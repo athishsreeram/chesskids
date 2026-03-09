@@ -2,380 +2,1310 @@
 
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1a1a1a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>ChessPlayground 🎮</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>♟ ChessPlayground</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@800;900&display=swap');
+
+:root{
+–bg:#F4EFE6;
+–white:#FFFFFF;
+–black:#111111;
+–grey:#777777;
+–light:#EBEBEB;
+–sq-light:#F0D9B5;
+–sq-dark:#2C2C2C;
+–green:#1DB954;
+–green-s:#157A38;
+–red:#E8321A;
+–red-s:#A82010;
+–yellow:#FFD600;
+–yellow-s:#C8A800;
+–star:#FFB300;
+–r-xl:24px;
+–r-lg:18px;
+–r-md:12px;
+–r-sm:8px;
+–sh-sm:0 4px 0 #000;
+–sh-md:0 6px 0 #000;
+–sh-lg:0 8px 0 #000;
+–ff-d:‘Fredoka’,cursive;
+–ff-b:‘Nunito’,sans-serif;
+–t:.14s ease;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+body{
+font-family:var(–ff-b);
+background:var(–bg);
+color:var(–black);
+min-height:100vh;
+overflow-x:hidden;
+user-select:none;
+background-image:
+linear-gradient(45deg,rgba(0,0,0,.04) 25%,transparent 25%),
+linear-gradient(-45deg,rgba(0,0,0,.04) 25%,transparent 25%),
+linear-gradient(45deg,transparent 75%,rgba(0,0,0,.04) 75%),
+linear-gradient(-45deg,transparent 75%,rgba(0,0,0,.04) 75%);
+background-size:40px 40px;
+}
+
+/* ── APP SHELL ── */
+#app{max-width:460px;margin:0 auto;min-height:100vh;background:var(–bg);position:relative}
+@media(min-width:461px){#app{box-shadow:0 0 60px rgba(0,0,0,.2)}}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;min-height:100vh;padding:14px 14px 28px;animation:su .25s cubic-bezier(.22,1,.36,1)}
+.screen.active{display:flex}
+@keyframes su{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* ════════════════════════
+HOME
+════════════════════════ */
+.home-hero{
+background:var(–black);
+color:var(–white);
+border-radius:var(–r-xl);
+padding:22px 20px 18px;
+margin-bottom:14px;
+position:relative;overflow:hidden;
+box-shadow:var(–sh-md);
+}
+.home-hero::before{
+content:’’;position:absolute;inset:0;
+background:repeating-conic-gradient(rgba(255,255,255,.05) 0% 25%,transparent 0% 50%);
+background-size:20px 20px;
+}
+.home-hero h1{font-family:var(–ff-d);font-size:2.6rem;font-weight:700;line-height:1.05;position:relative;z-index:1}
+.home-hero h1 em{color:var(–yellow);font-style:normal}
+.home-hero p{font-size:.95rem;font-weight:800;color:rgba(255,255,255,.55);margin-top:5px;position:relative;z-index:1}
+
+/* Stars strip */
+.stars-strip{
+display:flex;align-items:center;gap:10px;
+background:var(–white);
+border:3px solid var(–black);
+border-radius:var(–r-md);
+padding:10px 14px;
+box-shadow:var(–sh-sm);
+margin-bottom:14px;
+font-weight:900;font-size:1.05rem;
+}
+.stars-strip .lbl{color:var(–grey);font-size:.82rem;font-weight:800}
+.vwave{display:inline-flex;align-items:flex-end;gap:3px;height:16px;margin-left:auto}
+.vwave span{display:block;width:4px;background:var(–black);border-radius:2px;animation:wb .7s ease-in-out infinite alternate}
+.vwave span:nth-child(2){animation-delay:.12s}
+.vwave span:nth-child(3){animation-delay:.24s}
+.vwave span:nth-child(4){animation-delay:.12s}
+@keyframes wb{from{height:20%}to{height:100%}}
+
+/* Game cards grid */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
+.card{
+background:var(–white);
+border:3px solid var(–black);
+border-radius:var(–r-xl);
+padding:16px 10px 14px;
+text-align:center;cursor:pointer;
+box-shadow:var(–sh-lg);
+transition:transform var(–t),box-shadow var(–t);
+display:flex;flex-direction:column;align-items:center;gap:5px;
+position:relative;overflow:hidden;
+}
+.card::after{content:’’;position:absolute;top:0;left:0;right:0;height:5px;background:var(–black)}
+.card:nth-child(even)::after{background:#444}
+.card:active{transform:translateY(6px);box-shadow:0 2px 0 #000}
+.card .ic{font-size:2.8rem;line-height:1;margin-top:2px}
+.card .nm{font-family:var(–ff-d);font-weight:700;font-size:.95rem;color:var(–black);line-height:1.2}
+.card .st{font-size:.7rem;color:var(–star);letter-spacing:1px}
+
+/* Parent btn */
+.home-foot{display:flex;justify-content:center;padding:16px 0 0}
+.pbtn{
+background:var(–black);color:var(–white);
+border:3px solid var(–black);border-radius:var(–r-md);
+padding:12px 22px;font-family:var(–ff-b);font-weight:900;font-size:.9rem;
+cursor:pointer;box-shadow:var(–sh-sm);
+transition:transform var(–t),box-shadow var(–t);
+display:inline-flex;align-items:center;gap:7px;
+}
+.pbtn:active{transform:translateY(4px);box-shadow:0 0 0 #000}
+
+/* ════════════════════════
+GAME SCREENS - SHARED
+════════════════════════ */
+.ghead{
+background:var(–black);color:var(–white);
+border-radius:var(–r-xl);
+padding:13px 14px;
+display:flex;align-items:center;gap:10px;
+margin-bottom:12px;
+box-shadow:var(–sh-sm);
+}
+.ghead .gtitle{font-family:var(–ff-d);font-size:1.35rem;font-weight:700;color:var(–white);flex:1}
+.back{
+width:42px;height:42px;flex-shrink:0;
+background:var(–white);color:var(–black);
+border:2px solid var(–white);
+border-radius:var(–r-sm);
+font-size:1.2rem;font-weight:900;
+cursor:pointer;display:flex;align-items:center;justify-content:center;
+box-shadow:0 2px 0 rgba(255,255,255,.3);
+transition:transform var(–t);
+}
+.back:active{transform:translateY(2px)}
+.spill{
+background:var(–yellow);border:2px solid var(–black);
+border-radius:var(–r-sm);padding:5px 10px;
+font-weight:900;font-size:.95rem;color:var(–black);
+display:flex;align-items:center;gap:3px;white-space:nowrap;
+}
+
+/* Level tabs */
+.lvls{display:flex;gap:8px;margin-bottom:12px}
+.lvl{
+flex:1;padding:10px 4px;
+border:3px solid var(–black);border-radius:var(–r-md);
+background:var(–white);color:var(–black);
+font-family:var(–ff-b);font-weight:900;font-size:.78rem;
+cursor:pointer;text-align:center;line-height:1.2;
+box-shadow:var(–sh-sm);
+transition:all var(–t);
+}
+.lvl.on{background:var(–black);color:var(–white);transform:translateY(4px);box-shadow:0 0 0 #000}
+.lvl:not(.on):active{transform:translateY(4px);box-shadow:0 0 0 #000}
+
+/* Instruction box */
+.ibox{
+background:var(–white);border:3px solid var(–black);
+border-radius:var(–r-xl);padding:12px 14px;
+margin-bottom:10px;
+display:flex;align-items:center;gap:10px;
+box-shadow:var(–sh-sm);
+}
+.ibox .ie{font-size:2rem;flex-shrink:0;line-height:1}
+.ibox .it{font-weight:900;font-size:.95rem;line-height:1.4;color:var(–black)}
+.ibox .it b{color:var(–black)}
+
+/* Score/progress row */
+.srow{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.pill{
+background:var(–white);border:3px solid var(–black);
+border-radius:100px;padding:6px 16px;
+font-weight:900;font-size:.9rem;
+box-shadow:var(–sh-sm);color:var(–black);
+}
+.tpill{background:var(–black);color:var(–white);border-radius:100px;padding:6px 16px;font-weight:900;font-size:.9rem}
+
+/* ════════════════════════
+CHESS BOARD
+════════════════════════ */
+.bwrap{
+width:100%;aspect-ratio:1/1;
+border:4px solid var(–black);border-radius:var(–r-md);
+overflow:hidden;box-shadow:var(–sh-lg);
+margin-bottom:12px;position:relative;
+background:var(–black);
+}
+.board{width:100%;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}
+.sq{
+display:flex;align-items:center;justify-content:center;
+font-size:clamp(1rem,5.5vw,1.9rem);
+cursor:pointer;position:relative;
+transition:background .1s;
+-webkit-tap-highlight-color:transparent;
+}
+.sq.lt{background:var(–sq-light)}
+.sq.dk{background:var(–sq-dark)}
+/* Pieces – must be visible on both square types */
+.sq.lt .pc{color:var(–black);text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.sq.dk .pc{color:#FFFFFF;text-shadow:0 0 4px rgba(0,0,0,.9),0 0 2px #000}
+.sq.hc{background:var(–green)!important}
+.sq.hw{background:var(–red)!important}
+.sq.ht{background:var(–yellow)!important}
+.sq.hs{outline:4px solid var(–yellow);outline-offset:-4px}
+.pc{pointer-events:none;line-height:1;font-size:inherit}
+.cl{position:absolute;font-size:.5rem;font-weight:900;opacity:.6;line-height:1}
+.cl.f{bottom:2px;right:2px}
+.cl.r{top:2px;left:2px}
+.sq.lt .cl{color:var(–black)}
+.sq.dk .cl{color:var(–white)}
+.bflash{position:absolute;inset:0;background:var(–bg);display:flex;align-items:center;justify-content:center;font-size:4rem;transition:opacity .3s;z-index:2}
+
+/* ════════════════════════
+BUTTONS
+════════════════════════ */
+.btn{
+display:flex;align-items:center;justify-content:center;gap:7px;
+padding:16px 20px;border:3px solid var(–black);border-radius:var(–r-xl);
+background:var(–white);color:var(–black);
+font-family:var(–ff-b);font-weight:900;font-size:1.05rem;
+cursor:pointer;box-shadow:var(–sh-md);
+transition:transform var(–t),box-shadow var(–t);
+width:100%;margin-bottom:10px;
+}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 #000}
+.btn.pri{background:var(–black);color:var(–white)}
+.btn.sm{padding:11px 16px;font-size:.9rem;margin-bottom:0;box-shadow:var(–sh-sm)}
+
+/* Choice buttons */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.cbtn{
+padding:18px 8px;border:3px solid var(–black);border-radius:var(–r-xl);
+background:var(–white);color:var(–black);
+font-family:var(–ff-b);font-weight:900;font-size:1rem;
+cursor:pointer;box-shadow:var(–sh-sm);text-align:center;
+transition:all var(–t);
+}
+.cbtn:active{transform:translateY(4px);box-shadow:0 0 0 #000}
+.cbtn.ok{background:var(–green);color:var(–white);border-color:var(–green-s);box-shadow:0 4px 0 var(–green-s)}
+.cbtn.no{background:var(–red);color:var(–white);border-color:var(–red-s)}
+
+/* ════════════════════════
+RESULT OVERLAY
+════════════════════════ */
+.roverlay{
+position:fixed;inset:0;background:rgba(0,0,0,.65);
+display:none;align-items:center;justify-content:center;z-index:999;
+}
+.roverlay.show{display:flex}
+.rcard{
+background:var(–white);border:4px solid var(–black);
+border-radius:28px;padding:32px 24px;text-align:center;
+box-shadow:0 10px 0 #000;max-width:310px;width:90%;
+animation:pop .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.rem{font-size:4rem;display:block;margin-bottom:10px}
+.rcard h2{font-family:var(–ff-d);font-size:2rem;font-weight:700;margin-bottom:6px}
+.rsts{font-size:2rem;margin-bottom:12px;letter-spacing:3px}
+.rsco{font-size:.95rem;font-weight:800;color:var(–grey);margin-bottom:20px}
+
+/* ════════════════════════
+CONFETTI
+════════════════════════ */
+.cp{position:fixed;pointer-events:none;z-index:1000;animation:cf linear forwards}
+@keyframes cf{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* ════════════════════════
+OPENING TREE
+════════════════════════ */
+.tnode{border:3px solid var(–black);border-radius:var(–r-md);background:var(–white);box-shadow:var(–sh-sm);margin-bottom:10px;overflow:hidden}
+.thead{background:var(–black);color:var(–white);padding:13px 16px;font-weight:900;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.thead:active{opacity:.85}
+.mbadge{background:var(–white);color:var(–black);border-radius:var(–r-sm);padding:3px 10px;font-size:.85rem;font-family:monospace;font-weight:900}
+.tch{display:none;padding:8px 10px 10px;flex-direction:column;gap:7px;background:#F0EDE8}
+.tch.op{display:flex}
+.tchild{
+background:var(–white);border:2px solid var(–black);border-radius:var(–r-sm);
+padding:11px 14px;cursor:pointer;font-weight:900;
+display:flex;align-items:center;justify-content:space-between;
+box-shadow:0 3px 0 #000;transition:transform var(–t),box-shadow var(–t);
+}
+.tchild:active{transform:translateY(3px);box-shadow:0 0 0 #000}
+
+/* ════════════════════════
+THINKING TRAINER
+════════════════════════ */
+.tsteps{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.tstep{
+background:var(–white);border:3px solid var(–black);border-radius:var(–r-xl);
+padding:13px 14px;font-weight:900;font-size:.92rem;
+cursor:pointer;box-shadow:var(–sh-sm);
+display:flex;align-items:center;gap:10px;transition:all var(–t);
+}
+.tstep:active{transform:translateY(4px);box-shadow:0 0 0 #000}
+.tstep.done{background:var(–green);color:var(–white);border-color:var(–green-s);box-shadow:0 4px 0 var(–green-s)}
+.tstep.bad{background:var(–red);color:var(–white);border-color:var(–red-s)}
+.snum{width:32px;height:32px;border:3px solid currentColor;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.88rem;font-weight:900;flex-shrink:0}
+
+/* ════════════════════════
+DASHBOARD
+════════════════════════ */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.dcard{background:var(–white);border:3px solid var(–black);border-radius:var(–r-xl);padding:16px 12px;box-shadow:var(–sh-sm);text-align:center}
+.dval{font-family:var(–ff-d);font-size:2.2rem;font-weight:700;color:var(–black);line-height:1}
+.dlbl{font-size:.72rem;font-weight:900;color:var(–grey);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.dtitle{font-family:var(–ff-d);font-size:1.15rem;font-weight:700;margin-bottom:10px;color:var(–black)}
+.drow{
+display:flex;align-items:center;justify-content:space-between;
+padding:11px 14px;background:var(–white);
+border:3px solid var(–black);border-radius:var(–r-md);
+box-shadow:var(–sh-sm);margin-bottom:9px;font-weight:900;gap:6px;
+}
+.drow .dn{font-size:.88rem;flex:1}
+.drow .dp{font-size:.8rem;color:var(–grey)}
+.drow .ds{color:var(–star);font-size:.9rem}
+
+/* ════════════════════════
+PIN OVERLAY
+════════════════════════ */
+.poverlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1001}
+.poverlay.show{display:flex}
+.pcard{
+background:var(–white);border:4px solid var(–black);
+border-radius:28px;padding:28px 24px;text-align:center;
+box-shadow:0 10px 0 #000;max-width:290px;width:90%;
+animation:pop .25s cubic-bezier(.34,1.56,.64,1);
+}
+.pcard h2{font-family:var(–ff-d);font-size:1.6rem;font-weight:700;margin-bottom:4px}
+.pcard .pq{font-size:1.5rem;font-weight:900;margin:14px 0 12px;color:var(–black)}
+.pinrow{display:flex;gap:8px;margin-bottom:14px}
+.pin{
+flex:1;padding:13px;border:3px solid var(–black);border-radius:var(–r-md);
+font-family:var(–ff-b);font-size:1.3rem;font-weight:900;text-align:center;outline:none;
+background:#F8F8F8;
+}
+.pin:focus{border-color:var(–green);background:var(–white)}
+
+/* ════════════════════════
+MISC
+════════════════════════ */
+.hint{
+text-align:center;font-weight:900;color:var(–grey);font-size:.88rem;
+margin-top:7px;padding:8px 12px;
+background:var(–white);border:2px dashed #CCC;border-radius:var(–r-md);
+}
+.tp{text-align:center;font-weight:900;font-size:.95rem;margin-bottom:10px;padding:9px;background:var(–black);color:var(–white);border-radius:var(–r-md)}
+.hidden{display:none!important}
+.spacer{flex:1}
+.gs{flex:1;overflow-y:auto}
+
+/* PULSE */
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+.pulse{animation:pulse .75s ease infinite}
+</style>
+
 </head>
 <body>
 <div id="app">
 
-  <!-- ══ HOME SCREEN ══ -->
+<!-- ══ HOME ══ -->
 
-  <div id="home-screen" class="screen">
-    <div class="home-header">
-      <h1>♟ Chess<br><span>Playground</span></h1>
-      <p>Learn through fun mini-games!</p>
-    </div>
-
-```
-<div class="stars-strip">
-  <span class="star-icon">⭐</span>
-  <span class="total-stars" style="font-size:1.3rem;">0</span>
-  <span class="label">stars earned</span>
-  <div class="voice-wave"><span></span><span></span><span></span><span></span></div>
+<div id="home-screen" class="screen">
+  <div class="home-hero">
+    <h1>♟ Chess<br><em>Playground</em></h1>
+    <p>Learn through fun mini-games!</p>
+  </div>
+  <div class="stars-strip">
+    <span style="font-size:1.3rem">⭐</span>
+    <span class="total-stars" style="font-size:1.25rem;font-weight:900">0</span>
+    <span class="lbl">stars earned</span>
+    <div class="vwave"><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="grid">
+    <div class="card" data-game="memory">  <div class="ic">🎯</div><div class="nm">Memory Game</div><div class="st">★★★</div></div>
+    <div class="card" data-game="blindfold"><div class="ic">👀</div><div class="nm">Blindfold</div><div class="st">★★★</div></div>
+    <div class="card" data-game="pieceFinder"><div class="ic">♟</div><div class="nm">Piece Finder</div><div class="st">★★★</div></div>
+    <div class="card" data-game="patternMatch"><div class="ic">🧩</div><div class="nm">Patterns</div><div class="st">★★★</div></div>
+    <div class="card" data-game="openingTree"><div class="ic">🌳</div><div class="nm">Openings</div><div class="st">★★★</div></div>
+    <div class="card" data-game="endgame"><div class="ic">👑</div><div class="nm">Endgame Fun</div><div class="st">★★★</div></div>
+    <div class="card" data-game="vision"><div class="ic">🔎</div><div class="nm">Board Vision</div><div class="st">★★★</div></div>
+    <div class="card" data-game="calculation"><div class="ic">🧠</div><div class="nm">Calculate!</div><div class="st">★★★</div></div>
+    <div class="card" data-game="thinking"><div class="ic">✅</div><div class="nm">Think Smart</div><div class="st">★★★</div></div>
+    <div class="card" data-game="focus"><div class="ic">⚡</div><div class="nm">Focus Flash</div><div class="st">★★★</div></div>
+  </div>
+  <div class="home-foot"><button class="pbtn" id="parent-btn">👨‍👩‍👧 Parent Dashboard</button></div>
 </div>
 
-<div class="games-grid">
-  <div class="game-card" data-game="memory">
-    <div class="card-emoji">🎯</div>
-    <div class="card-name">Memory Game</div>
-    <div class="card-stars">★★★</div>
+<!-- ══ MEMORY ══ -->
+
+<div id="memory-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">🎯 Memory Game</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="memory-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
-  <div class="game-card" data-game="blindfold">
-    <div class="card-emoji">👀</div>
-    <div class="card-name">Blindfold</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="pieceFinder">
-    <div class="card-emoji">♟</div>
-    <div class="card-name">Piece Finder</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="patternMatch">
-    <div class="card-emoji">🧩</div>
-    <div class="card-name">Patterns</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="openingTree">
-    <div class="card-emoji">🌳</div>
-    <div class="card-name">Openings</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="endgame">
-    <div class="card-emoji">👑</div>
-    <div class="card-name">Endgame Fun</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="vision">
-    <div class="card-emoji">🔎</div>
-    <div class="card-name">Board Vision</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="calculation">
-    <div class="card-emoji">🧠</div>
-    <div class="card-name">Calculate!</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="thinking">
-    <div class="card-emoji">✅</div>
-    <div class="card-name">Think Smart</div>
-    <div class="card-stars">★★★</div>
-  </div>
-  <div class="game-card" data-game="focus">
-    <div class="card-emoji">⚡</div>
-    <div class="card-name">Focus Flash</div>
-    <div class="card-stars">★★★</div>
-  </div>
+  <div class="srow"><div class="pill" id="mem-timer">⏱ 6s</div><div class="pill">⭐ <span class="total-stars">0</span></div></div>
+  <div class="ibox" id="mem-inst"><span class="ie">👀</span><div class="it">Look at the board carefully!</div></div>
+  <div class="bwrap"><div class="board" id="mem-board"></div></div>
+  <button class="btn pri hidden" id="mem-check">✅ Check My Answer!</button>
 </div>
 
-<div class="home-bottom">
-  <button class="parent-btn" id="parent-btn">👨‍👩‍👧 Parent Dashboard</button>
+<!-- ══ BLINDFOLD ══ -->
+
+<div id="blindfold-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">👀 Blindfold</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="blind-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
+  </div>
+  <div class="ibox" id="blind-inst"><span class="ie">👀</span><div class="it">Study the board — it will disappear!</div></div>
+  <div class="bwrap" id="blind-wrap"><div class="board" id="blind-board"></div></div>
+  <p id="blind-tap" class="hidden" style="text-align:center;font-weight:900;margin:8px 0 5px;font-size:1rem">👇 Tap the correct square!</p>
 </div>
-```
 
+<!-- ══ PIECE FINDER ══ -->
+
+<div id="pf-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">♟ Piece Finder</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="pf-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
+  <div class="ibox" id="pf-inst"><span class="ie">🐴</span><div class="it">Find all squares the piece can move to!</div></div>
+  <div class="srow"><div class="pill">Found: <span id="pf-prog">0 / ?</span></div></div>
+  <div class="bwrap"><div class="board" id="pf-board"></div></div>
+</div>
 
-  <!-- ══ MEMORY GAME ══ -->
+<!-- ══ PATTERN MATCH ══ -->
 
-  <div id="memory-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">🎯 Memory Game</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector" id="memory-levels">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="score-row">
-      <div class="score-pill" id="memory-timer-pill">⏱ 6s</div>
-      <div class="score-pill">⭐ <span class="total-stars">0</span></div>
-    </div>
-    <div class="instruction-box" id="memory-instruction">
-      <span class="inst-emoji">👀</span>
-      <div class="inst-text">Look at the board carefully!</div>
-    </div>
-    <div class="board-wrap"><div class="chess-board" id="memory-board"></div></div>
-    <div id="memory-hint" style="text-align:center;font-weight:700;color:#888;margin-bottom:10px;"></div>
-    <button class="btn primary hidden" id="memory-check-btn">✅ Check My Answer!</button>
+<div id="pat-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">🧩 Patterns</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="pat-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
+  <div class="ibox" id="pat-inst"><span class="ie">🧩</span><div class="it">What pattern do you see?</div></div>
+  <div class="bwrap"><div class="board" id="pat-board"></div></div>
+  <div class="cgrid" id="pat-choices"></div>
+</div>
 
-  <!-- ══ BLINDFOLD GAME ══ -->
+<!-- ══ OPENINGS ══ -->
 
-  <div id="blindfold-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">👀 Blindfold</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="blindfold-instruction">
-      <span class="inst-emoji">👀</span>
-      <div class="inst-text">Study the board before it hides!</div>
-    </div>
-    <div class="board-wrap" id="blindfold-board-wrap" style="position:relative;">
-      <div class="chess-board" id="blindfold-board"></div>
-    </div>
-    <div class="hidden" id="blindfold-answer-area">
-      <p style="text-align:center;font-weight:700;margin:10px 0 6px;">Tap the correct square 👇</p>
-    </div>
+<div id="open-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">🌳 Openings</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="ibox"><span class="ie">🌳</span><div class="it">Tap a move to explore chess openings!</div></div>
+  <div class="bwrap hidden" id="open-board-wrap"><div class="board" id="open-board"></div></div>
+  <div id="open-tree" class="gs"></div>
+</div>
+
+<!-- ══ ENDGAME ══ -->
+
+<div id="eg-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">👑 Endgame Fun</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="eg-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
+  <div class="ibox" id="eg-inst"><span class="ie">👑</span><div class="it">Make the winning move!</div></div>
+  <div class="bwrap"><div class="board" id="eg-board"></div></div>
+  <div class="hint" id="eg-hint"></div>
+</div>
 
-  <!-- ══ PIECE FINDER ══ -->
+<!-- ══ BOARD VISION ══ -->
 
-  <div id="piecefinder-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">♟ Piece Finder</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="pf-instruction">
-      <span class="inst-emoji">🐴</span>
-      <div class="inst-text">Find all the squares the piece can move to!</div>
-    </div>
-    <div class="score-row">
-      <div class="score-pill">Found: <span id="pf-progress">0 / ?</span></div>
-    </div>
-    <div class="board-wrap"><div class="chess-board" id="pf-board"></div></div>
+<div id="vis-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">🔎 Board Vision</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="vis-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
+  <div class="ibox" id="vis-inst"><span class="ie">🔎</span><div class="it">Tap all squares the piece attacks!</div></div>
+  <div class="srow"><div class="pill">Found: <span id="vis-prog">0 / ?</span></div></div>
+  <div class="bwrap"><div class="board" id="vis-board"></div></div>
+</div>
 
-  <!-- ══ PATTERN MATCH ══ -->
+<!-- ══ CALCULATION ══ -->
 
-  <div id="pattern-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">🧩 Patterns</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="pattern-instruction">
-      <span class="inst-emoji">🧩</span>
-      <div class="inst-text">What pattern do you see?</div>
-    </div>
-    <div class="board-wrap"><div class="chess-board" id="pattern-board"></div></div>
-    <div class="choices-grid" id="pattern-choices"></div>
+<div id="calc-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">🧠 Calculate!</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="calc-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
+  <div class="ibox" id="calc-inst"><span class="ie">🧠</span><div class="it">Think about where the piece can go!</div></div>
+  <div class="bwrap"><div class="board" id="calc-board"></div></div>
+  <div class="hint" id="calc-hint"></div>
+  <div class="cgrid" id="calc-choices"></div>
+</div>
 
-  <!-- ══ OPENING TREE ══ -->
+<!-- ══ THINKING ══ -->
 
-  <div id="opening-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">🌳 Openings</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="instruction-box">
-      <span class="inst-emoji">🌳</span>
-      <div class="inst-text">Tap to explore chess openings! See how the game begins!</div>
-    </div>
-    <div id="opening-board-wrap" class="board-wrap hidden" style="margin-bottom:14px;">
-      <div class="chess-board" id="opening-board"></div>
-    </div>
-    <div id="opening-tree" class="game-scroll"></div>
+<div id="think-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">✅ Think Smart</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="think-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
+  <div class="ibox" id="think-inst"><span class="ie">♟</span><div class="it">A chess situation!</div></div>
+  <div class="tp" id="think-prompt">Tap the steps in the right order!</div>
+  <div class="tsteps" id="think-steps"></div>
+</div>
 
-  <!-- ══ ENDGAME TRAINER ══ -->
+<!-- ══ FOCUS FLASH ══ -->
 
-  <div id="endgame-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">👑 Endgame Fun</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="eg-instruction">
-      <span class="inst-emoji">👑</span>
-      <div class="inst-text">Make the winning move!</div>
-    </div>
-    <div class="board-wrap"><div class="chess-board" id="eg-board"></div></div>
-    <div id="eg-hint" style="text-align:center;font-weight:700;color:#888;margin-top:8px;"></div>
+<div id="focus-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">⚡ Focus Flash</div><div class="spill">⭐<span class="total-stars">0</span></div></div>
+  <div class="lvls" id="focus-lvls">
+    <button class="lvl on" data-lv="1">⭐ Beginner</button>
+    <button class="lvl" data-lv="2">⭐⭐ Explorer</button>
+    <button class="lvl" data-lv="3">⭐⭐⭐ Hero</button>
   </div>
+  <div class="ibox" id="focus-inst"><span class="ie">⚡</span><div class="it">Watch the board — then answer!</div></div>
+  <div class="bwrap" id="focus-wrap"><div class="board" id="focus-board"></div></div>
+  <div class="cgrid hidden" id="focus-choices" style="margin-top:12px"></div>
+</div>
 
-  <!-- ══ BOARD VISION ══ -->
+<!-- ══ DASHBOARD ══ -->
 
-  <div id="vision-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">🔎 Board Vision</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="vision-instruction">
-      <span class="inst-emoji">🔎</span>
-      <div class="inst-text">Tap all the squares the piece attacks!</div>
-    </div>
-    <div class="score-row">
-      <div class="score-pill">Found: <span id="vision-progress">0 / ?</span></div>
-    </div>
-    <div class="board-wrap"><div class="chess-board" id="vision-board"></div></div>
+<div id="dash-screen" class="screen">
+  <div class="ghead"><button class="back">←</button><div class="gtitle">👨‍👩‍👧 Dashboard</div></div>
+  <div class="dgrid">
+    <div class="dcard"><div class="dval" id="d-stars">0</div><div class="dlbl">⭐ Total Stars</div></div>
+    <div class="dcard"><div class="dval" id="d-streak">0🔥</div><div class="dlbl">Day Streak</div></div>
+    <div class="dcard"><div class="dval" id="d-plays">0</div><div class="dlbl">🎮 Total Plays</div></div>
+    <div class="dcard"><div class="dval" id="d-avg">0⭐</div><div class="dlbl">Avg Stars</div></div>
   </div>
-
-  <!-- ══ CALCULATION ══ -->
-
-  <div id="calc-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">🧠 Calculate!</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="calc-instruction">
-      <span class="inst-emoji">🧠</span>
-      <div class="inst-text">Think about where the piece can go!</div>
-    </div>
-    <div class="board-wrap"><div class="chess-board" id="calc-board"></div></div>
-    <div id="calc-hint" style="text-align:center;font-weight:700;color:#888;margin:8px 0;"></div>
-    <div class="choices-grid" id="calc-choices"></div>
-  </div>
-
-  <!-- ══ THINKING TRAINER ══ -->
-
-  <div id="thinking-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">✅ Think Smart</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="think-scenario">
-      <span class="inst-emoji">♟</span>
-      <div class="inst-text">A chess situation!</div>
-    </div>
-    <p id="think-prompt" style="text-align:center;font-weight:800;font-size:1rem;margin-bottom:12px;color:#555;">Tap the steps in order!</p>
-    <div class="thinking-steps" id="thinking-steps"></div>
-  </div>
-
-  <!-- ══ FOCUS FLASH ══ -->
-
-  <div id="focus-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">⚡ Focus Flash</div>
-      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
-    </div>
-    <div class="level-selector">
-      <button class="level-btn active" data-level="1">⭐ Beginner</button>
-      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
-      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
-    </div>
-    <div class="instruction-box" id="focus-instruction">
-      <span class="inst-emoji">⚡</span>
-      <div class="inst-text">Watch the board — then answer!</div>
-    </div>
-    <div class="board-wrap" id="focus-board-wrap" style="position:relative;">
-      <div class="chess-board" id="focus-board"></div>
-    </div>
-    <div class="hidden" id="focus-question-area">
-      <div class="choices-grid" id="focus-choices" style="margin-top:14px;"></div>
-    </div>
-  </div>
-
-  <!-- ══ PARENT DASHBOARD ══ -->
-
-  <div id="dashboard-screen" class="screen">
-    <div class="game-header">
-      <button class="back-btn">←</button>
-      <div class="game-title">👨‍👩‍👧 Dashboard</div>
-    </div>
-    <div class="dashboard-grid">
-      <div class="stat-card">
-        <div class="stat-val" id="dash-total-stars">0</div>
-        <div class="stat-label">⭐ Total Stars</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="dash-streak">0🔥</div>
-        <div class="stat-label">Day Streak</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="dash-plays">0</div>
-        <div class="stat-label">🎮 Total Plays</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="dash-avg">0⭐</div>
-        <div class="stat-label">Avg Stars</div>
-      </div>
-    </div>
-    <h3 class="section-title">📊 Game Progress</h3>
-    <div id="dash-game-list"></div>
-    <button class="btn" id="reset-stats-btn" style="margin-top:8px;">🗑 Reset Progress</button>
-  </div>
+  <div class="dtitle">📊 Game Progress</div>
+  <div id="d-list"></div>
+  <button class="btn" id="reset-btn" style="margin-top:8px">🗑 Reset Progress</button>
+</div>
 
 </div><!-- #app -->
 
-<!-- ══ RESULT OVERLAY ══ -->
+<!-- ══ RESULT ══ -->
 
-<div class="result-overlay" id="result-overlay">
-  <div class="result-card">
-    <span class="result-emoji" id="result-emoji">🎉</span>
-    <h2 id="result-title">Great Job!</h2>
-    <div class="result-stars" id="result-stars">⭐⭐⭐</div>
-    <div class="result-score" id="result-score"></div>
-    <button class="btn primary" id="result-next-btn" style="margin-bottom:10px;">▶ Play Again!</button>
-    <button class="btn" id="result-home-btn">🏠 Home</button>
+<div class="roverlay" id="result-overlay">
+  <div class="rcard">
+    <span class="rem" id="r-emoji">🎉</span>
+    <h2 id="r-title">Great Job!</h2>
+    <div class="rsts" id="r-stars">⭐⭐⭐</div>
+    <div class="rsco" id="r-score"></div>
+    <button class="btn pri" id="r-next" style="margin-bottom:10px">▶ Play Again!</button>
+    <button class="btn sm" id="r-home">🏠 Home</button>
   </div>
 </div>
 
-<!-- ══ PIN OVERLAY ══ -->
+<!-- ══ PIN ══ -->
 
-<div class="pin-overlay" id="pin-overlay">
-  <div class="pin-card">
+<div class="poverlay" id="pin-overlay">
+  <div class="pcard">
     <h2>🔐 Parent Check</h2>
-    <p style="color:#888;font-size:0.9rem;font-weight:600;">Solve this to continue:</p>
-    <div class="pin-q" id="pin-question">3 + 4 = ?</div>
-    <div class="pin-input-row">
-      <input class="pin-input" id="pin-input" type="number" placeholder="?" min="0" max="99">
-    </div>
-    <button class="btn primary" id="pin-submit" style="margin-bottom:8px;">✅ Enter</button>
+    <p style="color:var(--grey);font-size:.88rem;font-weight:800">Solve this to continue:</p>
+    <div class="pq" id="pin-q">3 + 4 = ?</div>
+    <div class="pinrow"><input class="pin" id="pin-in" type="number" placeholder="?" min="0" max="99"></div>
+    <button class="btn pri" id="pin-ok" style="margin-bottom:8px">✅ Enter</button>
     <button class="btn sm" id="pin-cancel">Cancel</button>
   </div>
 </div>
 
-<script src="app.js"></script>
+<script>
+'use strict';
+/* ════════════════════════════════
+   PUZZLE DATA (inlined)
+════════════════════════════════ */
+const DATA = {
+  memory:[
+    {id:1,lv:1,fen:'8/8/8/8/3K4/8/8/3k4 w - - 0 1',label:'Two Kings'},
+    {id:2,lv:1,fen:'8/8/8/8/8/8/4P3/3K1k2 w - - 0 1',label:'King & Pawn'},
+    {id:3,lv:2,fen:'8/8/3Q4/8/8/8/8/3K1k2 w - - 0 1',label:'Queen & Kings'},
+    {id:4,lv:2,fen:'8/8/8/3R4/8/8/3P4/3K1k2 w - - 0 1',label:'Rook & Pawn'},
+    {id:5,lv:3,fen:'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 1',label:'Italian Game'},
+  ],
+  pieceFinder:[
+    {id:1,lv:1,piece:'N',sq:'d4',moves:['b3','b5','c2','c6','e2','e6','f3','f5']},
+    {id:2,lv:1,piece:'R',sq:'d4',moves:['d1','d2','d3','d5','d6','d7','d8','a4','b4','c4','e4','f4','g4','h4']},
+    {id:3,lv:2,piece:'B',sq:'d4',moves:['a1','b2','c3','e5','f6','g7','h8','c5','b6','a7','e3','f2','g1']},
+    {id:4,lv:2,piece:'Q',sq:'e4',moves:['e1','e2','e3','e5','e6','e7','e8','a4','b4','c4','d4','f4','g4','h4','d3','c2','b1','f3','g2','h1','d5','c6','b7','a8','f5','g6','h7']},
+    {id:5,lv:3,piece:'N',sq:'f3',moves:['d2','d4','e1','e5','g1','g5','h2','h4']},
+  ],
+  vision:[
+    {id:1,lv:1,piece:'R',sq:'a1',attacked:['a2','a3','a4','a5','a6','a7','a8','b1','c1','d1','e1','f1','g1','h1']},
+    {id:2,lv:1,piece:'B',sq:'a1',attacked:['b2','c3','d4','e5','f6','g7','h8']},
+    {id:3,lv:2,piece:'N',sq:'e5',attacked:['d3','f3','c4','g4','c6','g6','d7','f7']},
+    {id:4,lv:2,piece:'Q',sq:'d4',attacked:['d1','d2','d3','d5','d6','d7','d8','a4','b4','c4','e4','f4','g4','h4','a1','b2','c3','e5','f6','g7','h8','a7','b6','c5','e3','f2','g1']},
+    {id:5,lv:3,piece:'K',sq:'e4',attacked:['d3','e3','f3','d4','f4','d5','e5','f5']},
+  ],
+  patterns:[
+    {id:1,lv:1,name:'Fork',emoji:'🍴',fen:'8/8/8/3N4/8/2k5/8/4K3 w - - 0 1',desc:'Knight attacks two pieces at once!'},
+    {id:2,lv:1,name:'Check',emoji:'👑',fen:'8/8/8/8/8/2k5/8/3QK3 w - - 0 1',desc:'The King is in danger!'},
+    {id:3,lv:2,name:'Pin',emoji:'📌',fen:'8/8/3r4/8/3B4/8/3K4/8 w - - 0 1',desc:'A piece cannot move!'},
+    {id:4,lv:2,name:'Back Rank',emoji:'🏰',fen:'6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',desc:'Attack the back row!'},
+    {id:5,lv:3,name:'Skewer',emoji:'🗡️',fen:'8/3k4/8/8/8/8/3K4/3R4 w - - 0 1',desc:'Force the king to move!'},
+  ],
+  endgame:[
+    {id:1,lv:1,fen:'8/8/8/8/8/3k4/3Q4/3K4 w - - 0 1',goal:'Checkmate the black king!',hint:'Use Queen near the king',moves:['d2d7','d2e3','d2f4','d2c3']},
+    {id:2,lv:1,fen:'8/8/8/8/8/8/1R6/k1K5 w - - 0 1',goal:'Checkmate with Rook!',hint:'Push king to corner',moves:['b2a2']},
+    {id:3,lv:2,fen:'8/8/8/8/8/3k4/3P4/3K4 w - - 0 1',goal:'Push the pawn forward!',hint:'March the pawn',moves:['d2d4','d2d3']},
+    {id:4,lv:2,fen:'8/8/8/8/8/8/R7/k1K5 w - - 0 1',goal:'Checkmate in 1!',hint:'Rook controls the file',moves:['a2a1']},
+    {id:5,lv:3,fen:'8/8/3k4/8/3K4/8/3P4/8 w - - 0 1',goal:'Win the King & Pawn ending',hint:'King must lead',moves:['d4d5','d4e5','d4c5']},
+  ],
+  calculation:[
+    {id:1,lv:1,q:'Knight on e4 moves once. Which is a valid square?',piece:'N',from:'e4',choices:['d2','e5','d4','e3'],correct:'d2',hint:'Knights jump in an L!'},
+    {id:2,lv:1,q:'Rook on a1 moves. Which square can it NOT reach in one move?',piece:'R',from:'a1',choices:['a8','h1','b2','a5'],correct:'b2',hint:'Rooks go in straight lines!'},
+    {id:3,lv:2,q:'Bishop on c1 moves diagonally. Which is reachable?',piece:'B',from:'c1',choices:['d2','e4','b1','a3'],correct:'d2',hint:'Bishops move diagonally!'},
+    {id:4,lv:2,q:'Which piece is the most powerful?',piece:'K',from:'e1',choices:['Rook','Bishop','Knight','Queen'],correct:'Queen',hint:'Queen = Rook + Bishop!'},
+    {id:5,lv:3,q:'Knight on g1 makes 2 moves. Can it reach e5?',piece:'N',from:'g1',choices:['Yes','No'],correct:'Yes',hint:'Try g1-f3-e5!'},
+  ],
+  focus:[
+    {id:1,lv:1,fen:'8/8/8/8/3K4/8/8/3k4 w - - 0 1',q:'Where is the White King?',ans:'d4'},
+    {id:2,lv:1,fen:'8/8/8/8/8/3Q4/8/4K2k w - - 0 1',q:'Where is the Queen?',ans:'d3'},
+    {id:3,lv:2,fen:'8/8/8/3r4/8/3B4/8/3K1k2 w - - 0 1',q:'Where is the Black Rook?',ans:'d5'},
+    {id:4,lv:2,fen:'8/8/8/8/8/8/4P3/3K1k2 w - - 0 1',q:'Where is the White Pawn?',ans:'e2'},
+    {id:5,lv:3,fen:'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 1',q:'How many Knights total?',ans:'4'},
+  ],
+  thinking:[
+    {id:1,steps:['👀 Look at opponent move','🎯 Find all checks','🏹 Find all captures','⚠️ Find all threats','✅ Pick best move'],scenario:'Your opponent just moved their queen. What do you do FIRST?'},
+    {id:2,steps:['👀 Look at opponent move','🎯 Find all checks','🏹 Find all captures','⚠️ Find all threats','✅ Pick best move'],scenario:'You can capture a pawn — but is it safe?'},
+    {id:3,steps:['👀 Look at opponent move','🎯 Find all checks','🏹 Find all captures','⚠️ Find all threats','✅ Pick best move'],scenario:'Your king is in check! Follow the steps!'},
+  ],
+  openings:[
+    {name:"King's Pawn Opening",notation:'e4',fen:'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+      children:[
+        {name:'Open Game (e5)',notation:'e5',fen:'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
+        {name:'Sicilian Defense (c5)',notation:'c5',fen:'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
+        {name:'French Defense (e6)',notation:'e6',fen:'rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
+      ]
+    },
+    {name:"Queen's Pawn Opening",notation:'d4',fen:'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1',
+      children:[
+        {name:"Queen's Gambit (d5)",notation:'d5',fen:'rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2'},
+        {name:'Indian Defense (Nf6)',notation:'Nf6',fen:'rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2'},
+      ]
+    },
+  ],
+};
 
-<script src="games/games.js"></script>
+/* ════════════════════════════════
+   APP STATE
+════════════════════════════════ */
+const APP = {lv:1,stars:0,streak:0,lastDate:null,stats:{},audioCtx:null};
+const PIECES = {wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',bK:'♚',bQ:'♛',bR:'♜',bB:'♝',bN:'♞',bP:'♟'};
+const PNAMES = {K:'King',Q:'Queen',R:'Rook',B:'Bishop',N:'Knight',P:'Pawn'};
+
+/* ── Storage ── */
+function save(){try{localStorage.setItem('cpg',JSON.stringify({stars:APP.stars,streak:APP.streak,lastDate:APP.lastDate,stats:APP.stats}))}catch(e){}}
+function load(){
+  try{
+    const r=localStorage.getItem('cpg');if(!r)return;
+    const s=JSON.parse(r);
+    APP.stars=s.stars||0;APP.streak=s.streak||0;APP.lastDate=s.lastDate||null;APP.stats=s.stats||{};
+    const today=new Date().toDateString(),yest=new Date(Date.now()-86400000).toDateString();
+    if(APP.lastDate&&APP.lastDate!==today){APP.streak=APP.lastDate===yest?APP.streak+1:0;}
+  }catch(e){}
+}
+function recordStat(game,stars){
+  if(!APP.stats[game])APP.stats[game]={plays:0,total:0,best:0};
+  APP.stats[game].plays++;APP.stats[game].total+=stars;APP.stats[game].best=Math.max(APP.stats[game].best,stars);
+  APP.stars+=stars;APP.lastDate=new Date().toDateString();save();updStars();
+}
+
+/* ── Audio ── */
+function tone(f,t='sine',d=.18,v=.35,del=0){
+  try{
+    if(!APP.audioCtx)APP.audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=APP.audioCtx.createOscillator(),g=APP.audioCtx.createGain();
+    o.connect(g);g.connect(APP.audioCtx.destination);
+    o.type=t;o.frequency.setValueAtTime(f,APP.audioCtx.currentTime+del);
+    g.gain.setValueAtTime(v,APP.audioCtx.currentTime+del);
+    g.gain.exponentialRampToValueAtTime(.001,APP.audioCtx.currentTime+del+d);
+    o.start(APP.audioCtx.currentTime+del);o.stop(APP.audioCtx.currentTime+del+d);
+  }catch(e){}
+}
+function sndOk(){tone(523,.sine,.12,.3);tone(659,.sine,.12,.3,.1);tone(784,.sine,.2,.3,.2)}
+function sndBad(){tone(280,'sawtooth',.2,.3);tone(230,'sawtooth',.2,.3,.15)}
+function sndWin(){[523,659,784,1047].forEach((f,i)=>tone(f,'sine',.22,.35,i*.14))}
+function sndClick(){tone(440,'sine',.07,.12)}
+function sndFlip(){tone(360,'sine',.14,.18)}
+
+/* ── Voice ── */
+function speak(txt){
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);u.rate=.85;u.pitch=1.15;u.volume=1;
+  speechSynthesis.speak(u);
+}
+
+/* ── Confetti ── */
+function confetti(n=80){
+  const cols=['#111','#FFD600','#1DB954','#E8321A','#3B8FE8','#FF7A00'];
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='cp';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-20px;background:${cols[Math.floor(Math.random()*cols.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.6}s`;
+    document.body.appendChild(el);el.addEventListener('animationend',()=>el.remove());
+  }
+}
+function starRain(n=20){
+  for(let i=0;i<n;i++){
+    const el=document.createElement('div');el.className='cp';
+    el.style.cssText=`left:${Math.random()*100}vw;top:-20px;background:transparent;font-size:${16+Math.random()*14}px;animation-duration:${1.2+Math.random()*1.5}s;animation-delay:${Math.random()*.8}s`;
+    el.textContent='⭐';document.body.appendChild(el);el.addEventListener('animationend',()=>el.remove());
+  }
+}
+function bigWin(){confetti(100);starRain(25);sndWin()}
+
+/* ── Screens ── */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);if(el){el.classList.add('active');}
+  window.scrollTo(0,0);
+}
+
+/* ── Stars ── */
+function updStars(){document.querySelectorAll('.total-stars').forEach(el=>el.textContent=APP.stars)}
+
+/* ── Result ── */
+function showResult(opts){
+  document.getElementById('r-emoji').textContent=opts.emoji||'🎉';
+  document.getElementById('r-title').textContent=opts.title||'Great Job!';
+  document.getElementById('r-stars').textContent='⭐'.repeat(opts.stars||0)+'☆'.repeat(3-(opts.stars||0));
+  document.getElementById('r-score').textContent=opts.score||'';
+  const ov=document.getElementById('result-overlay');ov.classList.add('show');
+  if(opts.stars>=2)bigWin();else if(opts.stars===1){confetti(35);sndOk();}
+  document.getElementById('r-next').onclick=()=>{ov.classList.remove('show');opts.next&&opts.next()};
+  document.getElementById('r-home').onclick=()=>{ov.classList.remove('show');show('home-screen')};
+}
+
+/* ── Board ── */
+function parseFEN(fen){
+  const b=Array.from({length:8},()=>Array(8).fill(null));
+  fen.split(' ')[0].split('/').forEach((row,ri)=>{
+    let fi=0;for(const ch of row){if(/\d/.test(ch)){fi+=+ch}else{b[ri][fi]=(ch===ch.toUpperCase()?'w':'b')+ch.toUpperCase();fi++}}
+  });return b;
+}
+function sq2pos(sq){return{f:sq.charCodeAt(0)-97,r:8-parseInt(sq[1])}}
+function buildBoard(id,fen,opts={}){
+  const c=document.getElementById(id);if(!c)return;
+  c.innerHTML='';const b=parseFEN(fen);
+  for(let r=0;r<8;r++){
+    for(let f=0;f<8;f++){
+      const el=document.createElement('div');
+      const light=(r+f)%2===0;
+      el.className='sq '+(light?'lt':'dk');
+      const sn=String.fromCharCode(97+f)+(8-r);
+      el.dataset.sq=sn;
+      // coords
+      if(f===7){const l=document.createElement('span');l.className='cl r';l.textContent=8-r;el.appendChild(l)}
+      if(r===7){const l=document.createElement('span');l.className='cl f';l.textContent=String.fromCharCode(97+f);el.appendChild(l)}
+      // piece
+      if(!opts.hide){
+        const p=b[r][f];
+        if(p&&PIECES[p]){const s=document.createElement('span');s.className='pc';s.textContent=PIECES[p];el.appendChild(s)}
+      }
+      // highlights
+      if(opts.correct&&opts.correct.has(sn))el.classList.add('hc');
+      if(opts.target&&opts.target.has(sn))el.classList.add('ht');
+      if(opts.sel===sn)el.classList.add('hs');
+      // click
+      if(opts.click){
+        el.addEventListener('click',()=>opts.click(sn,el,b[r][f]));
+        el.addEventListener('touchend',e=>{e.preventDefault();opts.click(sn,el,b[r][f])});
+      }
+      c.appendChild(el);
+    }
+  }
+}
+function simpleFEN(piece,sq){
+  const b=Array.from({length:8},()=>Array(8).fill('.'));
+  const {f,r}=sq2pos(sq);b[r][f]='w'+piece;
+  return b.map(row=>{let s='',e=0;for(const c of row){if(c==='.'){e++}else{if(e){s+=e;e=0}s+=c[1]}}if(e)s+=e;return s}).join('/')+' w - - 0 1';
+}
+
+/* ── Level tabs helper ── */
+function initLvls(containerId,cb){
+  document.querySelectorAll('#'+containerId+' .lvl').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('#'+containerId+' .lvl').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');APP.lv=+b.dataset.lv;sndClick();cb(APP.lv);
+    };
+  });
+}
+
+/* ── PIN ── */
+const PINS=[{q:'What is 3 + 4?',a:'7'},{q:'What is 5 + 2?',a:'7'},{q:'What is 6 + 3?',a:'9'},{q:'What is 8 - 3?',a:'5'},{q:'What is 4 × 2?',a:'8'}];
+function showPIN(onOk){
+  const pq=PINS[Math.floor(Math.random()*PINS.length)];
+  document.getElementById('pin-q').textContent=pq.q;
+  document.getElementById('pin-in').value='';
+  const ov=document.getElementById('pin-overlay');ov.classList.add('show');
+  document.getElementById('pin-ok').onclick=()=>{
+    if(document.getElementById('pin-in').value.trim()===pq.a){ov.classList.remove('show');onOk()}
+    else{document.getElementById('pin-in').style.borderColor='var(--red)';sndBad();setTimeout(()=>document.getElementById('pin-in').style.borderColor='',600)}
+  };
+  document.getElementById('pin-cancel').onclick=()=>ov.classList.remove('show');
+}
+
+/* ════════════════════════════════
+   GAME 1 — MEMORY
+════════════════════════════════ */
+let MEM={};
+function initMemory(){
+  APP.lv=1;
+  document.querySelectorAll('#memory-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('memory-lvls',()=>startMem());
+  startMem();
+}
+function startMem(){
+  const pool=DATA.memory.filter(p=>p.lv===APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  MEM={fen:p.fen,phase:'show',sel:new Set()};
+  const secs=APP.lv===1?6:APP.lv===2?4:3;
+  document.getElementById('mem-inst').innerHTML='<span class="ie">👀</span><div class="it">Look at the board! You have <b>'+secs+' seconds!</b></div>';
+  document.getElementById('mem-timer').textContent='⏱ '+secs+'s';
+  document.getElementById('mem-check').classList.add('hidden');
+  buildBoard('mem-board',p.fen,{});
+  speak('Look carefully! You have '+secs+' seconds!');
+  let t=secs;const ti=setInterval(()=>{t--;document.getElementById('mem-timer').textContent='⏱ '+t+'s';if(t<=0){clearInterval(ti);startMemRecall(p)}},1000);
+}
+function startMemRecall(p){
+  MEM.phase='recall';MEM.sel=new Set();
+  document.getElementById('mem-inst').innerHTML='<span class="ie">🤔</span><div class="it">Where were the pieces? <b>Tap those squares!</b></div>';
+  document.getElementById('mem-timer').textContent='';
+  document.getElementById('mem-check').classList.remove('hidden');
+  speak('Now tap where the pieces were!');
+  buildBoard('mem-board','8/8/8/8/8/8/8/8 w - - 0 1',{
+    click:(sq,el)=>{
+      sndClick();
+      if(MEM.sel.has(sq)){MEM.sel.delete(sq);el.classList.remove('ht')}
+      else{MEM.sel.add(sq);el.classList.add('ht')}
+    }
+  });
+  document.getElementById('mem-check').onclick=()=>checkMem(p);
+}
+function checkMem(p){
+  const correct=new Set();
+  parseFEN(p.fen).forEach((row,r)=>row.forEach((pc,f)=>{if(pc)correct.add(String.fromCharCode(97+f)+(8-r))}));
+  let hits=0;correct.forEach(s=>{if(MEM.sel.has(s))hits++});
+  document.querySelectorAll('#mem-board .sq').forEach(sq=>{
+    const s=sq.dataset.sq;sq.classList.remove('ht','hc','hw');
+    if(correct.has(s))sq.classList.add('hc');
+    else if(MEM.sel.has(s))sq.classList.add('hw');
+  });
+  const pct=correct.size>0?hits/correct.size:0;
+  const stars=pct>=.9?3:pct>=.6?2:pct>=.3?1:0;
+  recordStat('memory',stars);
+  setTimeout(()=>showResult({emoji:stars===3?'🏆':stars>=1?'⭐':'💪',title:stars===3?'Perfect!':stars>=1?'Good Job!':'Keep Trying!',stars,score:'Found '+hits+' of '+correct.size+' squares!',next:startMem}),1000);
+}
+
+/* ════════════════════════════════
+   GAME 2 — BLINDFOLD
+════════════════════════════════ */
+let BL={};
+function initBlind(){
+  APP.lv=1;
+  document.querySelectorAll('#blind-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('blind-lvls',()=>startBlind());
+  startBlind();
+}
+function startBlind(){
+  const pool=DATA.focus.filter(p=>p.lv===APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  BL={p,ans:p.ans};
+  const secs=APP.lv===1?5:APP.lv===2?3:2;
+  document.getElementById('blind-inst').innerHTML='<span class="ie">👀</span><div class="it">Study the board — <b>it will disappear in '+secs+'s!</b></div>';
+  document.getElementById('blind-tap').classList.add('hidden');
+  const wrap=document.getElementById('blind-wrap');
+  // show flash overlay first
+  let fl=document.getElementById('blind-flash');
+  if(!fl){fl=document.createElement('div');fl.id='blind-flash';fl.className='bflash';fl.textContent='👀';wrap.appendChild(fl);}
+  fl.style.opacity='1';fl.textContent='👀';
+  buildBoard('blind-board','8/8/8/8/8/8/8/8 w - - 0 1',{});
+  setTimeout(()=>{
+    buildBoard('blind-board',p.fen,{});fl.style.opacity='0';sndFlip();speak('Look carefully!');
+    let t=secs;const ti=setInterval(()=>{t--;if(t<=0){clearInterval(ti);hideBlind(p)}},1000);
+  },400);
+}
+function hideBlind(p){
+  sndFlip();
+  const fl=document.getElementById('blind-flash');if(fl){fl.style.opacity='1';fl.textContent='🤔';}
+  document.getElementById('blind-inst').innerHTML='<span class="ie">🤔</span><div class="it"><b>'+p.q+'</b> — Tap the square!</div>';
+  document.getElementById('blind-tap').classList.remove('hidden');
+  speak(p.q);
+  buildBoard('blind-board','8/8/8/8/8/8/8/8 w - - 0 1',{
+    click:(sq,el)=>{
+      sndClick();
+      document.querySelectorAll('#blind-board .sq').forEach(s=>{if(s.dataset.sq===p.ans)s.classList.add('hc')});
+      const ok=sq===p.ans;el.classList.add(ok?'hc':'hw');
+      const stars=ok?3:0;recordStat('blindfold',stars);
+      speak(ok?'Amazing memory!':'Not quite! See where it was!');
+      setTimeout(()=>showResult({emoji:ok?'🎉':'💪',title:ok?'You remembered!':'Almost!',stars,score:ok?'Perfect!':'It was on '+p.ans,next:startBlind}),900);
+    }
+  });
+}
+
+/* ════════════════════════════════
+   GAME 3 — PIECE FINDER
+════════════════════════════════ */
+let PF={};
+function initPF(){
+  APP.lv=1;
+  document.querySelectorAll('#pf-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('pf-lvls',()=>startPF());
+  startPF();
+}
+function startPF(){
+  const pool=DATA.pieceFinder.filter(p=>p.lv===APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  PF={p,found:new Set(),errors:0};
+  const name=PNAMES[p.piece];
+  document.getElementById('pf-inst').innerHTML='<span class="ie">♟</span><div class="it">The <b>'+name+'</b> is on <b>'+p.sq+'</b>. Tap all squares it can move to!</div>';
+  document.getElementById('pf-prog').textContent='0 / '+p.moves.length;
+  speak('Find all the squares the '+name+' can move to!');
+  const fen=simpleFEN(p.piece,p.sq);
+  buildBoard('pf-board',fen,{
+    target:new Set([p.sq]),
+    click:(sq,el)=>{
+      if(sq===p.sq){speak('That is where the piece is!');return}
+      sndClick();
+      const ok=p.moves.includes(sq);
+      if(ok&&!PF.found.has(sq)){
+        PF.found.add(sq);el.classList.add('hc');sndOk();
+        document.getElementById('pf-prog').textContent=PF.found.size+' / '+p.moves.length;
+        speak('Yes!');
+        if(PF.found.size===p.moves.length){
+          const stars=PF.errors===0?3:PF.errors<=2?2:1;
+          recordStat('pieceFinder',stars);
+          setTimeout(()=>showResult({emoji:'🏆',title:'All Found!',stars,score:'Found all '+p.moves.length+' squares!',next:startPF}),500);
+        }
+      }else if(!ok){
+        PF.errors++;el.classList.add('hw');sndBad();speak('Not quite!');setTimeout(()=>el.classList.remove('hw'),500);
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════
+   GAME 4 — PATTERN MATCH
+════════════════════════════════ */
+let PAT={};
+function initPat(){
+  APP.lv=1;
+  document.querySelectorAll('#pat-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('pat-lvls',()=>startPat());
+  startPat();
+}
+function startPat(){
+  const pool=DATA.patterns.filter(p=>p.lv<=APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  PAT={p,done:false};
+  document.getElementById('pat-inst').innerHTML='<span class="ie">'+p.emoji+'</span><div class="it">'+p.desc+' Which pattern is this?</div>';
+  buildBoard('pat-board',p.fen,{});
+  speak(p.desc+'. Which pattern is this?');
+  const all=['Fork','Check','Pin','Back Rank','Skewer','Discovery'];
+  const wrong=all.filter(n=>n!==p.name).sort(()=>Math.random()-.5).slice(0,APP.lv===1?1:APP.lv===2?2:3);
+  const choices=[p.name,...wrong].sort(()=>Math.random()-.5);
+  const grid=document.getElementById('pat-choices');grid.innerHTML='';
+  choices.forEach(ch=>{
+    const b=document.createElement('button');b.className='cbtn';b.textContent=ch;
+    b.onclick=()=>{
+      if(PAT.done)return;PAT.done=true;sndClick();
+      const ok=ch===p.name;b.classList.add(ok?'ok':'no');
+      grid.querySelectorAll('.cbtn').forEach(x=>{if(x.textContent===p.name)x.classList.add('ok')});
+      const stars=ok?3:1;recordStat('patternMatch',stars);
+      speak(ok?'Correct! Great job!':'The answer was '+p.name);
+      setTimeout(()=>showResult({emoji:ok?'🧩':'💪',title:ok?'Pattern Found!':'Keep Practicing!',stars,score:'Pattern: '+p.name,next:startPat}),700);
+    };
+    grid.appendChild(b);
+  });
+}
+
+/* ════════════════════════════════
+   GAME 5 — OPENING TREE
+════════════════════════════════ */
+function initOpenings(){
+  const c=document.getElementById('open-tree');c.innerHTML='';
+  document.getElementById('open-board-wrap').classList.add('hidden');
+  DATA.openings.forEach(op=>{
+    const node=document.createElement('div');node.className='tnode';
+    const hd=document.createElement('div');hd.className='thead';
+    hd.innerHTML='<span>'+op.name+'</span><span class="mbadge">'+op.notation+'</span>';
+    const ch=document.createElement('div');ch.className='tch';
+    op.children.forEach(child=>{
+      const row=document.createElement('div');row.className='tchild';
+      row.innerHTML='<span>'+child.name+'</span><span class="mbadge">'+child.notation+'</span>';
+      row.onclick=()=>{sndClick();speak(child.name);showOpenBoard(child.fen)};
+      ch.appendChild(row);
+    });
+    node.appendChild(hd);node.appendChild(ch);
+    hd.onclick=()=>{sndClick();ch.classList.toggle('op');showOpenBoard(op.fen);speak(op.name)};
+    c.appendChild(node);
+  });
+  speak('Tap to explore chess openings!');
+}
+function showOpenBoard(fen){
+  document.getElementById('open-board-wrap').classList.remove('hidden');
+  buildBoard('open-board',fen,{});
+}
+
+/* ════════════════════════════════
+   GAME 6 — ENDGAME
+════════════════════════════════ */
+let EG={};
+function initEG(){
+  APP.lv=1;
+  document.querySelectorAll('#eg-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('eg-lvls',()=>startEG());
+  startEG();
+}
+function startEG(){
+  const pool=DATA.endgame.filter(p=>p.lv===APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  EG={p,sel:null,done:false};
+  document.getElementById('eg-inst').innerHTML='<span class="ie">👑</span><div class="it">'+p.goal+'</div>';
+  document.getElementById('eg-hint').textContent='💡 '+p.hint;
+  speak(p.goal);
+  buildBoard('eg-board',p.fen,{
+    click:(sq,el,piece)=>{
+      if(EG.done)return;sndClick();
+      if(!EG.sel){
+        if(piece&&piece[0]==='w'){
+          EG.sel=sq;
+          document.querySelectorAll('#eg-board .sq').forEach(s=>s.classList.remove('hs'));
+          el.classList.add('hs');speak('Good! Now where to move?');
+        }
+      }else{
+        const mv=EG.sel+sq;
+        if(p.moves.some(m=>m.startsWith(mv.slice(0,4)))){
+          EG.done=true;el.classList.add('hc');sndWin();speak('Brilliant move!');
+          recordStat('endgame',3);
+          setTimeout(()=>showResult({emoji:'👑',title:'Brilliant!',stars:3,score:'Perfect endgame!',next:startEG}),700);
+        }else{
+          el.classList.add('hw');sndBad();EG.sel=null;
+          document.querySelectorAll('#eg-board .sq').forEach(s=>s.classList.remove('hs','hw'));
+          setTimeout(()=>el.classList.remove('hw'),500);speak('Try again!');
+        }
+      }
+    }
+  });
+}
+
+/* ════════════════════════════════
+   GAME 7 — BOARD VISION
+════════════════════════════════ */
+let VIS={};
+function initVis(){
+  APP.lv=1;
+  document.querySelectorAll('#vis-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('vis-lvls',()=>startVis());
+  startVis();
+}
+function startVis(){
+  const pool=DATA.vision.filter(p=>p.lv===APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  VIS={p,found:new Set(),errors:0};
+  const name=PNAMES[p.piece];
+  document.getElementById('vis-inst').innerHTML='<span class="ie">🔎</span><div class="it">Tap all squares the <b>'+name+'</b> on <b>'+p.sq+'</b> attacks!</div>';
+  document.getElementById('vis-prog').textContent='0 / '+p.attacked.length;
+  speak('Tap all squares the '+name+' attacks!');
+  const fen=simpleFEN(p.piece,p.sq);
+  buildBoard('vis-board',fen,{
+    target:new Set([p.sq]),
+    click:(sq,el)=>{
+      if(sq===p.sq){speak('That is where the piece is!');return}
+      sndClick();
+      const ok=p.attacked.includes(sq);
+      if(ok&&!VIS.found.has(sq)){
+        VIS.found.add(sq);el.classList.add('hc');sndOk();
+        document.getElementById('vis-prog').textContent=VIS.found.size+' / '+p.attacked.length;
+        if(VIS.found.size===p.attacked.length){
+          const stars=VIS.errors===0?3:VIS.errors<=2?2:1;
+          recordStat('vision',stars);
+          setTimeout(()=>showResult({emoji:'🔎',title:'Sharp Eyes!',stars,score:'Found all '+p.attacked.length+' attacked squares!',next:startVis}),500);
+        }
+      }else if(!ok){VIS.errors++;el.classList.add('hw');sndBad();setTimeout(()=>el.classList.remove('hw'),500)}
+    }
+  });
+}
+
+/* ════════════════════════════════
+   GAME 8 — CALCULATION
+════════════════════════════════ */
+let CALC={};
+function initCalc(){
+  APP.lv=1;
+  document.querySelectorAll('#calc-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('calc-lvls',()=>startCalc());
+  startCalc();
+}
+function startCalc(){
+  const pool=DATA.calculation.filter(p=>p.lv===APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  CALC={p,done:false};
+  document.getElementById('calc-inst').innerHTML='<span class="ie">🧠</span><div class="it">'+p.q+'</div>';
+  document.getElementById('calc-hint').textContent='💡 '+p.hint;
+  buildBoard('calc-board',simpleFEN(p.piece,p.from),{});
+  speak(p.q);
+  const grid=document.getElementById('calc-choices');grid.innerHTML='';
+  p.choices.forEach(ch=>{
+    const b=document.createElement('button');b.className='cbtn';b.textContent=ch;
+    b.onclick=()=>{
+      if(CALC.done)return;CALC.done=true;sndClick();
+      const ok=Array.isArray(p.correct)?p.correct.includes(ch):ch===p.correct;
+      b.classList.add(ok?'ok':'no');
+      grid.querySelectorAll('.cbtn').forEach(x=>{const c=p.correct;if(Array.isArray(c)?c.includes(x.textContent):x.textContent===c)x.classList.add('ok')});
+      const stars=ok?3:1;recordStat('calculation',stars);
+      speak(ok?'Brilliant thinking!':'Good try!');
+      setTimeout(()=>showResult({emoji:ok?'🧠':'💡',title:ok?'Great Thinking!':'Keep Going!',stars,score:p.hint,next:startCalc}),700);
+    };
+    grid.appendChild(b);
+  });
+}
+
+/* ════════════════════════════════
+   GAME 9 — THINKING TRAINER
+════════════════════════════════ */
+let TH={};
+function initThink(){
+  APP.lv=1;
+  document.querySelectorAll('#think-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('think-lvls',()=>startThink());
+  startThink();
+}
+function startThink(){
+  const p=DATA.thinking[Math.floor(Math.random()*DATA.thinking.length)];
+  TH={p,done:[],errors:0};
+  document.getElementById('think-inst').innerHTML='<span class="ie">♟</span><div class="it">'+p.scenario+'</div>';
+  speak('Tap the thinking steps in order! '+p.scenario);
+  const shuffled=[...p.steps].sort(()=>Math.random()-.5);
+  const c=document.getElementById('think-steps');c.innerHTML='';
+  shuffled.forEach((step,i)=>{
+    const el=document.createElement('div');el.className='tstep';
+    el.innerHTML='<div class="snum">'+(i+1)+'</div><span>'+step+'</span>';
+    el.onclick=()=>{
+      if(el.classList.contains('done'))return;
+      sndClick();
+      const exp=TH.done.length;const actual=p.steps.indexOf(step);
+      if(actual===exp){
+        el.classList.add('done');TH.done.push(step);sndOk();speak('Correct!');
+        if(TH.done.length===p.steps.length){
+          const stars=TH.errors===0?3:TH.errors<=1?2:1;recordStat('thinking',stars);
+          setTimeout(()=>showResult({emoji:'✅',title:'Perfect Thinking!',stars,score:'All '+p.steps.length+' steps correct!',next:startThink}),500);
+        }
+      }else{TH.errors++;el.classList.add('bad');sndBad();setTimeout(()=>el.classList.remove('bad'),500);speak('Follow the order!')}
+    };
+    c.appendChild(el);
+  });
+}
+
+/* ════════════════════════════════
+   GAME 10 — FOCUS FLASH
+════════════════════════════════ */
+let FC={};
+function initFocus(){
+  APP.lv=1;
+  document.querySelectorAll('#focus-lvls .lvl').forEach(b=>b.classList.toggle('on',+b.dataset.lv===1));
+  initLvls('focus-lvls',()=>startFocus());
+  startFocus();
+}
+function startFocus(){
+  const pool=DATA.focus.filter(p=>p.lv===APP.lv);
+  const p=pool[Math.floor(Math.random()*pool.length)];
+  FC={p,done:false};
+  const secs=APP.lv===1?4:APP.lv===2?3:2;
+  document.getElementById('focus-inst').innerHTML='<span class="ie">⚡</span><div class="it">The board will flash for <b>'+secs+' seconds!</b> Then answer!</div>';
+  document.getElementById('focus-choices').classList.add('hidden');
+  const wrap=document.getElementById('focus-wrap');
+  let fl=document.getElementById('focus-flash');
+  if(!fl){fl=document.createElement('div');fl.id='focus-flash';fl.className='bflash';fl.textContent='⚡';wrap.appendChild(fl);}
+  fl.style.opacity='1';fl.textContent='⚡';
+  buildBoard('focus-board','8/8/8/8/8/8/8/8 w - - 0 1',{});
+  speak('Get ready! Watch carefully!');
+  setTimeout(()=>{
+    buildBoard('focus-board',p.fen,{});fl.style.opacity='0';sndFlip();speak('Look!');
+    setTimeout(()=>{
+      fl.style.opacity='1';fl.textContent='🤔';
+      buildBoard('focus-board','8/8/8/8/8/8/8/8 w - - 0 1',{});sndFlip();
+      document.getElementById('focus-inst').innerHTML='<span class="ie">🤔</span><div class="it"><b>'+p.q+'</b></div>';
+      document.getElementById('focus-choices').classList.remove('hidden');
+      speak(p.q);buildFocusChoices(p);
+    },secs*1000);
+  },500);
+}
+function buildFocusChoices(p){
+  const grid=document.getElementById('focus-choices');grid.innerHTML='';
+  // generate 3 wrong answers
+  const squares=['a1','b3','c4','d5','e6','f7','g8','h2','e4','d3','c6','f5','g3'];
+  const nums=['1','2','3','4','5','6','8'];
+  const isNum=/^\d$/.test(p.ans);
+  const pool=(isNum?nums:squares).filter(x=>x!==p.ans).sort(()=>Math.random()-.5).slice(0,3);
+  [p.ans,...pool].sort(()=>Math.random()-.5).forEach(ch=>{
+    const b=document.createElement('button');b.className='cbtn';b.textContent=ch;
+    b.onclick=()=>{
+      if(FC.done)return;FC.done=true;sndClick();
+      const ok=ch===p.ans;b.classList.add(ok?'ok':'no');
+      grid.querySelectorAll('.cbtn').forEach(x=>{if(x.textContent===p.ans)x.classList.add('ok')});
+      const stars=ok?3:0;recordStat('focus',stars);
+      speak(ok?'Amazing focus!':'The answer was '+p.ans);
+      setTimeout(()=>showResult({emoji:ok?'⚡':'😅',title:ok?'Sharp Focus!':'Keep Training!',stars,score:ok?'Your memory is sharp!':'Answer was: '+p.ans,next:startFocus}),700);
+    };
+    grid.appendChild(b);
+  });
+}
+
+/* ════════════════════════════════
+   DASHBOARD
+════════════════════════════════ */
+function renderDash(){
+  const names={memory:'🎯 Memory',blindfold:'👀 Blindfold',pieceFinder:'♟ Piece Finder',
+    patternMatch:'🧩 Patterns',openingTree:'🌳 Openings',endgame:'👑 Endgame',
+    vision:'🔎 Board Vision',calculation:'🧠 Calculation',thinking:'✅ Thinking',focus:'⚡ Focus Flash'};
+  document.getElementById('d-stars').textContent=APP.stars;
+  document.getElementById('d-streak').textContent=(APP.streak||0)+'🔥';
+  const plays=Object.values(APP.stats).reduce((a,g)=>a+g.plays,0);
+  document.getElementById('d-plays').textContent=plays;
+  const tot=Object.values(APP.stats).reduce((a,g)=>a+g.total,0);
+  document.getElementById('d-avg').textContent=(plays>0?(tot/plays).toFixed(1):0)+'⭐';
+  const list=document.getElementById('d-list');list.innerHTML='';
+  Object.entries(names).forEach(([id,name])=>{
+    const s=APP.stats[id];
+    const row=document.createElement('div');row.className='drow';
+    row.innerHTML='<span class="dn">'+name+'</span><span class="dp">'+(s?s.plays:0)+' plays</span><span class="ds">'+'⭐'.repeat(Math.min(s?s.best:0,3))+'</span>';
+    list.appendChild(row);
+  });
+}
+
+/* ════════════════════════════════
+   GAME ROUTER
+════════════════════════════════ */
+const GAMES={
+  memory:     ()=>{show('memory-screen');initMemory()},
+  blindfold:  ()=>{show('blindfold-screen');initBlind()},
+  pieceFinder:()=>{show('pf-screen');initPF()},
+  patternMatch:()=>{show('pat-screen');initPat()},
+  openingTree:()=>{show('open-screen');initOpenings()},
+  endgame:    ()=>{show('eg-screen');initEG()},
+  vision:     ()=>{show('vis-screen');initVis()},
+  calculation:()=>{show('calc-screen');initCalc()},
+  thinking:   ()=>{show('think-screen');initThink()},
+  focus:      ()=>{show('focus-screen');initFocus()},
+};
+
+/* ════════════════════════════════
+   INIT
+════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  load();updStars();
+
+  // Game card clicks
+  document.querySelectorAll('.card[data-game]').forEach(c=>{
+    c.addEventListener('click',()=>{sndClick();APP.lv=1;const g=c.dataset.game;if(GAMES[g])GAMES[g]()});
+  });
+
+  // Back buttons
+  document.querySelectorAll('.back').forEach(b=>{
+    b.addEventListener('click',()=>{sndClick();speechSynthesis&&speechSynthesis.cancel();show('home-screen')});
+  });
+
+  // Parent dashboard
+  document.getElementById('parent-btn').addEventListener('click',()=>{
+    sndClick();showPIN(()=>{renderDash();show('dash-screen')});
+  });
+
+  // Reset
+  document.getElementById('reset-btn').addEventListener('click',()=>{
+    if(confirm('Reset all progress?')){APP.stars=0;APP.streak=0;APP.stats={};save();renderDash();updStars()}
+  });
+
+  // PIN enter key
+  document.getElementById('pin-in').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('pin-ok').click()});
+
+  show('home-screen');
+  setTimeout(()=>speak('Welcome to Chess Playground! Tap a game to start!'),400);
+});
+</script>
 
 </body>
 </html>
