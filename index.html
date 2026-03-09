@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>ChessPlayground 🎮</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ══ HOME SCREEN ══ -->
+
+  <div id="home-screen" class="screen">
+    <div class="home-header">
+      <h1>♟ Chess<br><span>Playground</span></h1>
+      <p>Learn through fun mini-games!</p>
+    </div>
+
+```
+<div class="stars-strip">
+  <span class="star-icon">⭐</span>
+  <span class="total-stars" style="font-size:1.3rem;">0</span>
+  <span class="label">stars earned</span>
+  <div class="voice-wave"><span></span><span></span><span></span><span></span></div>
+</div>
+
+<div class="games-grid">
+  <div class="game-card" data-game="memory">
+    <div class="card-emoji">🎯</div>
+    <div class="card-name">Memory Game</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="blindfold">
+    <div class="card-emoji">👀</div>
+    <div class="card-name">Blindfold</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="pieceFinder">
+    <div class="card-emoji">♟</div>
+    <div class="card-name">Piece Finder</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="patternMatch">
+    <div class="card-emoji">🧩</div>
+    <div class="card-name">Patterns</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="openingTree">
+    <div class="card-emoji">🌳</div>
+    <div class="card-name">Openings</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="endgame">
+    <div class="card-emoji">👑</div>
+    <div class="card-name">Endgame Fun</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="vision">
+    <div class="card-emoji">🔎</div>
+    <div class="card-name">Board Vision</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="calculation">
+    <div class="card-emoji">🧠</div>
+    <div class="card-name">Calculate!</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="thinking">
+    <div class="card-emoji">✅</div>
+    <div class="card-name">Think Smart</div>
+    <div class="card-stars">★★★</div>
+  </div>
+  <div class="game-card" data-game="focus">
+    <div class="card-emoji">⚡</div>
+    <div class="card-name">Focus Flash</div>
+    <div class="card-stars">★★★</div>
+  </div>
+</div>
+
+<div class="home-bottom">
+  <button class="parent-btn" id="parent-btn">👨‍👩‍👧 Parent Dashboard</button>
+</div>
+```
+
+  </div>
+
+  <!-- ══ MEMORY GAME ══ -->
+
+  <div id="memory-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">🎯 Memory Game</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector" id="memory-levels">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="score-row">
+      <div class="score-pill" id="memory-timer-pill">⏱ 6s</div>
+      <div class="score-pill">⭐ <span class="total-stars">0</span></div>
+    </div>
+    <div class="instruction-box" id="memory-instruction">
+      <span class="inst-emoji">👀</span>
+      <div class="inst-text">Look at the board carefully!</div>
+    </div>
+    <div class="board-wrap"><div class="chess-board" id="memory-board"></div></div>
+    <div id="memory-hint" style="text-align:center;font-weight:700;color:#888;margin-bottom:10px;"></div>
+    <button class="btn primary hidden" id="memory-check-btn">✅ Check My Answer!</button>
+  </div>
+
+  <!-- ══ BLINDFOLD GAME ══ -->
+
+  <div id="blindfold-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">👀 Blindfold</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="blindfold-instruction">
+      <span class="inst-emoji">👀</span>
+      <div class="inst-text">Study the board before it hides!</div>
+    </div>
+    <div class="board-wrap" id="blindfold-board-wrap" style="position:relative;">
+      <div class="chess-board" id="blindfold-board"></div>
+    </div>
+    <div class="hidden" id="blindfold-answer-area">
+      <p style="text-align:center;font-weight:700;margin:10px 0 6px;">Tap the correct square 👇</p>
+    </div>
+  </div>
+
+  <!-- ══ PIECE FINDER ══ -->
+
+  <div id="piecefinder-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">♟ Piece Finder</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="pf-instruction">
+      <span class="inst-emoji">🐴</span>
+      <div class="inst-text">Find all the squares the piece can move to!</div>
+    </div>
+    <div class="score-row">
+      <div class="score-pill">Found: <span id="pf-progress">0 / ?</span></div>
+    </div>
+    <div class="board-wrap"><div class="chess-board" id="pf-board"></div></div>
+  </div>
+
+  <!-- ══ PATTERN MATCH ══ -->
+
+  <div id="pattern-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">🧩 Patterns</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="pattern-instruction">
+      <span class="inst-emoji">🧩</span>
+      <div class="inst-text">What pattern do you see?</div>
+    </div>
+    <div class="board-wrap"><div class="chess-board" id="pattern-board"></div></div>
+    <div class="choices-grid" id="pattern-choices"></div>
+  </div>
+
+  <!-- ══ OPENING TREE ══ -->
+
+  <div id="opening-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">🌳 Openings</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="instruction-box">
+      <span class="inst-emoji">🌳</span>
+      <div class="inst-text">Tap to explore chess openings! See how the game begins!</div>
+    </div>
+    <div id="opening-board-wrap" class="board-wrap hidden" style="margin-bottom:14px;">
+      <div class="chess-board" id="opening-board"></div>
+    </div>
+    <div id="opening-tree" class="game-scroll"></div>
+  </div>
+
+  <!-- ══ ENDGAME TRAINER ══ -->
+
+  <div id="endgame-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">👑 Endgame Fun</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="eg-instruction">
+      <span class="inst-emoji">👑</span>
+      <div class="inst-text">Make the winning move!</div>
+    </div>
+    <div class="board-wrap"><div class="chess-board" id="eg-board"></div></div>
+    <div id="eg-hint" style="text-align:center;font-weight:700;color:#888;margin-top:8px;"></div>
+  </div>
+
+  <!-- ══ BOARD VISION ══ -->
+
+  <div id="vision-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">🔎 Board Vision</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="vision-instruction">
+      <span class="inst-emoji">🔎</span>
+      <div class="inst-text">Tap all the squares the piece attacks!</div>
+    </div>
+    <div class="score-row">
+      <div class="score-pill">Found: <span id="vision-progress">0 / ?</span></div>
+    </div>
+    <div class="board-wrap"><div class="chess-board" id="vision-board"></div></div>
+  </div>
+
+  <!-- ══ CALCULATION ══ -->
+
+  <div id="calc-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">🧠 Calculate!</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="calc-instruction">
+      <span class="inst-emoji">🧠</span>
+      <div class="inst-text">Think about where the piece can go!</div>
+    </div>
+    <div class="board-wrap"><div class="chess-board" id="calc-board"></div></div>
+    <div id="calc-hint" style="text-align:center;font-weight:700;color:#888;margin:8px 0;"></div>
+    <div class="choices-grid" id="calc-choices"></div>
+  </div>
+
+  <!-- ══ THINKING TRAINER ══ -->
+
+  <div id="thinking-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">✅ Think Smart</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="think-scenario">
+      <span class="inst-emoji">♟</span>
+      <div class="inst-text">A chess situation!</div>
+    </div>
+    <p id="think-prompt" style="text-align:center;font-weight:800;font-size:1rem;margin-bottom:12px;color:#555;">Tap the steps in order!</p>
+    <div class="thinking-steps" id="thinking-steps"></div>
+  </div>
+
+  <!-- ══ FOCUS FLASH ══ -->
+
+  <div id="focus-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">⚡ Focus Flash</div>
+      <div class="stars-bar" style="padding:6px 12px;"><span>⭐</span><span class="total-stars">0</span></div>
+    </div>
+    <div class="level-selector">
+      <button class="level-btn active" data-level="1">⭐ Beginner</button>
+      <button class="level-btn" data-level="2">⭐⭐ Explorer</button>
+      <button class="level-btn" data-level="3">⭐⭐⭐ Hero</button>
+    </div>
+    <div class="instruction-box" id="focus-instruction">
+      <span class="inst-emoji">⚡</span>
+      <div class="inst-text">Watch the board — then answer!</div>
+    </div>
+    <div class="board-wrap" id="focus-board-wrap" style="position:relative;">
+      <div class="chess-board" id="focus-board"></div>
+    </div>
+    <div class="hidden" id="focus-question-area">
+      <div class="choices-grid" id="focus-choices" style="margin-top:14px;"></div>
+    </div>
+  </div>
+
+  <!-- ══ PARENT DASHBOARD ══ -->
+
+  <div id="dashboard-screen" class="screen">
+    <div class="game-header">
+      <button class="back-btn">←</button>
+      <div class="game-title">👨‍👩‍👧 Dashboard</div>
+    </div>
+    <div class="dashboard-grid">
+      <div class="stat-card">
+        <div class="stat-val" id="dash-total-stars">0</div>
+        <div class="stat-label">⭐ Total Stars</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="dash-streak">0🔥</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="dash-plays">0</div>
+        <div class="stat-label">🎮 Total Plays</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="dash-avg">0⭐</div>
+        <div class="stat-label">Avg Stars</div>
+      </div>
+    </div>
+    <h3 class="section-title">📊 Game Progress</h3>
+    <div id="dash-game-list"></div>
+    <button class="btn" id="reset-stats-btn" style="margin-top:8px;">🗑 Reset Progress</button>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ══ RESULT OVERLAY ══ -->
+
+<div class="result-overlay" id="result-overlay">
+  <div class="result-card">
+    <span class="result-emoji" id="result-emoji">🎉</span>
+    <h2 id="result-title">Great Job!</h2>
+    <div class="result-stars" id="result-stars">⭐⭐⭐</div>
+    <div class="result-score" id="result-score"></div>
+    <button class="btn primary" id="result-next-btn" style="margin-bottom:10px;">▶ Play Again!</button>
+    <button class="btn" id="result-home-btn">🏠 Home</button>
+  </div>
+</div>
+
+<!-- ══ PIN OVERLAY ══ -->
+
+<div class="pin-overlay" id="pin-overlay">
+  <div class="pin-card">
+    <h2>🔐 Parent Check</h2>
+    <p style="color:#888;font-size:0.9rem;font-weight:600;">Solve this to continue:</p>
+    <div class="pin-q" id="pin-question">3 + 4 = ?</div>
+    <div class="pin-input-row">
+      <input class="pin-input" id="pin-input" type="number" placeholder="?" min="0" max="99">
+    </div>
+    <button class="btn primary" id="pin-submit" style="margin-bottom:8px;">✅ Enter</button>
+    <button class="btn sm" id="pin-cancel">Cancel</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+
+<script src="games/games.js"></script>
+
+</body>
+</html>
