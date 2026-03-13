@@ -4,179 +4,317 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Chess Playground</title>
+<title>ChessKids 🏆</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:16px}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#f0ebe0;color:#111;min-height:100vh;user-select:none}
-#app{max-width:480px;margin:0 auto;min-height:100vh;background:#f0ebe0}
+body{font-family:'Nunito',sans-serif;background:#FFF9F0;color:#2D2D2D;min-height:100vh;user-select:none}
+#app{max-width:480px;margin:0 auto;min-height:100vh;background:#FFF9F0;position:relative}
 
-/* SCREENS */
-.screen{display:none;flex-direction:column;min-height:100vh;padding:14px 14px 32px}
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:3px solid #2D2D2D;display:flex;z-index:500;box-shadow:0 -4px 0 #2D2D2D}
+.bnt{flex:1;padding:10px 4px 8px;text-align:center;cursor:pointer;transition:background .15s;border:none;background:transparent}
+.bnt .bni{font-size:1.5rem;display:block;margin-bottom:2px}
+.bnt .bnl{font-size:.65rem;font-weight:800;color:#888;font-family:‘Nunito’,sans-serif;text-transform:uppercase;letter-spacing:.5px}
+.bnt.on{background:#FFF3CC}
+.bnt.on .bnl{color:#F5A623}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;min-height:100vh;padding:14px 14px 88px}
 .screen.active{display:flex}
 
-/* HOME */
-.hero{background:#111;color:#fff;border-radius:20px;padding:24px 20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 6px 0 #000}
-.hero::before{content:’’;position:absolute;inset:0;background:repeating-conic-gradient(rgba(255,255,255,.06) 0% 25%,transparent 0% 50%);background-size:20px 20px}
-.hero h1{font-size:2.6rem;font-weight:900;line-height:1;position:relative}
-.hero h1 em{color:#FFD600;font-style:normal}
-.hero p{font-size:.95rem;font-weight:700;color:rgba(255,255,255,.55);margin-top:6px;position:relative}
-
-.sbar{display:flex;align-items:center;gap:10px;background:#fff;border:3px solid #111;border-radius:12px;padding:10px 14px;box-shadow:0 4px 0 #000;margin-bottom:14px;font-weight:900;font-size:1.1rem}
-.sbar .lbl{color:#888;font-size:.8rem;font-weight:700;margin-left:auto}
+/* ── HOME ── */
+.hero{background:linear-gradient(135deg,#6C63FF 0%,#48C9B0 100%);border-radius:24px;padding:24px 20px 20px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 6px 0 #4A42CC}
+.hero-chess{position:absolute;right:-10px;top:-10px;font-size:5rem;opacity:.18;transform:rotate(15deg)}
+.hero h1{font-family:‘Fredoka One’,cursive;font-size:2.6rem;color:#fff;line-height:1;position:relative}
+.hero h1 span{color:#FFE566}
+.hero p{font-size:.95rem;font-weight:700;color:rgba(255,255,255,.8);margin-top:6px;position:relative}
+.hero-stars{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.2);border-radius:100px;padding:6px 14px;margin-top:12px;display:inline-flex}
+.hero-stars span{font-weight:800;color:#fff;font-size:1rem}
 
 .gcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
-.gc{background:#fff;border:3px solid #111;border-radius:18px;padding:18px 12px 14px;text-align:center;cursor:pointer;box-shadow:0 6px 0 #000;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;overflow:hidden;transition:transform .12s,box-shadow .12s}
-.gc:active{transform:translateY(5px);box-shadow:0 1px 0 #000}
-.gc .ic{font-size:2.7rem;line-height:1}
-.gc .nm{font-weight:900;font-size:.92rem}
+.gc{border:3px solid #2D2D2D;border-radius:20px;padding:18px 12px 14px;text-align:center;cursor:pointer;box-shadow:0 5px 0 #2D2D2D;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative;overflow:hidden;transition:transform .12s,box-shadow .12s}
+.gc:active{transform:translateY(5px);box-shadow:0 0 0 #2D2D2D}
+.gc .ic{font-size:2.5rem;line-height:1}
+.gc .nm{font-weight:800;font-size:.88rem;font-family:‘Nunito’,sans-serif}
 .gc .st{font-size:.7rem;color:#FFB300;letter-spacing:1px}
+.gc-c0{background:#FFE8E8}.gc-c1{background:#E8F0FF}.gc-c2{background:#E8FFE8}.gc-c3{background:#FFF3E8}
+.gc-c4{background:#F0E8FF}.gc-c5{background:#E8FFFA}.gc-c6{background:#FFF8E8}.gc-c7{background:#FFE8F5}
+.gc-c8{background:#E8FFF0}.gc-c9{background:#E8F8FF}
 
 .hfoot{display:flex;justify-content:center;padding:18px 0 0}
-.pbtn{background:#111;color:#fff;border:3px solid #111;border-radius:12px;padding:12px 24px;font-weight:900;font-size:.9rem;cursor:pointer;box-shadow:0 4px 0 #000;transition:transform .12s,box-shadow .12s}
-.pbtn:active{transform:translateY(4px);box-shadow:0 0 0 #000}
 
-/* GAME HEADER */
-.gh{background:#111;color:#fff;border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;box-shadow:0 4px 0 #000}
-.gt{font-size:1.3rem;font-weight:900;flex:1;color:#fff}
-.bk{width:42px;height:42px;flex-shrink:0;background:#fff;color:#111;border:none;border-radius:8px;font-size:1.3rem;font-weight:900;cursor:pointer}
-.sp{background:#FFD600;border:2px solid #111;border-radius:8px;padding:5px 10px;font-weight:900;font-size:.9rem;color:#111}
+/* ── GAME HEADER ── */
+.gh{background:#2D2D2D;color:#fff;border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:12px;box-shadow:0 4px 0 #111}
+.gt{font-size:1.2rem;font-weight:800;flex:1;color:#fff;font-family:‘Nunito’,sans-serif}
+.bk{width:42px;height:42px;flex-shrink:0;background:#fff;color:#2D2D2D;border:none;border-radius:10px;font-size:1.3rem;font-weight:900;cursor:pointer;font-family:‘Nunito’,sans-serif}
+.sp{background:#FFE566;border:2px solid #2D2D2D;border-radius:8px;padding:5px 10px;font-weight:800;font-size:.9rem;color:#2D2D2D}
 
-/* LEVEL TABS */
+/* ── LEVEL TABS ── */
 .lvls{display:flex;gap:8px;margin-bottom:12px}
-.lv{flex:1;padding:11px 4px;border:3px solid #111;border-radius:10px;background:#fff;color:#111;font-weight:900;font-size:.78rem;cursor:pointer;text-align:center;box-shadow:0 4px 0 #000;transition:all .12s;line-height:1.2}
-.lv.on{background:#111;color:#fff;transform:translateY(4px);box-shadow:0 0 0 #000}
-.lv:not(.on):active{transform:translateY(4px);box-shadow:0 0 0 #000}
+.lv{flex:1;padding:11px 4px;border:3px solid #2D2D2D;border-radius:10px;background:#fff;color:#2D2D2D;font-weight:800;font-size:.78rem;cursor:pointer;text-align:center;box-shadow:0 4px 0 #2D2D2D;transition:all .12s;line-height:1.2;font-family:‘Nunito’,sans-serif}
+.lv.on{background:#6C63FF;color:#fff;border-color:#4A42CC;transform:translateY(4px);box-shadow:0 0 0 #2D2D2D}
 
-/* INSTRUCTION BOX */
-.ib{background:#fff;border:3px solid #111;border-radius:18px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 0 #000}
+/* ── INSTRUCTION BOX ── */
+.ib{background:#fff;border:3px solid #2D2D2D;border-radius:18px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 0 #2D2D2D}
 .ib .ie{font-size:2rem;flex-shrink:0}
-.ib .it{font-weight:800;font-size:.92rem;line-height:1.4}
+.ib .it{font-weight:700;font-size:.92rem;line-height:1.4;font-family:‘Nunito’,sans-serif}
 
-/* SCORE ROW */
+/* ── SCORE ROW ── */
 .sr{display:flex;align-items:center;margin-bottom:8px;gap:8px}
-.pill{background:#fff;border:3px solid #111;border-radius:100px;padding:7px 16px;font-weight:900;font-size:.9rem;box-shadow:0 3px 0 #000}
+.pill{background:#fff;border:3px solid #2D2D2D;border-radius:100px;padding:7px 16px;font-weight:800;font-size:.9rem;box-shadow:0 3px 0 #2D2D2D}
 
-/* BOARD */
-.bw{width:100%;aspect-ratio:1/1;border:4px solid #111;border-radius:10px;overflow:hidden;box-shadow:0 7px 0 #000;margin-bottom:12px;position:relative;background:#111}
+/* ── BOARD ── */
+.bw{width:100%;aspect-ratio:1/1;border:4px solid #2D2D2D;border-radius:12px;overflow:hidden;box-shadow:0 7px 0 #2D2D2D;margin-bottom:12px;position:relative;background:#2D2D2D}
 .board{width:100%;height:100%;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}
 .sq{display:flex;align-items:center;justify-content:center;font-size:clamp(1.1rem,5.5vw,2rem);cursor:pointer;position:relative}
-.sq.lt{background:#F0D9B5}
-.sq.dk{background:#2C2C2C}
-.sq.lt .pc{color:#111;text-shadow:0 1px 0 rgba(255,255,255,.4)}
+.sq.lt{background:#F5DEB3}
+.sq.dk{background:#8B6914}
+.sq.lt .pc{color:#1a1a1a;text-shadow:0 1px 0 rgba(255,255,255,.4)}
 .sq.dk .pc{color:#fff;text-shadow:0 0 4px #000,0 1px 3px #000}
-.sq.hc{background:#22c55e!important}
-.sq.hw{background:#ef4444!important}
+.sq.hc{background:#4ade80!important}
+.sq.hw{background:#f87171!important}
 .sq.ht{background:#FFD600!important}
-.sq.hs{box-shadow:inset 0 0 0 4px #FFD600}
+.sq.hs{box-shadow:inset 0 0 0 4px #6C63FF}
 .pc{pointer-events:none;line-height:1}
 .cl{position:absolute;font-size:.48rem;font-weight:900;opacity:.6}
 .cl.f{bottom:2px;right:2px}
 .cl.r{top:2px;left:2px}
 .sq.lt .cl{color:#555}
-.sq.dk .cl{color:#bbb}
-.bfl{position:absolute;inset:0;background:#f0ebe0;display:flex;align-items:center;justify-content:center;font-size:4rem;z-index:2;transition:opacity .3s}
+.sq.dk .cl{color:#ddd}
+.bfl{position:absolute;inset:0;background:#FFF9F0;display:flex;align-items:center;justify-content:center;font-size:4rem;z-index:2;transition:opacity .3s}
 
-/* BUTTONS */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 20px;border:3px solid #111;border-radius:18px;background:#fff;color:#111;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 5px 0 #000;transition:transform .12s,box-shadow .12s;width:100%;margin-bottom:10px}
-.btn:active{transform:translateY(5px);box-shadow:0 0 0 #000}
-.btn.pri{background:#111;color:#fff}
-.btn.sm{padding:11px 16px;font-size:.9rem;margin-bottom:0;box-shadow:0 3px 0 #000}
+/* ── BUTTONS ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 20px;border:3px solid #2D2D2D;border-radius:18px;background:#fff;color:#2D2D2D;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 5px 0 #2D2D2D;transition:transform .12s,box-shadow .12s;width:100%;margin-bottom:10px;font-family:‘Nunito’,sans-serif}
+.btn:active{transform:translateY(5px);box-shadow:0 0 0 #2D2D2D}
+.btn.pri{background:#6C63FF;color:#fff;border-color:#4A42CC;box-shadow:0 5px 0 #4A42CC}
+.btn.pri:active{box-shadow:0 0 0 #4A42CC}
+.btn.grn{background:#4ade80;color:#fff;border-color:#16a34a;box-shadow:0 5px 0 #16a34a}
+.btn.sm{padding:11px 16px;font-size:.9rem;margin-bottom:0;box-shadow:0 3px 0 #2D2D2D}
 
-/* CHOICES */
+/* ── CHOICES ── */
 .cg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.cb{padding:18px 8px;border:3px solid #111;border-radius:16px;background:#fff;color:#111;font-weight:900;font-size:1rem;cursor:pointer;box-shadow:0 4px 0 #000;text-align:center;transition:all .12s}
-.cb:active{transform:translateY(4px);box-shadow:0 0 0 #000}
-.cb.ok{background:#22c55e;color:#fff;border-color:#15803d;box-shadow:0 4px 0 #15803d}
-.cb.no{background:#ef4444;color:#fff;border-color:#b91c1c}
+.cb{padding:18px 8px;border:3px solid #2D2D2D;border-radius:16px;background:#fff;color:#2D2D2D;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 4px 0 #2D2D2D;text-align:center;transition:all .12s;font-family:‘Nunito’,sans-serif}
+.cb:active{transform:translateY(4px);box-shadow:0 0 0 #2D2D2D}
+.cb.ok{background:#4ade80;color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #16a34a}
+.cb.no{background:#f87171;color:#fff;border-color:#dc2626}
 
-/* RESULT */
+/* ── RESULT ── */
 .rov{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;z-index:999}
 .rov.show{display:flex}
-.rc{background:#fff;border:4px solid #111;border-radius:26px;padding:30px 24px;text-align:center;box-shadow:0 10px 0 #000;max-width:310px;width:90%;animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
+.rc{background:#fff;border:4px solid #2D2D2D;border-radius:26px;padding:30px 24px;text-align:center;box-shadow:0 10px 0 #2D2D2D;max-width:310px;width:90%;animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
 @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
 .re{font-size:4rem;display:block;margin-bottom:8px}
-.rc h2{font-size:1.9rem;font-weight:900;margin-bottom:6px}
+.rc h2{font-size:1.9rem;font-weight:900;margin-bottom:6px;font-family:‘Fredoka One’,cursive}
 .rss{font-size:2rem;margin-bottom:10px}
 .rsc{font-size:.9rem;font-weight:700;color:#888;margin-bottom:18px}
 
-/* CONFETTI */
+/* ── CONFETTI ── */
 .cp{position:fixed;pointer-events:none;z-index:1000;animation:cf linear forwards}
 @keyframes cf{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
-/* OPENING TREE */
-.tn{border:3px solid #111;border-radius:12px;background:#fff;box-shadow:0 4px 0 #000;margin-bottom:10px;overflow:hidden}
-.th{background:#111;color:#fff;padding:13px 16px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
-.mb{background:#fff;color:#111;border-radius:6px;padding:3px 10px;font-size:.82rem;font-family:monospace;font-weight:900}
-.tc{display:none;padding:8px 10px 10px;flex-direction:column;gap:7px;background:#e8e4dc}
+/* ── OPENING TREE ── */
+.tn{border:3px solid #2D2D2D;border-radius:14px;background:#fff;box-shadow:0 4px 0 #2D2D2D;margin-bottom:10px;overflow:hidden}
+.th{background:#6C63FF;color:#fff;padding:13px 16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:‘Nunito’,sans-serif}
+.mb{background:rgba(255,255,255,.25);color:#fff;border-radius:6px;padding:3px 10px;font-size:.82rem;font-family:monospace;font-weight:900}
+.tc{display:none;padding:8px 10px 10px;flex-direction:column;gap:7px;background:#F0EEFF}
 .tc.op{display:flex}
-.tch{background:#fff;border:2px solid #111;border-radius:8px;padding:11px 14px;cursor:pointer;font-weight:800;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 0 #000}
-.tch:active{transform:translateY(3px);box-shadow:0 0 0 #000}
+.tch{background:#fff;border:2px solid #2D2D2D;border-radius:8px;padding:11px 14px;cursor:pointer;font-weight:800;display:flex;align-items:center;justify-content:space-between;box-shadow:0 3px 0 #2D2D2D;font-family:‘Nunito’,sans-serif}
 
-/* THINKING */
+/* ── THINKING ── */
 .ts{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
-.tstep{background:#fff;border:3px solid #111;border-radius:16px;padding:13px 14px;font-weight:800;font-size:.88rem;cursor:pointer;box-shadow:0 4px 0 #000;display:flex;align-items:center;gap:10px}
-.tstep:active{transform:translateY(4px);box-shadow:0 0 0 #000}
-.tstep.done{background:#22c55e;color:#fff;border-color:#15803d;box-shadow:0 4px 0 #15803d}
-.tstep.bad{background:#ef4444;color:#fff}
+.tstep{background:#fff;border:3px solid #2D2D2D;border-radius:16px;padding:13px 14px;font-weight:700;font-size:.88rem;cursor:pointer;box-shadow:0 4px 0 #2D2D2D;display:flex;align-items:center;gap:10px;font-family:‘Nunito’,sans-serif}
+.tstep.done{background:#4ade80;color:#fff;border-color:#16a34a;box-shadow:0 4px 0 #16a34a}
+.tstep.bad{background:#f87171;color:#fff;border-color:#dc2626}
 .sn{width:30px;height:30px;border:2px solid currentColor;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:900;flex-shrink:0}
 
-/* DASHBOARD */
+/* ── DASHBOARD ── */
 .dg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.dc{background:#fff;border:3px solid #111;border-radius:16px;padding:16px 12px;box-shadow:0 4px 0 #000;text-align:center}
-.dv{font-size:2rem;font-weight:900;line-height:1}
+.dc{background:#fff;border:3px solid #2D2D2D;border-radius:16px;padding:16px 12px;box-shadow:0 4px 0 #2D2D2D;text-align:center}
+.dv{font-size:2rem;font-weight:900;line-height:1;font-family:‘Fredoka One’,cursive}
 .dl{font-size:.7rem;font-weight:800;color:#888;margin-top:3px;text-transform:uppercase}
-.dtit{font-size:1.1rem;font-weight:900;margin-bottom:10px}
-.dr{display:flex;align-items:center;padding:11px 14px;background:#fff;border:3px solid #111;border-radius:10px;box-shadow:0 3px 0 #000;margin-bottom:9px;font-weight:800;gap:6px}
+.dtit{font-size:1.1rem;font-weight:800;margin-bottom:10px;font-family:‘Nunito’,sans-serif}
+.dr{display:flex;align-items:center;padding:11px 14px;background:#fff;border:3px solid #2D2D2D;border-radius:10px;box-shadow:0 3px 0 #2D2D2D;margin-bottom:9px;font-weight:700;gap:6px;font-family:‘Nunito’,sans-serif}
 .dr .dn{font-size:.85rem;flex:1}
 .dr .dp{font-size:.78rem;color:#888}
 .dr .ds{color:#FFB300}
 
-/* PIN */
+/* ── PIN ── */
 .po{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:1001}
 .po.show{display:flex}
-.pc2{background:#fff;border:4px solid #111;border-radius:26px;padding:28px 24px;text-align:center;box-shadow:0 10px 0 #000;max-width:290px;width:90%;animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
-.pc2 h2{font-size:1.55rem;font-weight:900;margin-bottom:4px}
-.pq{font-size:1.5rem;font-weight:900;margin:12px 0;color:#111}
+.pc2{background:#fff;border:4px solid #2D2D2D;border-radius:26px;padding:28px 24px;text-align:center;box-shadow:0 10px 0 #2D2D2D;max-width:290px;width:90%;animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
+.pc2 h2{font-size:1.55rem;font-weight:900;margin-bottom:4px;font-family:‘Fredoka One’,cursive}
+.pq{font-size:1.5rem;font-weight:900;margin:12px 0;color:#2D2D2D;font-family:‘Fredoka One’,cursive}
 .prow{display:flex;gap:8px;margin-bottom:12px}
-.pin{flex:1;padding:12px;border:3px solid #111;border-radius:10px;font-size:1.3rem;font-weight:900;text-align:center;outline:none;background:#f8f8f8}
-.pin:focus{border-color:#22c55e}
+.pin{flex:1;padding:12px;border:3px solid #2D2D2D;border-radius:10px;font-size:1.3rem;font-weight:900;text-align:center;outline:none;background:#f8f8f8;font-family:‘Nunito’,sans-serif}
+.pin:focus{border-color:#6C63FF}
 
-/* UTIL */
-.hint{text-align:center;font-weight:800;color:#888;font-size:.85rem;margin-top:8px;padding:8px 12px;background:#fff;border:2px dashed #ccc;border-radius:10px}
-.tp{text-align:center;font-weight:900;font-size:.92rem;margin-bottom:10px;padding:9px;background:#111;color:#fff;border-radius:10px}
+/* ── UTIL ── */
+.hint{text-align:center;font-weight:700;color:#888;font-size:.85rem;margin-top:8px;padding:8px 12px;background:#fff;border:2px dashed #ccc;border-radius:10px;font-family:‘Nunito’,sans-serif}
+.tp{text-align:center;font-weight:800;font-size:.92rem;margin-bottom:10px;padding:9px;background:#6C63FF;color:#fff;border-radius:10px;font-family:‘Nunito’,sans-serif}
 .hidden{display:none!important}
+.pbtn{background:#6C63FF;color:#fff;border:3px solid #4A42CC;border-radius:12px;padding:12px 24px;font-weight:800;font-size:.9rem;cursor:pointer;box-shadow:0 4px 0 #4A42CC;transition:transform .12s,box-shadow .12s;font-family:‘Nunito’,sans-serif}
+.pbtn:active{transform:translateY(4px);box-shadow:0 0 0 #4A42CC}
+.hfoot{display:flex;justify-content:center;padding:18px 0 0}
+
+/* ════════════════════════════
+CURRICULUM STYLES
+════════════════════════════ */
+.curr-hero{background:linear-gradient(135deg,#FF6B6B,#FF8E53);border-radius:24px;padding:22px 20px;margin-bottom:16px;box-shadow:0 6px 0 #CC4A2A;position:relative;overflow:hidden}
+.curr-hero::after{content:‘♟’;position:absolute;right:10px;bottom:-10px;font-size:6rem;opacity:.15}
+.curr-hero h2{font-family:‘Fredoka One’,cursive;font-size:1.9rem;color:#fff}
+.curr-hero p{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.85);margin-top:4px}
+
+.level-card{border:3px solid #2D2D2D;border-radius:20px;margin-bottom:14px;overflow:hidden;box-shadow:0 5px 0 #2D2D2D;cursor:pointer}
+.level-head{padding:16px 16px;display:flex;align-items:center;gap:12px;position:relative}
+.level-badge{font-family:‘Fredoka One’,cursive;font-size:1.4rem;min-width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.level-info{flex:1}
+.level-info h3{font-family:‘Fredoka One’,cursive;font-size:1.15rem;color:#fff}
+.level-info p{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.8);margin-top:2px}
+.level-arrow{color:rgba(255,255,255,.8);font-size:1.2rem;font-weight:900;transition:transform .2s}
+.level-card.open .level-arrow{transform:rotate(90deg)}
+.level-body{display:none;padding:0 14px 16px;background:#fff}
+.level-card.open .level-body{display:block}
+
+/* level colors */
+.lc1{background:linear-gradient(135deg,#4ade80,#22c55e);box-shadow:0 5px 0 #15803d}
+.lc2{background:linear-gradient(135deg,#60a5fa,#3b82f6);box-shadow:0 5px 0 #1d4ed8}
+.lc3{background:linear-gradient(135deg,#a78bfa,#8b5cf6);box-shadow:0 5px 0 #5b21b6}
+.lc4{background:linear-gradient(135deg,#fb923c,#f97316);box-shadow:0 5px 0 #c2410c}
+.lc5{background:linear-gradient(135deg,#f87171,#ef4444);box-shadow:0 5px 0 #b91c1c}
+.lcm{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 5px 0 #b45309}
+
+.session-list{margin-top:12px}
+.session-item{background:#F8F6FF;border:2px solid #E0D9FF;border-radius:12px;margin-bottom:8px;overflow:hidden}
+.session-head{padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.session-num{font-family:‘Fredoka One’,cursive;font-size:.85rem;background:#6C63FF;color:#fff;border-radius:8px;padding:3px 8px;flex-shrink:0}
+.session-title{font-weight:800;font-size:.88rem;flex:1}
+.session-topics{font-size:.72rem;color:#888;font-weight:600;margin-top:1px}
+.session-arr{font-size:.9rem;color:#888;transition:transform .2s}
+.session-item.open .session-arr{transform:rotate(90deg)}
+.session-body{display:none;padding:0 12px 12px}
+.session-item.open .session-body{display:block}
+
+/* concept card */
+.concept-card{background:#fff;border:2px solid #E8E0FF;border-radius:14px;padding:14px;margin-bottom:10px}
+.concept-card .cc-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.concept-card .cc-emoji{font-size:2.2rem;flex-shrink:0;line-height:1}
+.concept-card .cc-title{font-family:‘Fredoka One’,cursive;font-size:1.05rem;color:#6C63FF;margin-bottom:3px}
+.concept-card .cc-explain{font-size:.82rem;font-weight:600;line-height:1.5;color:#444}
+.concept-card .cc-board-wrap{border:2px solid #2D2D2D;border-radius:10px;overflow:hidden;margin-bottom:10px;box-shadow:0 3px 0 #2D2D2D}
+.concept-card .cc-board{width:100%;aspect-ratio:1/1;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}
+.concept-card .cc-board .sq{display:flex;align-items:center;justify-content:center;font-size:clamp(.8rem,3.5vw,1.4rem)}
+.concept-card .cc-board .sq.lt{background:#F5DEB3}
+.concept-card .cc-board .sq.dk{background:#8B6914}
+.concept-card .cc-board .sq.hc{background:#4ade80!important}
+.concept-card .cc-board .sq.ht{background:#FFD600!important}
+.concept-card .cc-board .sq.hw{background:#f87171!important}
+.concept-card .cc-board .pc{pointer-events:none}
+.concept-card .cc-board .sq.lt .pc{color:#1a1a1a}
+.concept-card .cc-board .sq.dk .pc{color:#fff;text-shadow:0 0 3px #000}
+
+/* practice section */
+.practice-section{margin-top:10px}
+.practice-title{font-family:‘Fredoka One’,cursive;font-size:.95rem;color:#FF6B6B;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.quiz-q{font-weight:700;font-size:.85rem;margin-bottom:8px;padding:10px 12px;background:#FFF9F0;border:2px solid #FFE0B2;border-radius:10px;color:#444;line-height:1.4}
+.quiz-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.quiz-opt{padding:10px 8px;border:2.5px solid #2D2D2D;border-radius:12px;background:#fff;font-weight:700;font-size:.82rem;cursor:pointer;text-align:center;box-shadow:0 3px 0 #2D2D2D;transition:all .12s;font-family:‘Nunito’,sans-serif}
+.quiz-opt:active{transform:translateY(3px);box-shadow:0 0 0 #2D2D2D}
+.quiz-opt.ok{background:#4ade80;color:#fff;border-color:#16a34a;box-shadow:0 3px 0 #16a34a}
+.quiz-opt.no{background:#f87171;color:#fff;border-color:#dc2626;box-shadow:0 3px 0 #dc2626}
+.quiz-feedback{font-size:.82rem;font-weight:700;padding:8px 10px;border-radius:8px;margin-bottom:8px;display:none}
+.quiz-feedback.show{display:block}
+.quiz-feedback.ok{background:#dcfce7;color:#15803d}
+.quiz-feedback.no{background:#fee2e2;color:#b91c1c}
+
+/* board puzzle */
+.puzzle-instr{font-weight:700;font-size:.82rem;padding:9px 12px;background:#FFF3E8;border:2px solid #FFD0A0;border-radius:10px;margin-bottom:8px;color:#7C4A00;line-height:1.4}
+.puzzle-result{font-weight:700;font-size:.85rem;padding:9px 12px;border-radius:10px;margin-top:6px;display:none;text-align:center}
+.puzzle-result.show{display:block}
+.puzzle-result.ok{background:#dcfce7;color:#15803d}
+.puzzle-result.no{background:#fee2e2;color:#b91c1c}
+
+/* weekly structure */
+.weekly-card{background:linear-gradient(135deg,#667eea,#764ba2);border:3px solid #2D2D2D;border-radius:20px;padding:18px 16px;margin-bottom:14px;box-shadow:0 5px 0 #2D2D2D}
+.weekly-card h3{font-family:‘Fredoka One’,cursive;font-size:1.2rem;color:#fff;margin-bottom:12px}
+.session-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.15);border-radius:10px;padding:9px 12px;margin-bottom:7px}
+.session-row .time{font-family:‘Fredoka One’,cursive;font-size:1.1rem;color:#FFE566;min-width:42px}
+.session-row .desc{font-size:.82rem;font-weight:700;color:#fff}
+
+.training-badges{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.tbadge{background:#fff;border:2.5px solid #2D2D2D;border-radius:100px;padding:6px 14px;font-size:.78rem;font-weight:800;box-shadow:0 3px 0 #2D2D2D;display:flex;align-items:center;gap:5px}
+
+/* drag hint */
+.drag-hint{text-align:center;font-size:.78rem;font-weight:700;color:#888;margin:4px 0 8px;padding:6px;background:#f5f5f5;border-radius:8px}
+.draggable-piece{cursor:grab;font-size:clamp(1.1rem,5.5vw,2rem);line-height:1}
+.draggable-piece.dragging{opacity:.5}
+.sq.drag-over{background:#c084fc!important}
 </style>
 
 </head>
 <body>
 <div id="app">
 
-<!-- ═══ HOME ═══ -->
+<!-- ═══ HOME / PLAY ═══ -->
 
 <div id="s-home" class="screen active">
   <div class="hero">
-    <h1>♟ Chess<br><em>Playground</em></h1>
-    <p>Learn through fun mini-games!</p>
-  </div>
-  <div class="sbar">
-    <span style="font-size:1.3rem">⭐</span>
-    <span id="h-stars">0</span>
-    <span class="lbl">stars earned</span>
+    <div class="hero-chess">♟</div>
+    <h1>♟ Chess<br><span>Kids!</span></h1>
+    <p>Learn chess through fun games! 🎉</p>
+    <div class="hero-stars">
+      <span>⭐</span>
+      <span id="h-stars">0</span>
+      <span style="opacity:.8">stars</span>
+    </div>
   </div>
   <div class="gcards">
-    <div class="gc" onclick="go('memory')">   <div class="ic">🎯</div><div class="nm">Memory Game</div><div class="st">★★★</div></div>
-    <div class="gc" onclick="go('blindfold')"><div class="ic">👀</div><div class="nm">Blindfold</div>  <div class="st">★★★</div></div>
-    <div class="gc" onclick="go('pf')">       <div class="ic">♟</div><div class="nm">Piece Finder</div><div class="st">★★★</div></div>
-    <div class="gc" onclick="go('pattern')">  <div class="ic">🧩</div><div class="nm">Patterns</div>   <div class="st">★★★</div></div>
-    <div class="gc" onclick="go('opening')">  <div class="ic">🌳</div><div class="nm">Openings</div>   <div class="st">★★★</div></div>
-    <div class="gc" onclick="go('endgame')">  <div class="ic">👑</div><div class="nm">Endgame Fun</div><div class="st">★★★</div></div>
-    <div class="gc" onclick="go('vision')">   <div class="ic">🔎</div><div class="nm">Board Vision</div><div class="st">★★★</div></div>
-    <div class="gc" onclick="go('calc')">     <div class="ic">🧠</div><div class="nm">Calculate!</div> <div class="st">★★★</div></div>
-    <div class="gc" onclick="go('thinking')"> <div class="ic">✅</div><div class="nm">Think Smart</div><div class="st">★★★</div></div>
-    <div class="gc" onclick="go('focus')">    <div class="ic">⚡</div><div class="nm">Focus Flash</div><div class="st">★★★</div></div>
+    <div class="gc gc-c0" onclick="go('memory')">   <div class="ic">🎯</div><div class="nm">Memory Game</div><div class="st" id="gs-memory">★★★</div></div>
+    <div class="gc gc-c1" onclick="go('blindfold')"><div class="ic">👀</div><div class="nm">Blindfold</div>  <div class="st" id="gs-blindfold">★★★</div></div>
+    <div class="gc gc-c2" onclick="go('pf')">       <div class="ic">♟</div><div class="nm">Piece Finder</div><div class="st" id="gs-pf">★★★</div></div>
+    <div class="gc gc-c3" onclick="go('pattern')">  <div class="ic">🧩</div><div class="nm">Patterns</div>   <div class="st" id="gs-pattern">★★★</div></div>
+    <div class="gc gc-c4" onclick="go('opening')">  <div class="ic">🌳</div><div class="nm">Openings</div>   <div class="st" id="gs-opening">★★★</div></div>
+    <div class="gc gc-c5" onclick="go('endgame')">  <div class="ic">👑</div><div class="nm">Endgame Fun</div><div class="st" id="gs-endgame">★★★</div></div>
+    <div class="gc gc-c6" onclick="go('vision')">   <div class="ic">🔎</div><div class="nm">Board Vision</div><div class="st" id="gs-vision">★★★</div></div>
+    <div class="gc gc-c7" onclick="go('calc')">     <div class="ic">🧠</div><div class="nm">Calculate!</div> <div class="st" id="gs-calc">★★★</div></div>
+    <div class="gc gc-c8" onclick="go('thinking')"> <div class="ic">✅</div><div class="nm">Think Smart</div><div class="st" id="gs-thinking">★★★</div></div>
+    <div class="gc gc-c9" onclick="go('focus')">    <div class="ic">⚡</div><div class="nm">Focus Flash</div><div class="st" id="gs-focus">★★★</div></div>
   </div>
-  <div class="hfoot"><button class="pbtn" onclick="askPIN()">👨‍👩‍👧 Parent Dashboard</button></div>
+</div>
+
+<!-- ═══ CURRICULUM ═══ -->
+
+<div id="s-curriculum" class="screen">
+  <div class="curr-hero">
+    <h2>📚 Chess Courses</h2>
+    <p>Tap a level to start learning! 🚀</p>
+  </div>
+
+  <div class="training-badges">
+    <div class="tbadge">🧠 Concept Cards</div>
+    <div class="tbadge">🧩 Board Puzzles</div>
+    <div class="tbadge">✅ Quizzes</div>
+    <div class="tbadge">🎮 Practice Games</div>
+    <div class="tbadge">🏆 Mini Tournaments</div>
+  </div>
+
+  <div id="curriculum-levels"></div>
+
+  <div class="weekly-card">
+    <h3>⏰ Every Class (45 mins)</h3>
+    <div class="session-row"><div class="time">10m</div><div class="desc">📖 Learn a new concept</div></div>
+    <div class="session-row"><div class="time">15m</div><div class="desc">🧩 Solve puzzles</div></div>
+    <div class="session-row"><div class="time">15m</div><div class="desc">♟ Play guided games</div></div>
+    <div class="session-row"><div class="time">5m</div><div class="desc">🔍 Review your moves</div></div>
+  </div>
+</div>
+
+<!-- ═══ LESSON VIEWER ═══ -->
+
+<div id="s-lesson" class="screen">
+  <div class="gh"><button class="bk" onclick="backToCurriculum()">←</button><div class="gt" id="lesson-title">Lesson</div></div>
+  <div id="lesson-content"></div>
 </div>
 
 <!-- ═══ MEMORY ═══ -->
@@ -330,6 +468,20 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0ebe0;color:#111;min-h
   <button class="btn" style="margin-top:8px" onclick="if(confirm('Reset all progress?')){resetAll()}">🗑 Reset Progress</button>
 </div>
 
+<!-- BOTTOM NAV -->
+
+<nav class="bnav">
+  <button class="bnt on" id="nav-play" onclick="navTo('home','nav-play')">
+    <span class="bni">🎮</span><span class="bnl">Play</span>
+  </button>
+  <button class="bnt" id="nav-courses" onclick="navTo('curriculum','nav-courses')">
+    <span class="bni">📚</span><span class="bnl">Courses</span>
+  </button>
+  <button class="bnt" id="nav-progress" onclick="askPIN()">
+    <span class="bni">⭐</span><span class="bnl">Progress</span>
+  </button>
+</nav>
+
 </div><!-- #app -->
 
 <!-- RESULT OVERLAY -->
@@ -360,12 +512,908 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0ebe0;color:#111;min-h
 
 <script>
 'use strict';
-
-// ── SHORTHAND ─────────────────────────
 function Q(id){return document.getElementById(id)}
 
-// ── PUZZLE DATA ───────────────────────
-const DATA = {
+// ══════════════════════════════════════
+// CURRICULUM DATA
+// ══════════════════════════════════════
+const CURRICULUM = [
+  {
+    id:'l1', label:'L1', title:'Beginner', subtitle:'Foundations',
+    color:'lc1', duration:'~2.5 months · 20 Sessions',
+    goal:'Learn the chessboard, pieces, and how to play your first game!',
+    sessions:[
+      {
+        num:1, title:'The Chessboard', topics:'Squares, files, ranks, colors',
+        concepts:[
+          {
+            emoji:'♟', title:'Meet the Chessboard!',
+            explain:'A chessboard has 64 squares — 32 light and 32 dark! The board has 8 rows (called RANKS) going across, and 8 columns (called FILES) going up and down. Every square has its own special name, like "e4" or "a1"!',
+            fen:'8/8/8/8/8/8/8/8 w - - 0 1',
+            highlights:{ht:['e4','d5','a1','h8']},
+            quiz:{
+              q:'How many squares are on a chessboard?',
+              opts:['32','48','64','16'], ans:'64',
+              right:'🎉 Yes! 64 squares — 32 light and 32 dark!',
+              wrong:'Not quite! Count them — 8 rows × 8 columns = 64!'
+            },
+            puzzle:{
+              instr:'Tap the square called E4! 🎯',
+              fen:'8/8/8/8/8/8/8/8 w - - 0 1',
+              answer:'e4', highlights:{}
+            }
+          }
+        ]
+      },
+      {
+        num:2, title:'Piece Names', topics:'King, Queen, Rook, Bishop, Knight, Pawn',
+        concepts:[
+          {
+            emoji:'👑', title:'The King — Most Important!',
+            explain:'The King ♔ is the MOST IMPORTANT piece! If your King gets caught (checkmate), you lose the game. The King can move ONE square in ANY direction — forward, backward, sideways, or diagonally!',
+            fen:'8/8/8/8/4K3/8/8/8 w - - 0 1',
+            highlights:{hc:['d4','e4','f4','d5','f5','d3','e3','f3']},
+            quiz:{
+              q:'What happens if your King is caught (checkmated)?',
+              opts:['You lose a turn','You lose the game!','You swap pieces','Nothing happens'], ans:'You lose the game!',
+              right:'Yes! Protect your King always! 👑',
+              wrong:'The King is the MOST important — if it\'s caught, you lose!'
+            },
+            puzzle:{
+              instr:'The King is on E4. Tap ONE square the King can move to! 👑',
+              fen:'8/8/8/8/4K3/8/8/8 w - - 0 1',
+              answer:['d4','e5','f4','d5','f5','d3','e3','f3'],
+              highlights:{ht:['e4']}
+            }
+          },
+          {
+            emoji:'♛', title:'The Queen — Most Powerful!',
+            explain:'The Queen ♕ is the MOST POWERFUL piece on the board! She can move in ANY direction — forward, backward, sideways, AND diagonally — as many squares as she wants. The Queen is worth 9 points!',
+            fen:'8/8/8/8/3Q4/8/8/8 w - - 0 1',
+            highlights:{hc:['d1','d2','d3','d5','d6','d7','d8','a4','b4','c4','e4','f4','g4','h4','a1','b2','c3','e5','f6','g7','h8','a7','b6','c5','e3','f2','g1']},
+            quiz:{
+              q:'How does the Queen move?',
+              opts:['Only forward','Only diagonally','Any direction!','Only sideways'], ans:'Any direction!',
+              right:'The Queen is SUPER powerful — she goes everywhere! ♛',
+              wrong:'The Queen is the MOST powerful — she moves any direction!'
+            },
+            puzzle:{
+              instr:'Queen is on D4. Tap a square she can reach! ♛',
+              fen:'8/8/8/8/3Q4/8/8/8 w - - 0 1',
+              answer:['d1','d2','d3','d5','d6','d7','d8','a4','b4','c4','e4','f4','g4','h4','a1','b2','c3','e5','f6','g7','h8','a7','b6','c5','e3','f2','g1'],
+              highlights:{ht:['d4']}
+            }
+          }
+        ]
+      },
+      {
+        num:3, title:'Rook & Bishop', topics:'How Rooks and Bishops move',
+        concepts:[
+          {
+            emoji:'♜', title:'The Rook — Castle Tower!',
+            explain:'The Rook ♖ looks like a castle tower! It moves in STRAIGHT LINES only — forward, backward, left, right — as many squares as it likes. But it CANNOT move diagonally. The Rook is worth 5 points!',
+            fen:'8/8/8/8/3R4/8/8/8 w - - 0 1',
+            highlights:{hc:['d1','d2','d3','d5','d6','d7','d8','a4','b4','c4','e4','f4','g4','h4']},
+            quiz:{
+              q:'Which direction can a Rook NOT move?',
+              opts:['Forward','Sideways','Diagonally!','Backward'], ans:'Diagonally!',
+              right:'Rooks only go straight — never diagonal! 🏰',
+              wrong:'Rooks move straight lines only — never diagonally!'
+            },
+            puzzle:{
+              instr:'Rook on D4. Tap any square it can reach! 🏰',
+              fen:'8/8/8/8/3R4/8/8/8 w - - 0 1',
+              answer:['d1','d2','d3','d5','d6','d7','d8','a4','b4','c4','e4','f4','g4','h4'],
+              highlights:{ht:['d4']}
+            }
+          },
+          {
+            emoji:'♝', title:'The Bishop — Diagonal Dancer!',
+            explain:'The Bishop ♗ moves DIAGONALLY only — it stays on its own color ALL game! One Bishop always stays on light squares, the other on dark squares. The Bishop is worth 3 points!',
+            fen:'8/8/8/8/3B4/8/8/8 w - - 0 1',
+            highlights:{hc:['a1','b2','c3','e5','f6','g7','h8','c5','b6','a7','e3','f2','g1']},
+            quiz:{
+              q:'What is special about the Bishop?',
+              opts:['Jumps over pieces','Stays on one color!','Moves like a King','Goes backwards only'], ans:'Stays on one color!',
+              right:'The Bishop ALWAYS stays on its starting color! ♗',
+              wrong:'Each Bishop stays on its own color — light or dark — forever!'
+            },
+            puzzle:{
+              instr:'Bishop on D4. Tap a diagonal square it can reach! ♗',
+              fen:'8/8/8/8/3B4/8/8/8 w - - 0 1',
+              answer:['a1','b2','c3','e5','f6','g7','h8','c5','b6','a7','e3','f2','g1'],
+              highlights:{ht:['d4']}
+            }
+          }
+        ]
+      },
+      {
+        num:4, title:'Knight & Pawn', topics:'The L-shape jump and pawn moves',
+        concepts:[
+          {
+            emoji:'♞', title:'The Knight — Jumping Horse!',
+            explain:'The Knight ♘ is the ONLY piece that can JUMP over other pieces! It moves in an L-shape: 2 squares in one direction, then 1 square sideways (or 1 square then 2). This makes it very tricky! The Knight is worth 3 points!',
+            fen:'8/8/8/8/3N4/8/8/8 w - - 0 1',
+            highlights:{hc:['b3','b5','c2','c6','e2','e6','f3','f5']},
+            quiz:{
+              q:'What is special about the Knight?',
+              opts:['Moves in a straight line','Jumps over pieces!','Only goes forward','Moves like a Queen'], ans:'Jumps over pieces!',
+              right:'The Knight is the ONLY piece that jumps! 🐴',
+              wrong:'The Knight is unique — it JUMPS over other pieces in an L-shape!'
+            },
+            puzzle:{
+              instr:'Knight on D4. Tap an L-shape square it can jump to! 🐴',
+              fen:'8/8/8/8/3N4/8/8/8 w - - 0 1',
+              answer:['b3','b5','c2','c6','e2','e6','f3','f5'],
+              highlights:{ht:['d4']}
+            }
+          },
+          {
+            emoji:'♟', title:'The Pawn — Little Hero!',
+            explain:'Pawns ♙ only move FORWARD — they can never go back! On their very first move, they can go 1 OR 2 squares forward. After that, only 1 square. They CAPTURE diagonally! If a pawn reaches the other end of the board, it becomes a Queen! Pawns are worth 1 point.',
+            fen:'8/8/8/8/8/8/3P4/8 w - - 0 1',
+            highlights:{hc:['d3','d4']},
+            quiz:{
+              q:'What happens when a pawn reaches the other end?',
+              opts:['It stops','It disappears','It becomes a Queen!','It goes backwards'], ans:'It becomes a Queen!',
+              right:'Promotion! Your pawn becomes a powerful Queen! ♕',
+              wrong:'Pawns that reach the end get PROMOTED — usually to a Queen!'
+            },
+            puzzle:{
+              instr:'Pawn on D2. Tap a square it can move to! ♙',
+              fen:'8/8/8/8/8/8/3P4/8 w - - 0 1',
+              answer:['d3','d4'],
+              highlights:{ht:['d2']}
+            }
+          }
+        ]
+      },
+      {
+        num:5, title:'Check & Checkmate', topics:'Attacking the King, winning the game',
+        concepts:[
+          {
+            emoji:'⚠️', title:'Check — The King is in Danger!',
+            explain:'When you attack the enemy King, you say "CHECK!" ⚠️ The player in check MUST do something to save their King right away — they can\'t ignore it! They can: move the King away, block the attack, or capture the attacker.',
+            fen:'8/8/8/8/8/2k5/8/3QK3 w - - 0 1',
+            highlights:{hc:['c3'],ht:['d1']},
+            quiz:{
+              q:'When your King is in Check, what must you do?',
+              opts:['Keep playing normally','Save the King immediately!','Skip your turn','Move any piece'], ans:'Save the King immediately!',
+              right:'You MUST save your King when in check! ⚠️',
+              wrong:'When in check, saving your King is your ONLY job!'
+            },
+            puzzle:{
+              instr:'The black King on C3 is in check! Tap where the King should move to escape! 👑',
+              fen:'8/8/8/8/8/2k5/8/3QK3 w - - 0 1',
+              answer:['b4','c4','d4','b3','b2','c2','d2'],
+              highlights:{ht:['c3'],hw:['d3','d2','c2','b2','b3']}
+            }
+          },
+          {
+            emoji:'🏆', title:'Checkmate — Game Over!',
+            explain:'CHECKMATE means the King is attacked AND has NO WAY to escape! The King cannot move to safety, no piece can block, and the attacker cannot be captured. Checkmate ends the game — the player who gets checkmated LOSES! This is the goal of chess!',
+            fen:'6k1/5Q2/6K1/8/8/8/8/8 w - - 0 1',
+            highlights:{hc:['g8'],hw:['h8','f8','h7']},
+            quiz:{
+              q:'What is Checkmate?',
+              opts:['A draw','King is safe','King cannot escape — you win!','Just a check'], ans:'King cannot escape — you win!',
+              right:'Checkmate = the King is trapped! You WIN! 🏆',
+              wrong:'Checkmate means the King is attacked with NO escape — game over!'
+            },
+            puzzle:{
+              instr:'Look at this position — is the black King checkmated? Tap the King if YES! 👑',
+              fen:'6k1/5Q2/6K1/8/8/8/8/8 w - - 0 1',
+              answer:['g8'],
+              highlights:{ht:['g8']}
+            }
+          }
+        ]
+      },
+      {
+        num:6, title:'Basic Checkmates', topics:'King+Queen, King+Rook checkmates',
+        concepts:[
+          {
+            emoji:'♛', title:'King + Queen Checkmate',
+            explain:'With a King and Queen vs a lone King, you can always win! The trick is to push the enemy King to the EDGE of the board using your Queen, then bring your King close to help. Then deliver checkmate on the edge!',
+            fen:'8/8/8/8/8/3k4/3Q4/3K4 w - - 0 1',
+            highlights:{hc:['d3'],ht:['d2']},
+            quiz:{
+              q:'Where should you push the enemy King to checkmate?',
+              opts:['The center','Any square','The edge of the board!','A corner only'], ans:'The edge of the board!',
+              right:'Push the King to the edge — it has fewer escape squares! 🏁',
+              wrong:'Always push the enemy King to the edge or corner to checkmate!'
+            },
+            puzzle:{
+              instr:'White Queen on D2 can give checkmate! Tap the best Queen move! ♛',
+              fen:'8/8/8/8/8/3k4/3Q4/3K4 w - - 0 1',
+              answer:['d7','d8','a2','h2','d2'],
+              highlights:{ht:['d2']}
+            }
+          }
+        ]
+      },
+      {
+        num:7, title:'Piece Values', topics:'Point values of each piece',
+        concepts:[
+          {
+            emoji:'💎', title:'How Much is Each Piece Worth?',
+            explain:'Each chess piece has a POINT VALUE so you know if a trade is good or bad!\n♙ Pawn = 1 point\n♘ Knight = 3 points\n♗ Bishop = 3 points\n♖ Rook = 5 points\n♕ Queen = 9 points\n♔ King = priceless!\nIf you can win a Rook (5) by giving up a Bishop (3), that\'s a GOOD deal for you!',
+            fen:'8/8/8/8/8/8/8/RNBQKBNR w - - 0 1',
+            highlights:{},
+            quiz:{
+              q:'Which trade is GOOD for White? (White gives up, gets the other)',
+              opts:['Give Queen, get Rook','Give Pawn, get Queen!','Give Rook, get Knight','Give Bishop, get Pawn'], ans:'Give Pawn, get Queen!',
+              right:'Giving 1 point to get 9 points is amazing! ♕',
+              wrong:'Getting a Queen (9pts) for a Pawn (1pt) is a fantastic deal!'
+            },
+            puzzle:{
+              instr:'Tap the most valuable piece on the board! 💎',
+              fen:'8/8/8/8/8/8/8/RNBQKBNR w - - 0 1',
+              answer:['d1'],
+              highlights:{}
+            }
+          }
+        ]
+      },
+      {
+        num:8, title:'Opening Ideas', topics:'Control center, develop pieces, king safety',
+        concepts:[
+          {
+            emoji:'🌟', title:'3 Golden Opening Rules!',
+            explain:'In the opening (first few moves), follow these 3 golden rules:\n1️⃣ CONTROL THE CENTER — Move pawns to e4 or d4 to control the middle!\n2️⃣ DEVELOP YOUR PIECES — Bring Knights and Bishops out early!\n3️⃣ CASTLE YOUR KING — Keep your King safe by castling!',
+            fen:'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+            highlights:{hc:['d4','e4','d5','e5'],ht:['e2']},
+            quiz:{
+              q:'What is the FIRST thing you should do in the opening?',
+              opts:['Move your Queen out first','Move pawns to control the center!','Keep all pieces on back row','Move the same piece twice'], ans:'Move pawns to control the center!',
+              right:'Control the center with your pawns first! 🌟',
+              wrong:'The center squares (e4,d4,e5,d5) are the most important in the opening!'
+            },
+            puzzle:{
+              instr:'It\'s White\'s first move. Tap the BEST pawn to move first! (e2 for center control) 🌟',
+              fen:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1',
+              answer:['e2','d2'],
+              highlights:{ht:['e2','d2']}
+            }
+          }
+        ]
+      },
+      {
+        num:9, title:'Fork!', topics:'Attacking two pieces at once',
+        concepts:[
+          {
+            emoji:'🍴', title:'The Fork — Attack Two at Once!',
+            explain:'A FORK is when ONE piece attacks TWO enemy pieces at the same time! 🍴 The opponent can only save ONE, so you capture the other for free! Knights are AMAZING at forking because they jump in unexpected ways. Look for fork opportunities every move!',
+            fen:'8/8/8/3N4/8/2k5/8/4K3 w - - 0 1',
+            highlights:{hc:['c3','e3'],ht:['d5']},
+            quiz:{
+              q:'In a Fork, how many enemy pieces do you attack?',
+              opts:['One','Two at once!','Three','All of them'], ans:'Two at once!',
+              right:'A fork attacks TWO pieces — the opponent can only save one! 🍴',
+              wrong:'A Fork attacks TWO pieces at the same time — great tactic!'
+            },
+            puzzle:{
+              instr:'The Knight on D5 forks the King and another piece! Tap the Knight to see the fork! 🍴',
+              fen:'8/8/8/3N4/8/2k5/8/4K3 w - - 0 1',
+              answer:['d5'],
+              highlights:{ht:['d5']}
+            }
+          }
+        ]
+      },
+      {
+        num:10, title:'Pin & Skewer', topics:'Tactics that restrict piece movement',
+        concepts:[
+          {
+            emoji:'📌', title:'The Pin — Stuck in Place!',
+            explain:'A PIN is when you attack a piece that CANNOT move because moving it would expose a more valuable piece behind it! 📌 If a Bishop is pinned to the King, it cannot legally move! The pinned piece is stuck in place like a pin in a corkboard!',
+            fen:'8/8/3r4/8/3B4/8/3K4/8 w - - 0 1',
+            highlights:{hc:['d4'],ht:['d6']},
+            quiz:{
+              q:'In a Pin, why can\'t the pinned piece move?',
+              opts:['It is frozen','Moving exposes a bigger piece behind it!','It ran out of moves','The board is full'], ans:'Moving exposes a bigger piece behind it!',
+              right:'Moving the pinned piece would expose the King or a bigger piece! 📌',
+              wrong:'The pinned piece can\'t move because it would expose something valuable behind it!'
+            },
+            puzzle:{
+              instr:'The Black Rook on D6 pins the White Bishop on D4 to the White King on D2. Tap the pinned piece! 📌',
+              fen:'8/8/3r4/8/3B4/8/3K4/8 w - - 0 1',
+              answer:['d4'],
+              highlights:{ht:['d4']}
+            }
+          },
+          {
+            emoji:'⚔️', title:'The Skewer — Run King, Run!',
+            explain:'A SKEWER is like a reverse pin! You attack a VALUABLE piece (like the King) and when it moves away, you capture the less valuable piece hiding behind it! ⚔️ It\'s like forcing the King to run, then capturing what it was protecting!',
+            fen:'8/3k4/8/8/8/8/3K4/3R4 w - - 0 1',
+            highlights:{hc:['d7'],ht:['d1']},
+            quiz:{
+              q:'What is a Skewer?',
+              opts:['Attacking a pawn','Forcing a big piece to move, then capturing what\'s behind!','Blocking a file','Giving check'], ans:'Forcing a big piece to move, then capturing what\'s behind!',
+              right:'A skewer forces the King (or big piece) to move, revealing the prize! ⚔️',
+              wrong:'A Skewer attacks a valuable piece, forcing it away to grab what\'s behind!'
+            },
+            puzzle:{
+              instr:'White Rook on D1 skewers the Black King on D7! Tap the Rook to start the skewer! ⚔️',
+              fen:'8/3k4/8/8/8/8/3K4/3R4 w - - 0 1',
+              answer:['d1'],
+              highlights:{ht:['d1']}
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id:'l2', label:'L2', title:'Advanced Beginner', subtitle:'Thinking Before Moving',
+    color:'lc2', duration:'~2.5 months · 20 Sessions',
+    goal:'Learn to think before every move and spot simple tactics!',
+    sessions:[
+      {
+        num:1, title:'Opening Principles', topics:'Center control, piece development, King safety',
+        concepts:[
+          {
+            emoji:'🎯', title:'Control the Center!',
+            explain:'The CENTER of the board (squares d4, d5, e4, e5) is like the best land in chess! Pieces in the center control MORE squares and are more powerful. That\'s why we start by moving center pawns — 1.e4 or 1.d4! The player who controls the center usually wins!',
+            fen:'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+            highlights:{hc:['d4','e4','d5','e5']},
+            quiz:{
+              q:'Why is the CENTER of the board so important?',
+              opts:['Prettier squares','Pieces control more squares from the center!','Closer to promotion','More pawns there'], ans:'Pieces control more squares from the center!',
+              right:'Center pieces are SUPER powerful — they reach more of the board! 🎯',
+              wrong:'Pieces in the center control the most squares — that\'s real power!'
+            },
+            puzzle:{
+              instr:'Tap one of the 4 CENTER squares! 🎯',
+              fen:'8/8/8/8/8/8/8/8 w - - 0 1',
+              answer:['d4','d5','e4','e5'],
+              highlights:{ht:['d4','d5','e4','e5']}
+            }
+          }
+        ]
+      },
+      {
+        num:2, title:'Discovered Attack', topics:'Revealing an attack by moving away',
+        concepts:[
+          {
+            emoji:'💥', title:'Discovered Attack — Surprise!',
+            explain:'A DISCOVERED ATTACK happens when you move one piece to reveal an attack by another piece hiding behind it! 💥 It\'s like moving out of the way to unleash your friend! The best kind is a "Discovered Check" where the hidden piece attacks the King!',
+            fen:'8/3k4/8/8/8/8/3B4/3R4 w - - 0 1',
+            highlights:{hc:['d7'],ht:['d2']},
+            quiz:{
+              q:'In a Discovered Attack, how is the attack created?',
+              opts:['Moving the attacking piece','Moving a piece OUT OF THE WAY to reveal an attack!','Capturing a piece','Moving the King'], ans:'Moving a piece OUT OF THE WAY to reveal an attack!',
+              right:'Move one piece away, and SURPRISE — a hidden attacker is revealed! 💥',
+              wrong:'A Discovered Attack reveals a hidden attacker by moving another piece!'
+            },
+            puzzle:{
+              instr:'If the Bishop on D2 moves away, the Rook attacks the King! Tap the Bishop! 💥',
+              fen:'8/3k4/8/8/8/8/3B4/3R4 w - - 0 1',
+              answer:['d2'],
+              highlights:{ht:['d2']}
+            }
+          }
+        ]
+      },
+      {
+        num:3, title:'Back Rank Mate', topics:'Checkmate on rank 1 or rank 8',
+        concepts:[
+          {
+            emoji:'🏰', title:'Back Rank Mate — The Sneaky Trap!',
+            explain:'A BACK RANK MATE happens when the opponent\'s King is trapped on its own back row (rank 1 for white, rank 8 for black) by its own pawns! A Rook or Queen sneaks in on the back rank and it\'s checkmate! Always make an ESCAPE SQUARE for your King to avoid this!',
+            fen:'6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',
+            highlights:{hc:['g8'],hw:['f8','h8']},
+            quiz:{
+              q:'How do you AVOID a back rank mate?',
+              opts:['Move all pawns forward','Create an escape square for your King!','Move the Queen away','Do nothing'], ans:'Create an escape square for your King!',
+              right:'One pawn moved forward gives the King an escape — prevents back rank mate! 🏰',
+              wrong:'Moving a pawn (like h3 or g3) gives your King an escape route!'
+            },
+            puzzle:{
+              instr:'White Rook on A1 can give back rank checkmate! Tap the Rook! 🏰',
+              fen:'6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',
+              answer:['a1'],
+              highlights:{ht:['a1']}
+            }
+          }
+        ]
+      },
+      {
+        num:4, title:'King + Pawn Endgame', topics:'Basic K+P vs K endgame',
+        concepts:[
+          {
+            emoji:'♟', title:'King + Pawn vs King',
+            explain:'In the endgame, the KING becomes a FIGHTER, not just a piece to protect! In a King + Pawn vs King endgame, the key is OPPOSITION — placing your King directly opposite the enemy King with one square between them. The player who does NOT have the move has the OPPOSITION and the advantage!',
+            fen:'8/8/3k4/8/3K4/8/3P4/8 w - - 0 1',
+            highlights:{ht:['d4'],hc:['d6']},
+            quiz:{
+              q:'In the endgame, what does the King become?',
+              opts:['Less useful','A powerful attacking piece!','Only for defense','It never moves'], ans:'A powerful attacking piece!',
+              right:'In the endgame, march your King forward to help win! 👑',
+              wrong:'The King becomes a STRONG piece in the endgame — use it!'
+            },
+            puzzle:{
+              instr:'White King on D4, Pawn on D2, Black King on D6. Move the White King to gain OPPOSITION! Tap the King! 👑',
+              fen:'8/8/3k4/8/3K4/8/3P4/8 w - - 0 1',
+              answer:['d4','d5','c5','e5'],
+              highlights:{ht:['d4']}
+            }
+          }
+        ]
+      },
+      {
+        num:5, title:'Candidate Moves', topics:'How to think before you move',
+        concepts:[
+          {
+            emoji:'🤔', title:'Think BEFORE You Move!',
+            explain:'CANDIDATE MOVE THINKING means listing your BEST possible moves before picking one! Before each move ask: 1️⃣ Is my King safe? 2️⃣ Am I hanging (leaving) any pieces? 3️⃣ Can I check, capture, or threaten something? Pick the BEST candidate move after thinking — never move without thinking!',
+            fen:'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+            highlights:{},
+            quiz:{
+              q:'What should you ALWAYS do before making a move?',
+              opts:['Move quickly','Think about your best options first!','Always capture','Move the closest piece'], ans:'Think about your best options first!',
+              right:'Always think first — chess is a game of thinking! 🤔',
+              wrong:'Great chess players always think through candidate moves before deciding!'
+            },
+            puzzle:{
+              instr:'Think: can White play a good move here? Tap the pawn on E4 to consider capturing! 🤔',
+              fen:'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+              answer:['e4'],
+              highlights:{ht:['e4','e5']}
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id:'l3', label:'L3', title:'Intermediate', subtitle:'Chess Strategy',
+    color:'lc3', duration:'~2.5 months · 20 Sessions',
+    goal:'Learn strategic planning and start thinking 3-4 moves ahead!',
+    sessions:[
+      {
+        num:1, title:'Piece Coordination', topics:'Making pieces work together',
+        concepts:[
+          {
+            emoji:'🤝', title:'Pieces Work as a Team!',
+            explain:'In chess, pieces are STRONGEST when they work TOGETHER! A Rook and Bishop can cover more squares than either alone. A Knight and Bishop on the same side attack more territory. Good players coordinate their pieces so each one supports the others — like a sports team!',
+            fen:'8/8/8/8/2RB4/8/8/8 w - - 0 1',
+            highlights:{hc:['c1','c2','c3','c5','c6','c7','c8','a4','b4','e4','f4','g4','h4','a1','b2','e5','f6','g7','h8','b6','a7','e3','f2','g1']},
+            quiz:{
+              q:'Why is Piece Coordination important?',
+              opts:['To use fewer pieces','Pieces together cover more squares and attack more!','To protect pawns only','To reach the center faster'], ans:'Pieces together cover more squares and attack more!',
+              right:'Coordinated pieces are FAR stronger than pieces working alone! 🤝',
+              wrong:'When pieces work together they control much more of the board!'
+            },
+            puzzle:{
+              instr:'Tap the Rook on C4 — it works with the Bishop to control lots of squares! 🤝',
+              fen:'8/8/8/8/2RB4/8/8/8 w - - 0 1',
+              answer:['c4'],
+              highlights:{ht:['c4','d4']}
+            }
+          }
+        ]
+      },
+      {
+        num:2, title:'Open Files', topics:'Rooks on open and half-open files',
+        concepts:[
+          {
+            emoji:'🚀', title:'Open Files — Rocket Lanes for Rooks!',
+            explain:'An OPEN FILE is a column with NO pawns on it. A HALF-OPEN FILE has only enemy pawns (not your own). Rooks are MOST POWERFUL on open files — they can attack along the whole column! Try to place your Rooks on open files and double them (put both Rooks on the same file)!',
+            fen:'8/8/8/8/8/8/PPP1PPPP/R7 w - - 0 1',
+            highlights:{hc:['d1','d2','d3','d4','d5','d6','d7','d8']},
+            quiz:{
+              q:'What is an OPEN FILE?',
+              opts:['A file with many pawns','A column with NO pawns — Rooks love it!','The e-file only','A file near the King'], ans:'A column with NO pawns — Rooks love it!',
+              right:'Open files are highways for your Rooks — use them! 🚀',
+              wrong:'Open files (no pawns blocking) are the best lanes for your Rooks!'
+            },
+            puzzle:{
+              instr:'The D-file is open! Tap the Rook to move it to D1 (the open file)! 🚀',
+              fen:'8/8/8/8/8/8/PPP1PPPP/R7 w - - 0 1',
+              answer:['a1'],
+              highlights:{ht:['a1'],hc:['d1','d2','d3','d4','d5','d6','d7','d8']}
+            }
+          }
+        ]
+      },
+      {
+        num:3, title:'Weak Squares & Outposts', topics:'Exploiting holes in pawn structure',
+        concepts:[
+          {
+            emoji:'🕳️', title:'Weak Squares — Holes to Exploit!',
+            explain:'A WEAK SQUARE is a square that cannot be defended by a pawn anymore. If your opponent has a weak square near their King or in the center, you can PLANT a piece there — called an OUTPOST! A Knight on an outpost in enemy territory is extremely powerful because it can\'t be chased away by pawns!',
+            fen:'8/8/8/2Np4/8/8/8/8 w - - 0 1',
+            highlights:{hc:['c5'],ht:['d5']},
+            quiz:{
+              q:'What is a Knight OUTPOST?',
+              opts:['A Knight on rank 1','A Knight on a weak square enemy pawns can\'t attack!','A Knight near the King','A captured Knight'], ans:'A Knight on a weak square enemy pawns can\'t attack!',
+              right:'A Knight outpost can\'t be chased away — it\'s super strong! 🕳️',
+              wrong:'An outpost Knight sits on a weak square where enemy pawns can\'t reach it!'
+            },
+            puzzle:{
+              instr:'The Knight on C5 is on an OUTPOST — the D5 pawn can\'t attack it! Tap the Knight! 🕳️',
+              fen:'8/8/8/2Np4/8/8/8/8 w - - 0 1',
+              answer:['c5'],
+              highlights:{ht:['c5']}
+            }
+          }
+        ]
+      },
+      {
+        num:4, title:'Zwischenzug', topics:'The in-between move',
+        concepts:[
+          {
+            emoji:'⚡', title:'Zwischenzug — The In-Between Move!',
+            explain:'ZWISCHENZUG (tsvi-shen-tsoog) is a German word meaning "in-between move." Instead of the obvious response, you make an UNEXPECTED move first — often a check or a threat — then continue with the original plan! This can completely surprise your opponent and win material they didn\'t expect to lose!',
+            fen:'8/8/8/8/4p3/3Q4/8/4K2k w - - 0 1',
+            highlights:{hc:['h1'],ht:['d3']},
+            quiz:{
+              q:'What is a Zwischenzug?',
+              opts:['A German piece','An in-between surprise move before the expected response!','A type of checkmate','Moving a pawn forward'], ans:'An in-between surprise move before the expected response!',
+              right:'A Zwischenzug is the surprise intermediate move — very powerful! ⚡',
+              wrong:'Zwischenzug = instead of the obvious move, sneak in a surprise first!'
+            },
+            puzzle:{
+              instr:'Before recapturing on E4, White can give CHECK first! Tap the Queen for the in-between check! ⚡',
+              fen:'8/8/8/8/4p3/3Q4/8/4K2k w - - 0 1',
+              answer:['d3'],
+              highlights:{ht:['d3']}
+            }
+          }
+        ]
+      },
+      {
+        num:5, title:'Opposition in Endgames', topics:'King opposition technique',
+        concepts:[
+          {
+            emoji:'👑', title:'King Opposition — Who Moves Must Give Way!',
+            explain:'OPPOSITION means two Kings face each other on the SAME rank, file or diagonal with ONE square between them. The player who has to MOVE is at a disadvantage — they must step aside and let the other King advance! In pawn endgames, getting OPPOSITION for your King is the key to winning or drawing!',
+            fen:'8/8/3k4/8/3K4/8/8/8 w - - 0 1',
+            highlights:{ht:['d4'],hc:['d6']},
+            quiz:{
+              q:'What does OPPOSITION mean in King endgames?',
+              opts:['Kings on same diagonal','Two Kings facing each other with one square between — a big advantage!','Kings in opposite corners','Having more pawns'], ans:'Two Kings facing each other with one square between — a big advantage!',
+              right:'Opposition forces your opponent\'s King to step aside! 👑',
+              wrong:'Opposition (Kings facing each other, 1 square apart) gives a key endgame advantage!'
+            },
+            puzzle:{
+              instr:'White King on D4, Black King on D6 — White has OPPOSITION! Tap the White King! 👑',
+              fen:'8/8/3k4/8/3K4/8/8/8 w - - 0 1',
+              answer:['d4'],
+              highlights:{ht:['d4']}
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id:'l4', label:'L4', title:'Advanced', subtitle:'Tournament Thinking',
+    color:'lc4', duration:'~2.5 months · 20 Sessions',
+    goal:'Learn opening systems and prepare for competitive chess!',
+    sessions:[
+      {
+        num:1, title:'Italian Game', topics:'1.e4 e5 2.Nf3 Nc6 3.Bc4',
+        concepts:[
+          {
+            emoji:'🇮🇹', title:'The Italian Game',
+            explain:'The ITALIAN GAME is one of the oldest and best openings! After 1.e4 e5 2.Nf3 Nc6 3.Bc4, the White Bishop goes to C4 — pointing at the F7 square near Black\'s King. White develops quickly, controls the center, and sets up to attack! It follows ALL three golden opening rules!',
+            fen:'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4',
+            highlights:{ht:['c4'],hc:['e4','f7']},
+            quiz:{
+              q:'In the Italian Game, where does the White Bishop go?',
+              opts:['B5','C4 — pointing at F7!','D3','E2'], ans:'C4 — pointing at F7!',
+              right:'Bc4 aims at F7 — the weakest square near Black\'s King! 🇮🇹',
+              wrong:'In the Italian Game, Bc4 develops the Bishop and eyes the F7 weakness!'
+            },
+            puzzle:{
+              instr:'This is the Italian Game position! Tap the Bishop on C4 to see what it\'s aiming at! 🇮🇹',
+              fen:'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4',
+              answer:['c4'],
+              highlights:{ht:['c4'],hc:['f7']}
+            }
+          }
+        ]
+      },
+      {
+        num:2, title:'London System', topics:'Solid setup with d4, Nf3, Bf4',
+        concepts:[
+          {
+            emoji:'🏙️', title:'The London System — Rock Solid!',
+            explain:'The LONDON SYSTEM is a SOLID opening for White based on d4, Nf3, and Bf4. It\'s very flexible — you can use it against almost ANY Black setup! The Bishop goes to F4 before any pawns block it. It\'s great for players who want a reliable, safe opening they can use in every game!',
+            fen:'rnbqkbnr/pppppppp/8/8/3P4/2N1BN2/PPP1PPPP/R2QKB1R b KQkq - 0 4',
+            highlights:{hc:['d4','f3','e3'],ht:['e3']},
+            quiz:{
+              q:'What makes the London System a great choice?',
+              opts:['It\'s only for experts','It\'s solid and works against any Black opening!','Only works if Black plays e5','It requires memorizing 20 moves'], ans:'It\'s solid and works against any Black opening!',
+              right:'The London is reliable — use it every game! 🏙️',
+              wrong:'The London System is great because it works vs almost ANY Black setup!'
+            },
+            puzzle:{
+              instr:'In the London, the key pieces are on D4, F3 and E3 (Bishop). Tap the Bishop on E3! 🏙️',
+              fen:'rnbqkbnr/pppppppp/8/8/3P4/2N1BN2/PPP1PPPP/R2QKB1R b KQkq - 0 4',
+              answer:['e3'],
+              highlights:{ht:['e3']}
+            }
+          }
+        ]
+      },
+      {
+        num:3, title:'Sicilian Defense Basics', topics:'Black fights back with c5',
+        concepts:[
+          {
+            emoji:'🛡️', title:'Sicilian Defense — Black Fights Back!',
+            explain:'The SICILIAN DEFENSE starts with 1.e4 c5! Instead of copying White with e5, Black plays c5 — fighting for the center from the SIDE! The Sicilian is the MOST POPULAR response to e4 in the world! It leads to sharp, exciting games where Black doesn\'t just sit and defend — Black fights for a WIN!',
+            fen:'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+            highlights:{ht:['c5'],hc:['d4','e4']},
+            quiz:{
+              q:'Why is the Sicilian Defense so popular?',
+              opts:['It\'s the easiest defense','Black fights actively for a win, not just to draw!','It\'s only for beginners','White always wins against it'], ans:'Black fights actively for a win, not just to draw!',
+              right:'The Sicilian creates unbalanced, fighting positions — Black plays to WIN! 🛡️',
+              wrong:'The Sicilian gives Black winning chances — that\'s why it\'s so popular!'
+            },
+            puzzle:{
+              instr:'After 1.e4, Black plays the Sicilian! Tap the C5 pawn — Black\'s fighting move! 🛡️',
+              fen:'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+              answer:['c5'],
+              highlights:{ht:['c5']}
+            }
+          }
+        ]
+      },
+      {
+        num:4, title:'Rook Endgames', topics:'Basic Rook vs Rook + Pawn technique',
+        concepts:[
+          {
+            emoji:'🏰', title:'Rook Endgames — Most Common!',
+            explain:'ROOK ENDGAMES are the most common type of endgame in chess! The key principle is: ROOKS BELONG BEHIND PASSED PAWNS — whether your own (pushing it forward) or the opponent\'s (stopping it from queening)! Also remember: the Rook is most active when it cuts off the enemy King on a rank or file!',
+            fen:'8/8/8/8/8/3k4/3p4/3RK3 w - - 0 1',
+            highlights:{ht:['d1'],hc:['d2']},
+            quiz:{
+              q:'Where should a Rook be placed relative to a passed pawn?',
+              opts:['In front of the pawn','Behind the pawn!','Next to the pawn','Away from the pawn'], ans:'Behind the pawn!',
+              right:'Rooks belong BEHIND passed pawns — yours and the enemy\'s! 🏰',
+              wrong:'Always put your Rook BEHIND passed pawns (yours or theirs) in endgames!'
+            },
+            puzzle:{
+              instr:'The Rook on D1 is behind Black\'s passed pawn on D2 — stopping it! Tap the Rook! 🏰',
+              fen:'8/8/8/8/8/3k4/3p4/3RK3 w - - 0 1',
+              answer:['d1'],
+              highlights:{ht:['d1']}
+            }
+          }
+        ]
+      },
+      {
+        num:5, title:'Defensive Techniques', topics:'How to defend difficult positions',
+        concepts:[
+          {
+            emoji:'🛡️', title:'How to Defend Like a Champion!',
+            explain:'Even strong players get into DIFFICULT positions sometimes! Key defensive principles: 1️⃣ Exchange attacking pieces (trade away what\'s attacking you)! 2️⃣ Create COUNTERPLAY (your own threats force the opponent to defend)! 3️⃣ Find FORTRESSES (positions that can\'t be broken)! 4️⃣ Never give up — defense is a skill!',
+            fen:'r4rk1/ppp2ppp/8/8/8/8/PPP2PPP/R4RK1 w - - 0 1',
+            highlights:{},
+            quiz:{
+              q:'What is the BEST way to defend an attack?',
+              opts:['Give up immediately','Create your own threats while defending!','Move the King away always','Trade off all your pieces'], ans:'Create your own threats while defending!',
+              right:'Counter-attack while defending — make your opponent worry too! 🛡️',
+              wrong:'The best defense often includes creating counter-threats to distract the attacker!'
+            },
+            puzzle:{
+              instr:'This position is equal. Tap the King on G1 to keep it safe! 🛡️',
+              fen:'r4rk1/ppp2ppp/8/8/8/8/PPP2PPP/R4RK1 w - - 0 1',
+              answer:['g1'],
+              highlights:{ht:['g1']}
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id:'l5', label:'L5', title:'Advanced Part 2', subtitle:'Competitive Player',
+    color:'lc5', duration:'~2.5 months · 20 Sessions',
+    goal:'Develop strong competitive skills and prepare for tournaments!',
+    sessions:[
+      {
+        num:1, title:'Advanced Opening Prep', topics:'Building an opening repertoire',
+        concepts:[
+          {
+            emoji:'📖', title:'Build Your Opening Repertoire!',
+            explain:'A REPERTOIRE is your personal set of openings that you study and play every game! Strong players have 2-3 favorite openings they know very well. The key: don\'t try to memorize every line — understand the IDEAS! Ask "Why is this move good?" not just "What move comes next?" Study Grandmaster games in your openings!',
+            fen:'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 6',
+            highlights:{},
+            quiz:{
+              q:'What is the BEST way to study openings?',
+              opts:['Memorize every move','Understand the IDEAS and plans behind the moves!','Only play the first 3 moves','Never study openings'], ans:'Understand the IDEAS and plans behind the moves!',
+              right:'Understanding WHY beats memorizing WHAT every time! 📖',
+              wrong:'Understanding the ideas in an opening is far better than just memorizing moves!'
+            },
+            puzzle:{
+              instr:'This is a Giuoco Piano position. Both sides are well-developed! Tap your King on E1 to consider castling! 📖',
+              fen:'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 6',
+              answer:['e1'],
+              highlights:{ht:['e1'],hc:['g1']}
+            }
+          }
+        ]
+      },
+      {
+        num:2, title:'Positional Sacrifices', topics:'Giving material for long-term advantage',
+        concepts:[
+          {
+            emoji:'💡', title:'Sacrifice for a Better Position!',
+            explain:'A POSITIONAL SACRIFICE is when you give up material (a pawn or even a piece) not for immediate attack, but for LONG-TERM positional advantages like a strong outpost, open files for your Rooks, a safer King, or better piece activity! Famous players like Petrosian and Tal were masters of this. Sometimes giving up a little wins the game slowly!',
+            fen:'r1bqr1k1/ppp2ppp/2n5/3pP3/3P4/2PB1N2/PP3PPP/R1BQR1K1 w - - 0 10',
+            highlights:{},
+            quiz:{
+              q:'Why would you sacrifice material positionally?',
+              opts:['Just to try something new','To gain long-term advantages like better pieces or King safety!','Because you made a mistake','To end the game faster'], ans:'To gain long-term advantages like better pieces or King safety!',
+              right:'Sometimes giving up a little gets you a BIG positional advantage! 💡',
+              wrong:'Positional sacrifices trade short-term material for lasting strategic gains!'
+            },
+            puzzle:{
+              instr:'White has a strong center. Tap the pawn on E5 — a potential sacrifice pawn! 💡',
+              fen:'r1bqr1k1/ppp2ppp/2n5/3pP3/3P4/2PB1N2/PP3PPP/R1BQR1K1 w - - 0 10',
+              answer:['e5'],
+              highlights:{ht:['e5']}
+            }
+          }
+        ]
+      },
+      {
+        num:3, title:'Deep Calculation', topics:'Visualizing 4-5 moves ahead',
+        concepts:[
+          {
+            emoji:'🔭', title:'See Farther — Calculate Deeper!',
+            explain:'CALCULATION means visualizing the position in your head after a series of moves, WITHOUT moving the pieces! To calculate better: 1️⃣ First look for CHECKS, CAPTURES, THREATS (in that order!). 2️⃣ Only calculate the important lines — not every move. 3️⃣ Practice by solving puzzles WITHOUT moving pieces. 4️⃣ Aim to calculate 4-5 moves ahead comfortably!',
+            fen:'r3k2r/ppp2ppp/2n1bn2/3qp3/3PP3/2PBBN2/PP3PPP/R2QK2R w KQkq - 0 10',
+            highlights:{},
+            quiz:{
+              q:'When calculating, what do you look for FIRST?',
+              opts:['Pawn moves','Checks, captures, then threats!','The prettiest move','What your opponent wants'], ans:'Checks, captures, then threats!',
+              right:'Always check for Checks first, then Captures, then Threats! 🔭',
+              wrong:'The order is: Checks first, then Captures, then Threats — never skip this!'
+            },
+            puzzle:{
+              instr:'This complex position needs deep calculation! Tap the Queen on D5 to study the position! 🔭',
+              fen:'r3k2r/ppp2ppp/2n1bn2/3qp3/3PP3/2PBBN2/PP3PPP/R2QK2R w KQkq - 0 10',
+              answer:['d5'],
+              highlights:{ht:['d5']}
+            }
+          }
+        ]
+      },
+      {
+        num:4, title:'Time Management', topics:'How to use your clock wisely',
+        concepts:[
+          {
+            emoji:'⏰', title:'Managing Your Time in Tournaments!',
+            explain:'TIME MANAGEMENT is crucial in tournament chess! Rules to follow: 1️⃣ Spend MORE time on CRITICAL moments (tactics, big decisions). 2️⃣ Move FASTER in simple positions or when following your opening plan. 3️⃣ Never spend too long on one move early in the game — save time for the middlegame! 4️⃣ When in time trouble, look for CHECKS and FORCING moves only!',
+            fen:'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+            highlights:{},
+            quiz:{
+              q:'When should you spend the MOST time thinking?',
+              opts:['On every move equally','On critical, complex moments and big decisions!','Only on pawn moves','In the opening only'], ans:'On critical, complex moments and big decisions!',
+              right:'Save your time for the moments that matter most! ⏰',
+              wrong:'Spend more time on critical decisions — not every move needs equal thinking!'
+            },
+            puzzle:{
+              instr:'After 1.e4, this is a critical moment for Black! Tap the E4 pawn — study this position! ⏰',
+              fen:'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+              answer:['e4'],
+              highlights:{ht:['e4']}
+            }
+          }
+        ]
+      },
+      {
+        num:5, title:'Psychology of Chess', topics:'Mental game and tournament preparation',
+        concepts:[
+          {
+            emoji:'🧘', title:'The Mental Game of Chess!',
+            explain:'Chess is not just about moves — it\'s a MENTAL BATTLE too! Tips for tournament psychology: 1️⃣ Stay CALM even when losing. 2️⃣ Don\'t be intimidated by higher-rated opponents — just play your game! 3️⃣ Analyze your OWN games after every round (not just wins). 4️⃣ Take breaks, eat well, sleep enough before tournaments. 5️⃣ Every game is a NEW game — forget the last one!',
+            fen:'8/8/8/8/8/8/8/8 w - - 0 1',
+            highlights:{},
+            quiz:{
+              q:'What should you do AFTER a tough loss in a tournament?',
+              opts:['Quit chess','Stay calm, analyze what went wrong, and focus on the next game!','Blame your pieces','Avoid your next game'], ans:'Stay calm, analyze what went wrong, and focus on the next game!',
+              right:'Every loss is a lesson — analyze it and come back stronger! 🧘',
+              wrong:'Champions analyze losses calmly and use them to improve for the next game!'
+            },
+            puzzle:{
+              instr:'Empty board — visualize the board in your mind! Tap the center square E4 from memory! 🧘',
+              fen:'8/8/8/8/8/8/8/8 w - - 0 1',
+              answer:['e4'],
+              highlights:{ht:['e4']}
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id:'lm', label:'★', title:'Master Course', subtitle:'Performance Track',
+    color:'lcm', duration:'Sub Junior · Junior · Senior',
+    goal:'Compete confidently in rated chess tournaments!',
+    sessions:[
+      {
+        num:1, title:'Advanced Opening Repertoire', topics:'Deep opening preparation',
+        concepts:[
+          {
+            emoji:'🏆', title:'Master Your Opening Repertoire!',
+            explain:'At Master level, you need a DEEP opening repertoire. This means knowing your main lines to move 15-20, understanding ALL the key variations, and having BACKUP options when opponents deviate. Study Grandmaster games in your openings and always know the strategic PLANS, not just the moves. White and Black need different approaches!',
+            fen:'r2qkb1r/ppp1pppp/2n2n2/3p1b2/2PP4/2N1PN2/PP3PPP/R1BQKB1R w KQkq - 0 7',
+            highlights:{},
+            quiz:{
+              q:'At Master level, how deeply should you know your openings?',
+              opts:['3 moves','5 moves','15-20 moves with understanding of plans!','Just the first move'], ans:'15-20 moves with understanding of plans!',
+              right:'Masters know their openings deeply AND understand the plans! 🏆',
+              wrong:'Master-level opening prep goes 15-20 moves deep with full understanding of plans!'
+            },
+            puzzle:{
+              instr:'Complex middlegame — study every piece carefully! Tap the Black Queen on D8! 🏆',
+              fen:'r2qkb1r/ppp1pppp/2n2n2/3p1b2/2PP4/2N1PN2/PP3PPP/R1BQKB1R w KQkq - 0 7',
+              answer:['d8'],
+              highlights:{ht:['d8']}
+            }
+          }
+        ]
+      },
+      {
+        num:2, title:'Endgame Mastery', topics:'Complex endgame technique',
+        concepts:[
+          {
+            emoji:'♟', title:'Endgame Mastery — Win the Won Positions!',
+            explain:'At Master level, endgame technique separates winners from losers! KEY endgames to master: ♟ All pawn endgames and opposition. ♖ Lucena and Philidor positions (Rook endgames). ♗ Bishop vs Knight endgames. ♔ King activity in ALL endgames. Remember: pawn endgames are concrete — calculate exactly! Rook endgames need technique and patience!',
+            fen:'8/8/1p6/pPp5/P1P5/8/5K2/3k4 w - - 0 1',
+            highlights:{hc:['b5'],ht:['b6']},
+            quiz:{
+              q:'In Rook endgames, what are the two KEY positions every Master knows?',
+              opts:['Italian and Spanish','Lucena and Philidor positions!','King and Queen only','Double Rook positions'], ans:'Lucena and Philidor positions!',
+              right:'Lucena (winning) and Philidor (drawing) are THE must-know Rook endgames! ♖',
+              wrong:'Every Master must know the Lucena (how to win) and Philidor (how to draw) Rook endgames!'
+            },
+            puzzle:{
+              instr:'Complex pawn endgame — White has a passed pawn on B5! Tap the B5 pawn! ♟',
+              fen:'8/8/1p6/pPp5/P1P5/8/5K2/3k4 w - - 0 1',
+              answer:['b5'],
+              highlights:{ht:['b5']}
+            }
+          }
+        ]
+      },
+      {
+        num:3, title:'Tournament Strategy', topics:'How to perform in rated events',
+        concepts:[
+          {
+            emoji:'🎖️', title:'Tournament Strategy — How to Perform!',
+            explain:'Tournament success requires more than good chess! Strategy tips: 1️⃣ Start SOLIDLY — don\'t take big risks in round 1. 2️⃣ Know your TOURNAMENT SITUATION — do you need a win or is a draw ok? 3️⃣ Prepare specifically for upcoming opponents — study their games! 4️⃣ Physical preparation: sleep, food, warmup puzzles. 5️⃣ In the last round, adjust your strategy based on standings!',
+            fen:'8/8/8/8/8/8/8/8 w - - 0 1',
+            highlights:{},
+            quiz:{
+              q:'In a tournament, what should you focus on in the LAST ROUND?',
+              opts:['Play the same way always','Adjust your strategy based on standings — win if you need to, draw if a draw wins!','Always play aggressively','Never change your style'], ans:'Adjust your strategy based on standings — win if you need to, draw if a draw wins!',
+              right:'Smart tournament strategy means knowing when to go for a win vs a draw! 🎖️',
+              wrong:'Last-round strategy depends on the standings — sometimes a draw is enough to win the tournament!'
+            },
+            puzzle:{
+              instr:'Visualize: you\'re in a tournament. Tap the E4 square — plan your first move! 🎖️',
+              fen:'8/8/8/8/8/8/8/8 w - - 0 1',
+              answer:['e4','d4'],
+              highlights:{ht:['e4','d4']}
+            }
+          }
+        ]
+      }
+    ]
+  }
+];
+
+// ══════════════════════════════════════
+// PUZZLE DATA (original)
+// ══════════════════════════════════════
+const DATA={
   memory:[
     {lv:1,fen:'8/8/8/8/3K4/8/8/3k4 w - - 0 1'},
     {lv:1,fen:'8/8/8/8/8/8/4P3/3K1k2 w - - 0 1'},
@@ -388,17 +1436,17 @@ const DATA = {
     {lv:3,piece:'K',sq:'e4',att:['d3','e3','f3','d4','f4','d5','e5','f5']},
   ],
   pattern:[
-    {lv:1,name:'Fork',    emoji:'🍴',fen:'8/8/8/3N4/8/2k5/8/4K3 w - - 0 1',  desc:'Knight attacks two pieces at once!'},
-    {lv:1,name:'Check',   emoji:'👑',fen:'8/8/8/8/8/2k5/8/3QK3 w - - 0 1',   desc:'The King is in danger!'},
-    {lv:2,name:'Pin',     emoji:'📌',fen:'8/8/3r4/8/3B4/8/3K4/8 w - - 0 1',  desc:'A piece cannot move!'},
+    {lv:1,name:'Fork',emoji:'🍴',fen:'8/8/8/3N4/8/2k5/8/4K3 w - - 0 1',desc:'Knight attacks two pieces at once!'},
+    {lv:1,name:'Check',emoji:'👑',fen:'8/8/8/8/8/2k5/8/3QK3 w - - 0 1',desc:'The King is in danger!'},
+    {lv:2,name:'Pin',emoji:'📌',fen:'8/8/3r4/8/3B4/8/3K4/8 w - - 0 1',desc:'A piece cannot move!'},
     {lv:2,name:'Back Rank',emoji:'🏰',fen:'6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',desc:'Attack the back row!'},
-    {lv:3,name:'Skewer',  emoji:'⚔️', fen:'8/3k4/8/8/8/8/3K4/3R4 w - - 0 1', desc:'Force the king to move!'},
+    {lv:3,name:'Skewer',emoji:'⚔️',fen:'8/3k4/8/8/8/8/3K4/3R4 w - - 0 1',desc:'Force the king to move!'},
   ],
   endgame:[
     {lv:1,fen:'8/8/8/8/8/3k4/3Q4/3K4 w - - 0 1',goal:'Checkmate the black king!',hint:'Move Queen near the king',moves:['d2d7','d2e3','d2c3','d2f4']},
-    {lv:1,fen:'8/8/8/8/8/8/1R6/k1K5 w - - 0 1', goal:'Checkmate with the Rook!', hint:'Push king to corner',moves:['b2a2']},
-    {lv:2,fen:'8/8/8/8/8/3k4/3P4/3K4 w - - 0 1',goal:'Push the pawn forward!',   hint:'March the pawn!',moves:['d2d3','d2d4']},
-    {lv:3,fen:'8/8/3k4/8/3K4/8/3P4/8 w - - 0 1', goal:'Win the pawn ending!',    hint:'Your king must lead',moves:['d4d5','d4e5','d4c5']},
+    {lv:1,fen:'8/8/8/8/8/8/1R6/k1K5 w - - 0 1',goal:'Checkmate with the Rook!',hint:'Push king to corner',moves:['b2a2']},
+    {lv:2,fen:'8/8/8/8/8/3k4/3P4/3K4 w - - 0 1',goal:'Push the pawn forward!',hint:'March the pawn!',moves:['d2d3','d2d4']},
+    {lv:3,fen:'8/8/3k4/8/3K4/8/3P4/8 w - - 0 1',goal:'Win the pawn ending!',hint:'Your king must lead',moves:['d4d5','d4e5','d4c5']},
   ],
   calc:[
     {lv:1,q:'Knight on e4 — pick a valid square it can jump to:',piece:'N',from:'e4',choices:['d2','e5','d4','e3'],ans:'d2',hint:'Knights jump in an L-shape!'},
@@ -408,10 +1456,10 @@ const DATA = {
     {lv:3,q:'Knight on g1, two moves — can it reach e5?',piece:'N',from:'g1',choices:['Yes','No'],ans:'Yes',hint:'Try g1→f3→e5!'},
   ],
   focus:[
-    {lv:1,fen:'8/8/8/8/3K4/8/8/3k4 w - - 0 1',   q:'Where is the White King?',ans:'d4'},
-    {lv:1,fen:'8/8/8/8/8/3Q4/8/4K2k w - - 0 1',   q:'Where is the Queen?',     ans:'d3'},
+    {lv:1,fen:'8/8/8/8/3K4/8/8/3k4 w - - 0 1',q:'Where is the White King?',ans:'d4'},
+    {lv:1,fen:'8/8/8/8/8/3Q4/8/4K2k w - - 0 1',q:'Where is the Queen?',ans:'d3'},
     {lv:2,fen:'8/8/8/3r4/8/3B4/8/3K1k2 w - - 0 1',q:'Where is the Black Rook?',ans:'d5'},
-    {lv:2,fen:'8/8/8/8/8/8/4P3/3K1k2 w - - 0 1',   q:'Where is the White Pawn?',ans:'e2'},
+    {lv:2,fen:'8/8/8/8/8/8/4P3/3K1k2 w - - 0 1',q:'Where is the White Pawn?',ans:'e2'},
     {lv:3,fen:'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 0 1',q:'How many Knights total?',ans:'4'},
   ],
   thinking:[
@@ -421,13 +1469,13 @@ const DATA = {
   ],
   opening:[
     {name:"King's Pawn Opening",note:'e4',fen:'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',kids:[
-      {name:'Open Game (e5)',     note:'e5', fen:'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
-      {name:'Sicilian Defense',  note:'c5', fen:'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
-      {name:'French Defense',    note:'e6', fen:'rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
+      {name:'Open Game (e5)',note:'e5',fen:'rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
+      {name:'Sicilian Defense',note:'c5',fen:'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
+      {name:'French Defense',note:'e6',fen:'rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2'},
     ]},
     {name:"Queen's Pawn Opening",note:'d4',fen:'rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1',kids:[
-      {name:"Queen's Gambit",    note:'d5', fen:'rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2'},
-      {name:'Indian Defense',   note:'Nf6',fen:'rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2'},
+      {name:"Queen's Gambit",note:'d5',fen:'rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2'},
+      {name:'Indian Defense',note:'Nf6',fen:'rnbqkb1r/pppppppp/5n2/8/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2'},
     ]},
   ],
 };
@@ -435,17 +1483,15 @@ const DATA = {
 const PM={'wK':'♔','wQ':'♕','wR':'♖','wB':'♗','wN':'♘','wP':'♙','bK':'♚','bQ':'♛','bR':'♜','bB':'♝','bN':'♞','bP':'♟'};
 const PN={K:'King',Q:'Queen',R:'Rook',B:'Bishop',N:'Knight',P:'Pawn'};
 
-// ── STATE ─────────────────────────────
 const LV={memory:1,blindfold:1,pf:1,pattern:1,endgame:1,vision:1,calc:1,thinking:1,focus:1};
 let ST={stars:0,streak:0,lastDate:null,stats:{}};
 let CUR={};
-let RN=null; // result "next" callback
+let RN=null;
 
-// ── STORAGE ───────────────────────────
-function save(){try{localStorage.setItem('cpg3',JSON.stringify(ST))}catch(e){}}
+function save(){try{localStorage.setItem('cpg4',JSON.stringify(ST))}catch(e){}}
 function load(){
   try{
-    const r=localStorage.getItem('cpg3');
+    const r=localStorage.getItem('cpg4');
     if(r)Object.assign(ST,JSON.parse(r));
     const t=new Date().toDateString(),y=new Date(Date.now()-86400000).toDateString();
     if(ST.lastDate&&ST.lastDate!==t)ST.streak=ST.lastDate===y?ST.streak:0;
@@ -461,9 +1507,15 @@ function resetAll(){ST={stars:0,streak:0,lastDate:null,stats:{}};save();updStars
 function updStars(){
   Q('h-stars').textContent=ST.stars;
   document.querySelectorAll('.gs').forEach(e=>e.textContent=ST.stars);
+  // update game card stars
+  const names=['memory','blindfold','pf','pattern','opening','endgame','vision','calc','thinking','focus'];
+  names.forEach(n=>{
+    const el=Q('gs-'+n);if(!el)return;
+    const s=ST.stats[n];
+    el.textContent=s&&s.best>0?'⭐'.repeat(s.best)+'☆'.repeat(3-s.best):'★★★';
+  });
 }
 
-// ── AUDIO ─────────────────────────────
 let AC=null;
 function tone(f,t,d,v,dl){
   try{
@@ -482,13 +1534,10 @@ const sWin=()=>{[523,659,784,1047].forEach((f,i)=>tone(f,'sine',.22,.35,i*.14))}
 const sCl=()=>tone(440,'sine',.07,.12);
 const sFl=()=>tone(360,'sine',.14,.18);
 
-// ── VOICE ─────────────────────────────
-function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.85;u.pitch=1.1;speechSynthesis.speak(u)}catch(e){}}
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.85;u.pitch=1.2;speechSynthesis.speak(u)}catch(e){}}
 
-// ── CONFETTI ──────────────────────────
 function confetti(n){
-  ['#111','#FFD600','#22c55e','#ef4444','#3b82f6','#f97316'].forEach(()=>{});
-  const c=['#111','#FFD600','#22c55e','#ef4444','#3b82f6','#f97316'];
+  const c=['#6C63FF','#FFE566','#4ade80','#f87171','#60a5fa','#fb923c'];
   for(let i=0;i<n;i++){
     const e=document.createElement('div');e.className='cp';
     e.style.cssText=`left:${Math.random()*100}vw;top:-20px;background:${c[Math.random()*c.length|0]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s`;
@@ -504,13 +1553,12 @@ function stars(n){
 }
 function bigWin(){confetti(100);stars(25);sWin()}
 
-// ── SCREENS ───────────────────────────
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   Q('s-'+id).classList.add('active');
   window.scrollTo(0,0);
 }
-function home(){try{speechSynthesis.cancel()}catch(e){}showScreen('home')}
+function home(){try{speechSynthesis.cancel()}catch(e){}showScreen('home');setNavActive('nav-play')}
 function go(g){sCl();showScreen(g);startGame(g)}
 function setLv(game,v){
   LV[game]=v;
@@ -518,7 +1566,17 @@ function setLv(game,v){
   startGame(game);
 }
 
-// ── RESULT ────────────────────────────
+function navTo(screen, navId){
+  sCl();
+  showScreen(screen);
+  setNavActive(navId);
+  if(screen==='curriculum')buildCurriculum();
+}
+function setNavActive(id){
+  document.querySelectorAll('.bnt').forEach(b=>b.classList.remove('on'));
+  const el=Q(id);if(el)el.classList.add('on');
+}
+
 function showR(emoji,title,s,score,game,next){
   RN=next;
   Q('r-em').textContent=emoji;Q('r-ti').textContent=title;
@@ -529,7 +1587,6 @@ function showR(emoji,title,s,score,game,next){
 }
 function closeR(again){Q('rover').classList.remove('show');again&&RN?RN():home()}
 
-// ── BOARD ─────────────────────────────
 function parseFEN(fen){
   const b=Array.from({length:8},()=>Array(8).fill(null));
   fen.split(' ')[0].split('/').forEach((row,ri)=>{
@@ -538,8 +1595,7 @@ function parseFEN(fen){
 }
 function drawBoard(id,fen,opts){
   const c=Q(id);if(!c)return;
-  c.innerHTML='';
-  opts=opts||{};
+  c.innerHTML='';opts=opts||{};
   const b=parseFEN(fen);
   for(let r=0;r<8;r++){
     for(let f=0;f<8;f++){
@@ -578,15 +1634,192 @@ function flashDiv(wrapId,text){
   return fl;
 }
 
-// ── GAME ROUTER ───────────────────────
 function startGame(g){
   const m={memory:startMem,blindfold:startBl,pf:startPF,pattern:startPat,opening:startOpen,endgame:startEG,vision:startVis,calc:startCalc,thinking:startThink,focus:startFocus};
   if(m[g])m[g]();
 }
 
-// ═══════════════════════════
-// 1. MEMORY
-// ═══════════════════════════
+// ── CURRICULUM BUILDER ─────────────────
+function buildCurriculum(){
+  const cont=Q('curriculum-levels');
+  if(cont.children.length>0)return; // already built
+  cont.innerHTML='';
+  CURRICULUM.forEach(level=>{
+    const card=document.createElement('div');
+    card.className='level-card';
+    card.innerHTML=`
+      <div class="level-head ${level.color}">
+        <div class="level-badge">${level.label}</div>
+        <div class="level-info">
+          <h3>${level.title}</h3>
+          <p>${level.subtitle} · ${level.duration}</p>
+        </div>
+        <div class="level-arrow">▶</div>
+      </div>
+      <div class="level-body">
+        <p style="font-size:.82rem;font-weight:700;color:#666;padding:12px 0 8px;border-bottom:2px dashed #eee;margin-bottom:10px">🎯 ${level.goal}</p>
+        <div class="session-list" id="sl-${level.id}"></div>
+      </div>`;
+    card.querySelector('.level-head').addEventListener('click',()=>{
+      card.classList.toggle('open');
+      if(card.classList.contains('open'))buildSessions(level);
+    });
+    cont.appendChild(card);
+  });
+}
+
+function buildSessions(level){
+  const cont=Q('sl-'+level.id);
+  if(cont.children.length>0)return;
+  level.sessions.forEach(session=>{
+    const item=document.createElement('div');
+    item.className='session-item';
+    item.innerHTML=`
+      <div class="session-head">
+        <span class="session-num">S${session.num}</span>
+        <div style="flex:1">
+          <div class="session-title">${session.title}</div>
+          <div class="session-topics">${session.topics}</div>
+        </div>
+        <span class="session-arr">▶</span>
+      </div>
+      <div class="session-body" id="sb-${level.id}-${session.num}"></div>`;
+    item.querySelector('.session-head').addEventListener('click',()=>{
+      item.classList.toggle('open');
+      if(item.classList.contains('open'))buildLesson(level,session,item.querySelector('.session-body'));
+    });
+    cont.appendChild(item);
+  });
+}
+
+function buildLesson(level, session, container){
+  if(container.children.length>0)return;
+  session.concepts.forEach((concept,ci)=>{
+    const card=document.createElement('div');
+    card.className='concept-card';
+    // Explain text with line breaks
+    const explainHtml=concept.explain.replace(/\n/g,'<br>');
+    card.innerHTML=`
+      <div class="cc-top">
+        <div class="cc-emoji">${concept.emoji}</div>
+        <div>
+          <div class="cc-title">${concept.title}</div>
+          <div class="cc-explain">${explainHtml}</div>
+        </div>
+      </div>
+      <div class="cc-board-wrap">
+        <div class="cc-board" id="ccb-${level.id}-${session.num}-${ci}"></div>
+      </div>
+      <div class="practice-section">
+        <div class="practice-title">🧩 Spot It!</div>
+        <div class="puzzle-instr">${concept.puzzle.instr}</div>
+        <div class="cc-board-wrap">
+          <div class="cc-board" id="pzb-${level.id}-${session.num}-${ci}"></div>
+        </div>
+        <div class="puzzle-result" id="pzr-${level.id}-${session.num}-${ci}"></div>
+        <div class="practice-title" style="margin-top:10px">✅ Quick Quiz!</div>
+        <div class="quiz-q">${concept.quiz.q}</div>
+        <div class="quiz-opts" id="qo-${level.id}-${session.num}-${ci}"></div>
+        <div class="quiz-feedback" id="qf-${level.id}-${session.num}-${ci}"></div>
+      </div>`;
+    container.appendChild(card);
+    // Draw concept board
+    setTimeout(()=>{
+      drawSmallBoard(`ccb-${level.id}-${session.num}-${ci}`, concept.fen, concept.highlights);
+      drawPuzzleBoard(level.id, session.num, ci, concept);
+      buildQuiz(level.id, session.num, ci, concept.quiz);
+    }, 50);
+  });
+}
+
+function drawSmallBoard(id, fen, highlights){
+  const c=Q(id);if(!c)return;
+  c.innerHTML='';
+  const b=parseFEN(fen);
+  for(let r=0;r<8;r++){
+    for(let f=0;f<8;f++){
+      const el=document.createElement('div');
+      el.className='sq '+((r+f)%2===0?'lt':'dk');
+      const sn=String.fromCharCode(97+f)+(8-r);
+      if(highlights.hc&&highlights.hc.includes(sn))el.classList.add('hc');
+      if(highlights.ht&&highlights.ht.includes(sn))el.classList.add('ht');
+      if(highlights.hw&&highlights.hw.includes(sn))el.classList.add('hw');
+      const p=b[r][f];
+      if(p&&PM[p]){const s=document.createElement('span');s.className='pc';s.textContent=PM[p];el.appendChild(s)}
+      c.appendChild(el);
+    }
+  }
+}
+
+function drawPuzzleBoard(lid, snum, ci, concept){
+  const id=`pzb-${lid}-${snum}-${ci}`;
+  const resId=`pzr-${lid}-${snum}-${ci}`;
+  const c=Q(id);if(!c)return;
+  c.innerHTML='';
+  const b=parseFEN(concept.puzzle.fen);
+  const answers=Array.isArray(concept.puzzle.answer)?concept.puzzle.answer:[concept.puzzle.answer];
+  let answered=false;
+  for(let r=0;r<8;r++){
+    for(let f=0;f<8;f++){
+      const el=document.createElement('div');
+      el.className='sq '+((r+f)%2===0?'lt':'dk');
+      const sn=String.fromCharCode(97+f)+(8-r);
+      // highlights
+      const h=concept.puzzle.highlights||{};
+      if(h.hc&&h.hc.includes(sn))el.classList.add('hc');
+      if(h.ht&&h.ht.includes(sn))el.classList.add('ht');
+      if(h.hw&&h.hw.includes(sn))el.classList.add('hw');
+      const p=b[r][f];
+      if(p&&PM[p]){const s=document.createElement('span');s.className='pc';s.textContent=PM[p];el.appendChild(s)}
+      el.addEventListener('click',()=>{
+        if(answered)return;
+        sCl();
+        const res=Q(resId);
+        if(answers.includes(sn)){
+          answered=true;el.classList.add('hc');sOk();
+          res.textContent='🎉 Correct! Great job!';res.className='puzzle-result show ok';
+          confetti(30);
+        } else {
+          el.classList.add('hw');sBad();
+          res.textContent='Not quite! Try another square! 💪';res.className='puzzle-result show no';
+          setTimeout(()=>el.classList.remove('hw'),500);
+        }
+      });
+      c.appendChild(el);
+    }
+  }
+}
+
+function buildQuiz(lid, snum, ci, quiz){
+  const gridId=`qo-${lid}-${snum}-${ci}`;
+  const fbId=`qf-${lid}-${snum}-${ci}`;
+  const grid=Q(gridId);if(!grid)return;
+  grid.innerHTML='';
+  let done=false;
+  quiz.opts.forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='quiz-opt';
+    b.textContent=opt;
+    b.addEventListener('click',()=>{
+      if(done)return;sCl();done=true;
+      const ok=opt===quiz.ans;
+      b.classList.add(ok?'ok':'no');
+      grid.querySelectorAll('.quiz-opt').forEach(x=>{if(x.textContent===quiz.ans)x.classList.add('ok')});
+      const fb=Q(fbId);
+      fb.textContent=ok?quiz.right:quiz.wrong;
+      fb.className='quiz-feedback show '+(ok?'ok':'no');
+      if(ok){sOk();confetti(20)}else sBad();
+    });
+    grid.appendChild(b);
+  });
+}
+
+function backToCurriculum(){
+  showScreen('curriculum');
+  setNavActive('nav-courses');
+}
+
+// ── MEMORY ─────────────────────────────
 function startMem(){
   const pool=DATA.memory.filter(p=>p.lv===LV.memory);
   const p=pool[Math.random()*pool.length|0];
@@ -634,33 +1867,23 @@ function checkMem(){
   setTimeout(()=>showR(s===3?'🏆':s>=1?'⭐':'💪',s===3?'Perfect Memory!':s>=1?'Good Job!':'Keep Trying!',s,'Found '+hits+'/'+correct.size+' squares','memory',startMem),900);
 }
 
-// ═══════════════════════════
-// 2. BLINDFOLD
-// ═══════════════════════════
+// ── BLINDFOLD ──────────────────────────
 function startBl(){
   const pool=DATA.focus.filter(p=>p.lv===LV.blindfold);
   const p=pool[Math.random()*pool.length|0];
   CUR.bl={p};
   const secs=LV.blindfold===1?5:LV.blindfold===2?3:2;
-
-  // 1. Draw the real board immediately — visible right away
   drawBoard('bl-board',p.fen,{});
-
-  // 2. Get/create flash overlay but keep it hidden initially
   const fl=flashDiv('bl-bw','👀');
   if(fl)fl.style.opacity='0';
-
   Q('bl-inst').innerHTML='<span class="ie">👀</span><div class="it">Look at the board! <b>'+secs+' seconds then it hides!</b></div>';
   say('Look carefully! You have '+secs+' seconds!');
-
-  // 3. After secs, cover with flash overlay then show blank board
   let t=secs;
   const ti=setInterval(()=>{
     t--;
-    Q('bl-inst').innerHTML='<span class="ie">👀</span><div class="it">Look at the board! <b>'+t+' seconds then it hides!</b></div>';
+    Q('bl-inst').innerHTML='<span class="ie">👀</span><div class="it">Memorize the board! <b>'+t+' seconds!</b></div>';
     if(t<=0){
-      clearInterval(ti);
-      sFl();
+      clearInterval(ti);sFl();
       if(fl){fl.textContent='🤔';fl.style.opacity='1';}
       drawBoard('bl-board','8/8/8/8/8/8/8/8 w - - 0 1',{});
       startBlRecall(p,fl);
@@ -668,14 +1891,11 @@ function startBl(){
   },1000);
 }
 function startBlRecall(p,fl){
-  Q('bl-inst').innerHTML='<span class="ie">🤔</span><div class="it"><b>'+p.q+'</b> — Tap the square below!</div>';
+  Q('bl-inst').innerHTML='<span class="ie">🤔</span><div class="it"><b>'+p.q+'</b> — Tap the square!</div>';
   say(p.q);
-
-  // Draw blank clickable board under the flash overlay
   drawBoard('bl-board','8/8/8/8/8/8/8/8 w - - 0 1',{
     click:(sq,el)=>{
       sCl();
-      // Reveal answer: hide flash, show correct square
       if(fl)fl.style.opacity='0';
       drawBoard('bl-board',p.fen,{});
       setTimeout(()=>{
@@ -693,9 +1913,7 @@ function startBlRecall(p,fl){
   });
 }
 
-// ═══════════════════════════
-// 3. PIECE FINDER
-// ═══════════════════════════
+// ── PIECE FINDER ───────────────────────
 function startPF(){
   const pool=DATA.pf.filter(p=>p.lv===LV.pf);
   const p=pool[Math.random()*pool.length|0];
@@ -707,25 +1925,22 @@ function startPF(){
   drawBoard('pf-board',mkFEN(p.piece,p.sq),{
     target:new Set([p.sq]),
     click:(sq,el)=>{
-      if(sq===p.sq){say('That is where the piece is!');return}
-      sCl();
+      if(sq===p.sq)return;sCl();
       if(p.moves.includes(sq)&&!CUR.pf.found.has(sq)){
-        CUR.pf.found.add(sq);el.classList.add('hc');sOk();say('Yes!');
+        CUR.pf.found.add(sq);el.classList.add('hc');sOk();
         Q('pf-prog').textContent=CUR.pf.found.size+'/'+p.moves.length;
         if(CUR.pf.found.size===p.moves.length){
           const s=CUR.pf.err===0?3:CUR.pf.err<=2?2:1;earn('pf',s);
           setTimeout(()=>showR('🏆','All Found!',s,'Found all '+p.moves.length+' squares!','pf',startPF),500);
         }
-      }else if(!p.moves.includes(sq)&&!CUR.pf.found.has(sq)){
+      }else if(!p.moves.includes(sq)){
         CUR.pf.err++;el.classList.add('hw');sBad();setTimeout(()=>el.classList.remove('hw'),500);
       }
     }
   });
 }
 
-// ═══════════════════════════
-// 4. PATTERN MATCH
-// ═══════════════════════════
+// ── PATTERN ────────────────────────────
 function startPat(){
   const pool=DATA.pattern.filter(p=>p.lv<=LV.pattern);
   const p=pool[Math.random()*pool.length|0];
@@ -748,9 +1963,7 @@ function startPat(){
   });
 }
 
-// ═══════════════════════════
-// 5. OPENINGS
-// ═══════════════════════════
+// ── OPENINGS ───────────────────────────
 function startOpen(){
   const tree=Q('open-tree');tree.innerHTML='';
   Q('open-bw').classList.add('hidden');
@@ -775,9 +1988,7 @@ function showOpenBoard(fen){
   Q('open-bw').classList.remove('hidden');drawBoard('open-board',fen,{});
 }
 
-// ═══════════════════════════
-// 6. ENDGAME
-// ═══════════════════════════
+// ── ENDGAME ────────────────────────────
 function startEG(){
   const pool=DATA.endgame.filter(p=>p.lv===LV.endgame);
   const p=pool[Math.random()*pool.length|0];
@@ -791,7 +2002,7 @@ function startEG(){
         if(piece&&piece[0]==='w'){
           CUR.eg.sel=sq;
           document.querySelectorAll('#eg-board .sq').forEach(s=>s.classList.remove('hs'));
-          el.classList.add('hs');say('Now where to move?');
+          el.classList.add('hs');
         }
       }else{
         const mv=CUR.eg.sel+sq;
@@ -801,16 +2012,14 @@ function startEG(){
         }else{
           el.classList.add('hw');sBad();CUR.eg.sel=null;
           document.querySelectorAll('#eg-board .sq').forEach(s=>s.classList.remove('hs','hw'));
-          setTimeout(()=>el.classList.remove('hw'),500);say('Try again!');
+          setTimeout(()=>el.classList.remove('hw'),500);
         }
       }
     }
   });
 }
 
-// ═══════════════════════════
-// 7. VISION
-// ═══════════════════════════
+// ── VISION ─────────────────────────────
 function startVis(){
   const pool=DATA.vision.filter(p=>p.lv===LV.vision);
   const p=pool[Math.random()*pool.length|0];
@@ -821,8 +2030,7 @@ function startVis(){
   drawBoard('vis-board',mkFEN(p.piece,p.sq),{
     target:new Set([p.sq]),
     click:(sq,el)=>{
-      if(sq===p.sq){say('That is where the piece is!');return}
-      sCl();
+      if(sq===p.sq)return;sCl();
       if(p.att.includes(sq)&&!CUR.vis.found.has(sq)){
         CUR.vis.found.add(sq);el.classList.add('hc');sOk();
         Q('vis-prog').textContent=CUR.vis.found.size+'/'+p.att.length;
@@ -837,9 +2045,7 @@ function startVis(){
   });
 }
 
-// ═══════════════════════════
-// 8. CALCULATION
-// ═══════════════════════════
+// ── CALCULATION ────────────────────────
 function startCalc(){
   const pool=DATA.calc.filter(p=>p.lv===LV.calc);
   const p=pool[Math.random()*pool.length|0];
@@ -861,14 +2067,12 @@ function startCalc(){
   });
 }
 
-// ═══════════════════════════
-// 9. THINKING
-// ═══════════════════════════
+// ── THINKING ───────────────────────────
 function startThink(){
   const p=DATA.thinking[Math.random()*DATA.thinking.length|0];
   CUR.th={p,done:[],err:0};
   Q('th-inst').innerHTML='<span class="ie">♟</span><div class="it">'+p.scene+'</div>';
-  say('Tap the thinking steps in order! '+p.scene);
+  say('Tap the thinking steps in order!');
   const shuffled=[...p.steps].sort(()=>Math.random()-.5);
   const c=Q('th-steps');c.innerHTML='';
   shuffled.forEach((step,i)=>{
@@ -877,40 +2081,35 @@ function startThink(){
     el.onclick=()=>{
       if(el.classList.contains('done'))return;sCl();
       if(p.steps.indexOf(step)===CUR.th.done.length){
-        el.classList.add('done');CUR.th.done.push(step);sOk();say('Correct!');
+        el.classList.add('done');CUR.th.done.push(step);sOk();
         if(CUR.th.done.length===p.steps.length){
           const s=CUR.th.err===0?3:CUR.th.err<=1?2:1;earn('thinking',s);
           setTimeout(()=>showR('✅','Perfect Thinking!',s,'All '+p.steps.length+' steps correct!','thinking',startThink),500);
         }
       }else{
-        CUR.th.err++;el.classList.add('bad');sBad();setTimeout(()=>el.classList.remove('bad'),500);say('Follow the order!');
+        CUR.th.err++;el.classList.add('bad');sBad();setTimeout(()=>el.classList.remove('bad'),500);
       }
     };
     c.appendChild(el);
   });
 }
 
-// ═══════════════════════════
-// 10. FOCUS FLASH
-// ═══════════════════════════
+// ── FOCUS FLASH ────────────────────────
 function startFocus(){
   const pool=DATA.focus.filter(p=>p.lv===LV.focus);
   const p=pool[Math.random()*pool.length|0];
   CUR.fc={p,done:false};
   const secs=LV.focus===1?4:LV.focus===2?3:2;
   Q('fc-choices').classList.add('hidden');
-  // Draw board immediately — visible right away, NO blank screen
   drawBoard('fc-board',p.fen,{});
-  // Flash overlay starts hidden
   const fl=flashDiv('fc-bw','⚡');
   if(fl)fl.style.opacity='0';
   Q('fc-inst').innerHTML='<span class="ie">⚡</span><div class="it">Remember the board! <b>'+secs+' seconds!</b></div>';
-  say('Look carefully! Remember the board!');
-  // Countdown then hide board
+  say('Look carefully!');
   let t=secs;
   const ti=setInterval(()=>{
     t--;
-    Q('fc-inst').innerHTML='<span class="ie">⚡</span><div class="it">Remember the board! <b>'+t+' seconds!</b></div>';
+    Q('fc-inst').innerHTML='<span class="ie">⚡</span><div class="it">Remember! <b>'+t+' seconds!</b></div>';
     if(t<=0){
       clearInterval(ti);sFl();
       if(fl){fl.textContent='🤔';fl.style.opacity='1';}
@@ -937,9 +2136,7 @@ function mkFocusChoices(p){
   });
 }
 
-// ═══════════════════════════
-// DASHBOARD
-// ═══════════════════════════
+// ── DASHBOARD ──────────────────────────
 function renderDash(){
   const names={memory:'🎯 Memory',blindfold:'👀 Blindfold',pf:'♟ Piece Finder',pattern:'🧩 Patterns',opening:'🌳 Openings',endgame:'👑 Endgame',vision:'🔎 Vision',calc:'🧠 Calculation',thinking:'✅ Thinking',focus:'⚡ Focus Flash'};
   Q('d-stars').textContent=ST.stars;
@@ -957,9 +2154,7 @@ function renderDash(){
   });
 }
 
-// ═══════════════════════════
-// PIN
-// ═══════════════════════════
+// ── PIN ────────────────────────────────
 const PINS=[{q:'3 + 4 = ?',a:'7'},{q:'5 + 2 = ?',a:'7'},{q:'6 + 3 = ?',a:'9'},{q:'8 - 3 = ?',a:'5'},{q:'4 × 2 = ?',a:'8'}];
 let CPIN=null;
 function askPIN(){
@@ -972,14 +2167,13 @@ function chkPIN(){
   if(Q('pin-in').value.trim()===CPIN.a){
     Q('pover').classList.remove('show');renderDash();showScreen('dash');
   }else{
-    Q('pin-in').style.borderColor='#ef4444';sBad();
+    Q('pin-in').style.borderColor='#f87171';sBad();
     setTimeout(()=>Q('pin-in').style.borderColor='',600);
   }
 }
 
-// ── BOOT ──────────────────────────────
 load();
-setTimeout(()=>say('Welcome to Chess Playground! Tap a game to start!'),600);
+setTimeout(()=>say('Welcome to Chess Kids! Tap a game to start!'),600);
 </script>
 
 </body>
