@@ -1,0 +1,59 @@
+# LICENSE — Personal Use Only
+
+ChessKids — Interactive Chess Learning App
+Copyright (c) Athish Sreeram. All rights reserved.
+
+-----
+
+## PERMITTED USES
+
+This content — including all chess curriculum, lesson material, concept
+explanations, puzzles, quiz questions, and training structure — is made
+available for personal or classroom learning only.
+
+You are permitted to:
+
+1. Use this app and its lessons for your own personal chess learning.
+1. Use this app in a classroom or coaching setting to teach students.
+1. Share screenshots or brief examples privately within your classroom
+   or with students, provided you credit the original creator.
+
+-----
+
+## RESTRICTIONS
+
+You are NOT permitted to:
+
+1. Redistribute this app, its source code, or its curriculum content
+   — in whole or in part — without explicit written permission from
+   the original creator.
+1. Sell, license, or monetise this content or any derivative of it.
+1. Claim this content — including the curriculum structure, lesson
+   text, puzzle designs, or concept explanations — as your own work.
+1. Publish or distribute modified versions of this app without
+   permission.
+1. Use this content in any commercial product, paid course, or
+   subscription service.
+
+-----
+
+## ATTRIBUTION
+
+If you share examples from this curriculum privately within your
+classroom, you must credit:
+
+ChessKids by Athish Sreeram
+https://github.com/athishsreeram/chesskids
+
+-----
+
+## DISCLAIMER
+
+This app is provided “as is”, without warranty of any kind, express or
+implied. The creator is not liable for any claims or damages arising
+from the use of this content.
+
+-----
+
+For permissions beyond the scope of this licence, contact the creator
+via GitHub: https://github.com/athishsreeram
