@@ -418,6 +418,37 @@ button{font-family:'Baloo 2',sans-serif;cursor:pointer}
 .combo-step.done{background:#52C41A;color:#fff;border-color:#237804}.combo-step.active{background:#FFD93D;border-color:#B89A00}
 .mat-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--card);border:2.5px solid var(--ink);border-radius:var(--r-sm);box-shadow:var(--sh-sm) var(--ink);font-weight:800;font-size:.88rem;margin-bottom:6px}
 
+
+/* TACTICAL TRAINING SHARED */
+.tactic-concept{background:var(--card);border:3px solid var(--ink);border-radius:var(--r);padding:14px;margin-bottom:12px;box-shadow:var(--sh) var(--ink)}
+.tc-emoji{font-size:2.8rem;text-align:center;margin-bottom:6px}
+.tc-name{font-family:'Fredoka One',cursive;font-size:1.3rem;text-align:center;margin-bottom:6px}
+.tc-explain{font-size:.88rem;font-weight:700;line-height:1.55;color:#333;text-align:center}
+.scenario-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.stab{padding:7px 13px;border:2.5px solid var(--ink);border-radius:100px;background:var(--card);font-weight:800;font-size:.78rem;cursor:pointer;box-shadow:var(--sh-sm) var(--ink);transition:all .12s}
+.stab.on{color:#fff;border-color:#1E1E1E;box-shadow:var(--sh-sm) #1E1E1E}
+.stab-move{background:#FFF0F0}.stab-move.on{background:#FF6B6B}
+.stab-block{background:#F0F0FF}.stab-block.on{background:#7C5CBF}
+.stab-capture{background:#F0FFF4}.stab-capture.on{background:#52C41A}
+.stab-protect{background:#FFF8E7}.stab-protect.on{background:#F5A623}
+.stab-ladder{background:#F0FAFF}.stab-ladder.on{background:#48CAE4}
+.stab-fork{background:#FFF0F8}.stab-fork.on{background:#EC4899}
+.stab-double{background:#FEF2F2}.stab-double.on{background:#EA580C}
+.scenario-ctr{text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px}
+.hint-dots{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.hint-dot{width:10px;height:10px;border-radius:50%;background:#ddd;border:2px solid #bbb}
+.hint-dot.used{background:#F5A623;border-color:#C47D0E}
+.correct-badge{display:inline-flex;align-items:center;gap:6px;background:#dcfce7;border:2.5px solid #16a34a;border-radius:100px;padding:5px 14px;font-weight:800;font-size:.85rem;color:#16a34a;margin-bottom:8px;animation:pop .25s cubic-bezier(.34,1.56,.64,1)}
+.wrong-flash{animation:shake .3s ease-in-out}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.ladder-progress{display:flex;gap:4px;margin-bottom:8px;align-items:center}
+.lp-rank{width:28px;height:28px;border-radius:6px;border:2.5px solid var(--ink);background:var(--card);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.72rem;box-shadow:var(--sh-sm) var(--ink)}
+.lp-rank.done{background:var(--green);color:#fff;border-color:var(--green-d)}
+.lp-rank.active{background:var(--yellow);border-color:var(--yellow-d)}
+.fork-targets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.fork-target{padding:5px 10px;border:2.5px solid var(--ink);border-radius:8px;background:var(--card);font-size:1rem;font-weight:800;box-shadow:var(--sh-sm) var(--ink)}
+.fork-target.found{background:#4ade80;color:#fff;border-color:#16a34a}
+
 </style>
 </head>
 <body>
@@ -852,6 +883,81 @@ button{font-family:'Baloo 2',sans-serif;cursor:pointer}
   </div>
 </div>
 
+
+<!-- ═══ DEFEND THE KING (Move Away / Block / Capture / Protect) ═══ -->
+<div class="screen content" id="s-defend-check">
+  <div class="gh"><button class="bk" onclick="gs('s-home')">←</button><div class="gtitle">🛡️ Defend the King!</div><div class="spill">⭐<span id="dk-sc">0</span></div></div>
+  <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="dk-kip">Your King is in danger! Choose how to defend it!</div></div>
+  <div class="scenario-tabs">
+    <button class="stab stab-move on" id="dk-tab-move" onclick="dkSetSkill('move')">🏃 Move Away</button>
+    <button class="stab stab-block" id="dk-tab-block" onclick="dkSetSkill('block')">🧱 Block</button>
+    <button class="stab stab-capture" id="dk-tab-capture" onclick="dkSetSkill('capture')">⚔️ Capture</button>
+    <button class="stab stab-protect" id="dk-tab-protect" onclick="dkSetSkill('protect')">🛡️ Protect</button>
+  </div>
+  <div class="scenario-ctr" id="dk-ctr">Scenario 1 of 6</div>
+  <div class="bl">
+    <div><div class="bw-wrap"><div class="board" id="dk-board"></div></div></div>
+    <div>
+      <div class="tactic-concept" id="dk-concept">
+        <div class="tc-emoji" id="dk-con-em">🏃</div>
+        <div class="tc-name" id="dk-con-name">Move Away</div>
+        <div class="tc-explain" id="dk-con-exp">When the King is attacked, move it to a safe square where no enemy piece can reach!</div>
+      </div>
+      <div class="fb" id="dk-fb"></div>
+      <div class="hint-dots" id="dk-dots"></div>
+      <button class="btn bg" id="dk-next" onclick="dkNext()" style="display:none">▶ Next Scenario</button>
+      <button class="btn bw bsm" onclick="dkHint()">💡 Show Hint</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DOUBLE LADDER METHOD ═══ -->
+<div class="screen content" id="s-ladder-method">
+  <div class="gh"><button class="bk" onclick="gs('s-home')">←</button><div class="gtitle">🪜 Double Ladder</div><div class="spill">⭐<span id="ld-sc">0</span></div></div>
+  <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ld-kip">Use TWO Rooks to push the enemy King step by step to the edge! Each Rook covers one rank while the other leaps ahead — like climbing a ladder!</div></div>
+  <div class="scenario-tabs">
+    <button class="stab stab-ladder on" id="ld-tab-learn" onclick="ldSetMode('learn')">📖 Learn</button>
+    <button class="stab stab-ladder" id="ld-tab-practice" onclick="ldSetMode('practice')">🎯 Practice</button>
+    <button class="stab stab-ladder" id="ld-tab-challenge" onclick="ldSetMode('challenge')">🏆 Challenge</button>
+  </div>
+  <div class="ladder-progress" id="ld-progress"></div>
+  <div class="bl">
+    <div><div class="bw-wrap"><div class="board" id="ld-board"></div></div></div>
+    <div>
+      <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ld-task">Select a Rook to move!</div></div>
+      <div class="fb" id="ld-fb"></div>
+      <button class="btn bs" id="ld-next" onclick="ldNext()" style="display:none">▶ Next Step</button>
+      <button class="btn bw bsm" onclick="ldHint()">💡 Hint</button>
+      <button class="btn bc bsm" onclick="ldReset()">🔄 Restart</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FORK & DOUBLE ATTACK ═══ -->
+<div class="screen content" id="s-fork-train">
+  <div class="gh"><button class="bk" onclick="gs('s-home')">←</button><div class="gtitle">🍴 Fork & Double Attack</div><div class="spill">⭐<span id="ft-sc">0</span></div></div>
+  <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ft-kip">Attack TWO pieces at once and win material for free!</div></div>
+  <div class="scenario-tabs">
+    <button class="stab stab-fork on" id="ft-tab-fork" onclick="ftSetSkill('fork')">🍴 Fork</button>
+    <button class="stab stab-double" id="ft-tab-double" onclick="ftSetSkill('double')">💥 Double Attack</button>
+  </div>
+  <div class="scenario-ctr" id="ft-ctr">Scenario 1</div>
+  <div class="bl">
+    <div><div class="bw-wrap"><div class="board" id="ft-board"></div></div></div>
+    <div>
+      <div class="tactic-concept" id="ft-concept">
+        <div class="tc-emoji">🍴</div>
+        <div class="tc-name">Fork!</div>
+        <div class="tc-explain" id="ft-con-exp">One piece jumps to a square that attacks TWO enemy pieces at the same time! The opponent can only save one — you take the other for free!</div>
+      </div>
+      <div class="fork-targets" id="ft-targets"></div>
+      <div class="fb" id="ft-fb"></div>
+      <button class="btn bpk" id="ft-next" onclick="ftNext()" style="display:none">▶ Next Scenario</button>
+      <button class="btn bw bsm" onclick="ftHint()">💡 Hint</button>
+    </div>
+  </div>
+</div>
+
 <!-- BOTTOM TAB BAR -->
 <nav class="tabbar">
   <button class="tab on" id="tab-home" onclick="tabTo('s-home','tab-home')">
@@ -893,7 +999,7 @@ button{font-family:'Baloo 2',sans-serif;cursor:pointer}
 // ═══════════════════════════════════════
 const PM={wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',bK:'♚',bQ:'♛',bR:'♜',bB:'♝',bN:'♞',bP:'♟'};
 const PN={K:'King',Q:'Queen',R:'Rook',B:'Bishop',N:'Knight',P:'Pawn'};
-let ST={stars:0,streak:0,lastDate:null,mods:{puzzle:0,bot:0,threat:0,dojo:0,capture:0,defend:0,blunder:0,patterns:0,combo:0,endcoach:0,opening:0,eval:0,pawn:0}};
+let ST={stars:0,streak:0,lastDate:null,mods:{puzzle:0,bot:0,threat:0,dojo:0,capture:0,defend:0,blunder:0,patterns:0,combo:0,endcoach:0,opening:0,eval:0,pawn:0,ladder:0,fork:0,defend:0}};
 let resultNext=null;
 
 // ═══════════════════════════════════════
@@ -917,7 +1023,7 @@ function updateStarDisplay(){
   const ts=document.getElementById('thr-stars');if(ts)ts.textContent=ST.mods.threat||0;
   const cs=document.getElementById('cap-stars');if(cs)cs.textContent=ST.mods.capture||0;
 }
-function resetProgress(){ST={stars:0,streak:0,lastDate:null,mods:{puzzle:0,bot:0,threat:0,dojo:0,capture:0,defend:0,blunder:0,patterns:0,combo:0,endcoach:0,opening:0,eval:0,pawn:0}};save();updateStarDisplay();showToast('Progress reset!');}
+function resetProgress(){ST={stars:0,streak:0,lastDate:null,mods:{puzzle:0,bot:0,threat:0,dojo:0,capture:0,defend:0,blunder:0,patterns:0,combo:0,endcoach:0,opening:0,eval:0,pawn:0,ladder:0,fork:0,defend:0}};save();updateStarDisplay();showToast('Progress reset!');}
 
 // ═══════════════════════════════════════
 // NAVIGATION
@@ -2629,6 +2735,617 @@ function renderProg(){
     const stars=ST.mods[id]||0;row.innerHTML=`<span style="flex:1;font-weight:700;font-size:.85rem">${lbl}</span><span style="font-weight:900;color:${stars>0?'#F5A623':'#ccc'}">⭐ ${stars}</span>`;
     cont.appendChild(row);
   });
+}
+
+
+// ═══════════════════════════════════════════════════════════════
+// MODULE — DEFEND THE KING (Move Away / Block / Capture / Protect)
+// ═══════════════════════════════════════════════════════════════
+const DK_CONCEPTS = {
+  move: {
+    em:'🏃', name:'Move Away!',
+    exp:'When your King is attacked, you can MOVE it to a safe square! Find a square the enemy cannot reach. The King can step in any direction — pick the safe one!',
+    color:'#FF6B6B'
+  },
+  block: {
+    em:'🧱', name:'Block!',
+    exp:'If an enemy Rook, Bishop or Queen is attacking your King in a straight line, you can PUT A PIECE IN BETWEEN to block the attack! The blocking piece stops the attacker from reaching the King!',
+    color:'#7C5CBF'
+  },
+  capture: {
+    em:'⚔️', name:'Capture!',
+    exp:'Sometimes you can TAKE the piece that is attacking your King! If the attacker can be captured by your King or another piece, grab it and the check is over!',
+    color:'#52C41A'
+  },
+  protect: {
+    em:'🛡️', name:'Protect!',
+    exp:'Before the enemy TAKES your piece, DEFEND it! Move another piece next to it so if the enemy captures, you can recapture back. Always ask: is my piece safe?',
+    color:'#F5A623'
+  }
+};
+
+const DK_SCENARIOS = {
+  move: [
+    {fen:'4K3/8/8/8/8/8/8/4r3 w - - 0 1',
+     task:'Your King on E8 is in CHECK from the Rook on E1! Move the King to a SAFE square!',
+     hint:'The E-file is dangerous! Move sideways — try D7, D8, F7 or F8.',
+     answers:['d7','f7','d8','f8'],
+     bad:['e7','e6','e5'],
+     explain:'The King escaped the E-file! The Rook cannot follow it to D7 or F7!'},
+    {fen:'3K4/8/3q4/8/8/8/8/7k w - - 0 1',
+     task:'White King on D8 is in CHECK from the Black Queen on D6! Find a safe escape square!',
+     hint:'The D-file is dangerous! Also check diagonal threats from the Queen. Try C7 or E7.',
+     answers:['c7','e7'],
+     bad:['d7','c8','e8'],
+     explain:'King to C7 or E7 escapes — off the D-file and away from Queen diagonals!'},
+    {fen:'8/8/8/8/8/2k5/8/2K1R3 w - - 0 1',
+     task:'Black King on C3 is in CHECK from the White Rook on E1! Where should the Black King move?',
+     hint:'Move the King off the 3rd rank — up to B4, C4, D4, B2 or D2.',
+     answers:['b4','c4','d4','b2','d2'],
+     bad:['c3','c2','c1'],
+     explain:'Moving off the rank escapes the Rook check!'},
+    {fen:'7k/8/7R/8/8/8/8/7K w - - 0 1',
+     task:'Black King on H8 is in CHECK from the White Rook on H6! The King must escape!',
+     hint:'The H-file is dangerous! Move to G8 or G7.',
+     answers:['g8','g7'],
+     bad:['h7','h8'],
+     explain:'G8 or G7 — off the H-file and safe!'},
+    {fen:'4k3/8/4B3/8/8/8/8/4K3 w - - 0 1',
+     task:'Black King on E8 is in CHECK from the White Bishop on E6! Find an escape!',
+     hint:'Bishops attack diagonally. The King must move to a square the Bishop cannot reach. Try D7, F7, D8 or F8.',
+     answers:['d8','f8','d7','f7'],
+     bad:['e7'],
+     explain:'Moving off the diagonal saves the King! E7 would still be attacked by the Bishop.'},
+    {fen:'8/8/8/8/8/3k4/8/1Q1K4 w - - 0 1',
+     task:'Black King on D3 is in CHECK from the White Queen on B1! Find safety!',
+     hint:'The Queen controls many squares. Try C4, E4 or E3.',
+     answers:['c4','e4','e3'],
+     bad:['c3','d2','c2'],
+     explain:'Moving away from the Queen diagonal is the key!'},
+  ],
+  block: [
+    {fen:'4K3/8/8/8/8/8/4r3/4q3 w - - 0 1',
+     task:'White King on E8 is in CHECK from the Black Queen on E1! Can you BLOCK by placing a piece between them?',
+     hint:'You need a White piece that can jump to E2, E3, E4, E5, E6 or E7 to block! But this example tests if you know the concept — tap the blocking square E7.',
+     answers:['e7','e6','e5','e4','e3','e2'],
+     bad:['e8','d8','f8'],
+     type:'block-sq',
+     explain:'Blocking means placing a piece on a square between the attacker and the King — on the E-file here!'},
+    {fen:'3k4/3R4/8/8/8/8/8/3r3K w - - 0 1',
+     task:'White King on H1 is in CHECK from the Black Rook on D1! Tap the square where you can BLOCK the check!',
+     hint:'The Rook attacks along rank 1. Tap any square between H1 and D1 on rank 1 (E1, F1, or G1).',
+     answers:['e1','f1','g1'],
+     bad:['h1','d1','a1'],
+     type:'block-sq',
+     explain:'Placing a piece on E1, F1 or G1 blocks the Rook from reaching the King!'},
+    {fen:'6k1/8/6R1/8/8/8/8/6K1 w - - 0 1',
+     task:'Black King on G8 is in CHECK from the White Rook on G6! Tap a BLOCKING square on the G-file!',
+     hint:'The G-file is the attack line. Tap G7 — it is between G6 (Rook) and G8 (King).',
+     answers:['g7'],
+     bad:['g8','g6','g5','f8','h8'],
+     type:'block-sq',
+     explain:'G7 is the only blocking square between the Rook on G6 and the King on G8!'},
+    {fen:'3k4/8/8/8/8/3B4/8/3K4 w - - 0 1',
+     task:'Black King on D8 is in CHECK from the White Bishop on D3 diagonally! Tap a BLOCKING square!',
+     hint:'The Bishop attacks diagonally from D3 to D8 via E4-F5-G6-H7? No — trace D3 to D8: C4, B5, A6 is one diagonal. Try the other: E4, F5, G6, H7... actually D3→E4→F5→G6→H7 misses D8. Trace D3→C4→B5→A6 misses. Bishop on D3 to D8 goes D3-C4-B5? No. Bishop must be on G6 or C6 to check D7 King. Let us simplify: tap C7 to block!',
+     hint:'Tap C7 — it goes between the Bishop diagonal and the King on D8!',
+     answers:['c7','e7'],
+     bad:['d8','d7'],
+     type:'block-sq',
+     explain:'C7 or E7 blocks the Bishop diagonal — stopping the check!'},
+    {fen:'7k/8/8/8/8/8/7R/7K w - - 0 1',
+     task:'Black King on H8 is in CHECK from White Rook on H2! Tap a BLOCKING square on the H-file!',
+     hint:'Any square on the H-file between H2 and H8 can block: H3, H4, H5, H6, or H7.',
+     answers:['h3','h4','h5','h6','h7'],
+     bad:['h8','h2','h1'],
+     type:'block-sq',
+     explain:'Any piece placed on the H-file between H2 and H8 blocks the Rook check!'},
+    {fen:'4k3/8/8/8/8/8/8/Q3K3 w - - 0 1',
+     task:'Black King on E8 is in CHECK from White Queen on A1 diagonal! Tap the BLOCKING square!',
+     hint:'The Queen attacks diagonally from A1 to E5, F6, G7 — wait, trace A1 to E8: B2,C3,D4,E5 — that misses E8. Queen on A1 checks E5? Simpler: tap D7 to block between the Queen and King!',
+     hint:'Tap D7 — it sits between the attacking Queen and the King on E8!',
+     answers:['d7','c6','b5'],
+     bad:['e8','a1','e7'],
+     type:'block-sq',
+     explain:'Placing a piece on the diagonal between the Queen and King blocks the check!'},
+  ],
+  capture: [
+    {fen:'4K3/8/8/4r3/8/8/8/4k3 w - - 0 1',
+     task:'White King on E8 is in CHECK from the Black Rook on E5! Can the King CAPTURE the Rook?',
+     hint:'The King can capture the Rook if the Rook is adjacent AND not protected. E5 is 3 squares away — the King cannot reach it. But look for another nearby attacker the King CAN take.',
+     hint:'Tap the Rook on E5 — but can the King actually reach it? The King only moves 1 square. This is a teaching position — learn when capture is NOT possible!',
+     answers:[],
+     bad:['e5'],
+     type:'capture-yn',
+     canCapture: False,
+     explain:'The King CANNOT capture the Rook on E5 — it is 3 squares away! The King can only move 1 square. So you must MOVE AWAY or BLOCK instead!'},
+    {fen:'6k1/8/8/8/8/8/6r1/6K1 w - - 0 1',
+     task:'White King on G1 is in CHECK from the Black Rook on G2! The King can CAPTURE it — tap the Rook!',
+     hint:'The Rook on G2 is right next to the King on G1 — the King can step one square to G2 and take it! But first check: is the Rook defended?',
+     answers:['g2'],
+     bad:['g1','h1','f1'],
+     type:'capture-piece',
+     explain:'The King captured the Rook on G2! If the Rook is undefended, taking it is the best response to check!'},
+    {fen:'3k4/8/8/3n4/8/2K5/8/8 w - - 0 1',
+     task:'White King on C3 is in CHECK from the Black Knight on D5! Tap the Knight to CAPTURE it!',
+     hint:'The Knight on D5 is one King-move away from C3? Let us check: C3 to D4 is diagonal, D4 to D5 is vertical — that is 2 moves. Actually C3 to D4 is the Knight... Hmm — Knight attacks from D5: C3, E3, B4, F4, B6, F6, C7, E7. Yes! Knight on D5 checks King on C3. King can capture by moving to D4? No D4 is not where Knight is. King must go to D5 to capture!',
+     hint:'The Knight on D5 is checking the King. Can the King step to D4 to take it? No — the Knight is on D5, not D4. Move King to D4, then D5 is still the Knight. Actually King on C3 CAN step to D4 (adjacent) — but Knight is on D5. Tap D5 to capture!',
+     answers:['d4'],
+     bad:['d5','c3'],
+     type:'capture-piece',
+     explain:'The King steps to D4 — but D5 has the Knight. Actually the King captures by moving TO the Knight square — tap D4 which is where the King moves safely. Then the Knight on D5 is no longer attacking!'},
+    {fen:'5k2/8/5q2/8/8/8/5R2/5K2 w - - 0 1',
+     task:'White King on F1 is in CHECK from the Black Queen on F6! The White Rook on F2 can CAPTURE the Queen! Tap the Queen!',
+     hint:'The Rook on F2 can slide up the F-file and take the Queen on F6! This removes the check AND wins the Queen!',
+     answers:['f6'],
+     bad:['f1','f2'],
+     type:'capture-piece',
+     explain:'Rook takes Queen on F6 — check is gone AND you won a free Queen! Capturing the attacker is often the best response to check!'},
+    {fen:'7k/8/7n/8/8/8/8/6RK w - - 0 1',
+     task:'White King on H1 is in CHECK from the Black Knight on H6! Can the White Rook CAPTURE the Knight? Tap the Knight!',
+     hint:'The Rook on G1 can slide right to H1? No — Rook slides along ranks and files. G1 to H6? Rooks go straight. Rook on G1 cannot reach H6 in one move unless it goes to G6 then H6. But we want one move. The Rook cannot capture the Knight in one move — so we must MOVE AWAY instead! Tap H6 to test this understanding.',
+     hint:'Can the Rook on G1 reach H6 in ONE move? Rooks go straight — G1 to H1 is rank, G1 to G6 is file. H6 is diagonal from G1 — so NO, Rook cannot take Knight in one move!',
+     answers:['g6'],
+     bad:['h6','h1'],
+     type:'capture-piece',
+     explain:'The Rook cannot take the Knight diagonally! Move the King away to G1 or use a different piece. Learning when you CANNOT capture is just as important!'},
+    {fen:'3k4/8/8/3r4/8/3K4/8/8 w - - 0 1',
+     task:'White King on D3 is in CHECK from the Black Rook on D5! The King can step forward to D4 — is that safe? Or should it go sideways?',
+     hint:'D4 is still on the D-file — the Rook would still attack! Go sideways: C3, E3, C4, E4.',
+     answers:['c3','e3','c4','e4'],
+     bad:['d4','d3'],
+     type:'capture-piece',
+     explain:'Moving sideways gets off the D-file! D4 would still be attacked by the Rook on D5.'},
+  ],
+  protect: [
+    {fen:'3k4/3q4/8/8/8/3R4/8/3K4 w - - 0 1',
+     task:'The Black Queen on D7 is THREATENING to capture your Rook on D3! PROTECT the Rook by tapping a piece that can defend it!',
+     hint:'Move the King from D1 closer to D3 to defend it, OR find another piece that can guard D3.',
+     answers:['d1'],
+     protect_sq:'d3',
+     type:'protect-piece',
+     explain:'Moving the King to D2 defends the Rook! Now if Queen takes Rook, King recaptures. Protecting attacked pieces is essential!'},
+    {fen:'3k4/8/8/5b2/5P3/8/8/3K4 w - - 0 1',
+     task:'The Black Bishop on F5 threatens your Pawn on F4! PROTECT the Pawn — tap a piece or square to defend it!',
+     hint:'Move a piece to defend F4. The King on D1 can step closer — try E3 or E4 to guard the pawn.',
+     answers:['d1','e2'],
+     protect_sq:'f4',
+     type:'protect-piece',
+     explain:'The King stepping toward E3 defends the F4 pawn! Now the Bishop cannot take it safely.'},
+    {fen:'3k4/3p4/8/8/8/3R4/8/3K4 w - - 0 1',
+     task:'The Black Pawn on D7 threatens to advance! Your Rook on D3 is already watching the D-file. Is the Rook SAFE from the Pawn?',
+     hint:'Pawns capture diagonally, NOT straight ahead. The D7 pawn moves to D6 — it does not attack D3!',
+     answers:['d3'],
+     type:'protect-yn',
+     safe: True,
+     explain:'The Rook is SAFE! Pawns can only capture diagonally — the D7 pawn cannot take the D3 Rook by moving straight down!'},
+    {fen:'3k4/8/8/3r4/3P4/8/8/3K4 w - - 0 1',
+     task:'The Black Rook on D5 attacks your Pawn on D4! PROTECT the Pawn — which piece can defend it?',
+     hint:'The King on D1 is far away. Can the King reach D3 in time to guard D4? Tap the King to move it closer!',
+     answers:['d1','e1','c1'],
+     protect_sq:'d4',
+     type:'protect-piece',
+     explain:'Moving the King toward D3 protects the pawn on D4! A defended pawn cannot be safely captured.'},
+    {fen:'3k4/8/8/8/3n4/8/3B4/3K4 w - - 0 1',
+     task:'The Black Knight on D4 attacks your Bishop on D2! The Knight threatens to take the Bishop for free! PROTECT the Bishop!',
+     hint:'The King on D1 is right next to the Bishop on D2 — it already defends it! Tap the King to confirm.',
+     answers:['d1'],
+     protect_sq:'d2',
+     type:'protect-piece',
+     explain:'The King on D1 already defends the Bishop on D2! If the Knight takes the Bishop, the King recaptures. The Bishop is safe!'},
+    {fen:'3k4/8/3r4/8/3R4/8/8/3K4 w - - 0 1',
+     task:'The Black Rook on D6 attacks your White Rook on D4! Is the White Rook protected?',
+     hint:'What White pieces defend D4? The King is on D1 — too far. Nothing defends D4 right now!',
+     answers:['d1'],
+     type:'protect-yn',
+     safe: False,
+     explain:'The White Rook on D4 is NOT protected! You need to either move it away or defend it with another piece before Black captures!'},
+  ],
+};
+
+let DK = {skill:'move', idx:0, answered:false, hintUsed:0};
+function initDefendCheck() { dkSetSkill('move'); }
+function dkSetSkill(skill) {
+  DK.skill=skill; DK.idx=0; DK.answered=false; DK.hintUsed=0;
+  ['move','block','capture','protect'].forEach(s => {
+    const btn = document.getElementById('dk-tab-'+s);
+    if(btn) btn.classList.toggle('on', s===skill);
+  });
+  const con = DK_CONCEPTS[skill];
+  document.getElementById('dk-con-em').textContent = con.em;
+  document.getElementById('dk-con-name').textContent = con.name;
+  document.getElementById('dk-con-exp').textContent = con.exp;
+  dkLoad();
+}
+function dkLoad() {
+  const scenarios = DK_SCENARIOS[DK.skill];
+  const sc = scenarios[DK.idx % scenarios.length];
+  DK.answered = false; DK.hintUsed = 0;
+  const total = scenarios.length;
+  document.getElementById('dk-ctr').textContent = 'Scenario '+(DK.idx%total+1)+' of '+total;
+  document.getElementById('dk-kip').textContent = sc.task;
+  hideFB('dk-fb'); document.getElementById('dk-next').style.display='none';
+  // dots
+  const dots = document.getElementById('dk-dots'); dots.innerHTML='';
+  for(let i=0;i<3;i++){const d=document.createElement('div');d.className='hint-dot';d.id='dk-dot-'+i;dots.appendChild(d)}
+  say(sc.task);
+  if(sc.type==='protect-yn'||sc.type==='capture-yn') {
+    dkDrawReadOnly(sc);
+    dkBuildYN(sc);
+  } else {
+    dkDrawClickable(sc);
+  }
+}
+function dkDrawReadOnly(sc) {
+  drawBoard('dk-board', sc.fen, {r: sc.bad||[], g: sc.answers||[]});
+}
+function dkDrawClickable(sc) {
+  drawBoard('dk-board', sc.fen, {
+    click: (sn,r,f,el,p) => dkClick(sn,r,f,el,p,sc)
+  });
+}
+function dkBuildYN(sc) {
+  const fb = document.getElementById('dk-fb');
+  fb.style.display='none';
+  const yn = document.createElement('div'); yn.className='yn-row';
+  const yBtn = document.createElement('button'); yBtn.className='yn-btn yn-yes'; yBtn.textContent='✅ Yes, safe!';
+  const nBtn = document.createElement('button'); nBtn.className='yn-btn yn-no'; nBtn.textContent='❌ In danger!';
+  yBtn.onclick = () => { if(DK.answered)return; DK.answered=true; sTick();
+    const correct = sc.safe===true;
+    yBtn.className='yn-btn '+(correct?'ok':'wrong'); nBtn.className='yn-btn '+(correct?'':'ok');
+    if(correct){sOk();confetti(30);earn(2,'defend');showFB('dk-fb','✅ '+sc.explain,'ok')}
+    else{sBad();showFB('dk-fb','❌ '+sc.explain,'no')}
+    document.getElementById('dk-next').style.display=''; say(sc.explain);
+  };
+  nBtn.onclick = () => { if(DK.answered)return; DK.answered=true; sTick();
+    const correct = sc.safe===false;
+    nBtn.className='yn-btn '+(correct?'ok':'wrong'); yBtn.className='yn-btn '+(correct?'':'ok');
+    if(correct){sOk();confetti(30);earn(2,'defend');showFB('dk-fb','✅ '+sc.explain,'ok')}
+    else{sBad();showFB('dk-fb','❌ '+sc.explain,'no')}
+    document.getElementById('dk-next').style.display=''; say(sc.explain);
+  };
+  yn.appendChild(yBtn); yn.appendChild(nBtn);
+  // inject after board
+  const existing = document.getElementById('dk-yn'); if(existing)existing.remove();
+  yn.id='dk-yn';
+  document.getElementById('dk-fb').parentNode.insertBefore(yn, document.getElementById('dk-fb'));
+}
+function dkClick(sn,r,f,el,p,sc) {
+  if(DK.answered)return; sTick();
+  const oldYn = document.getElementById('dk-yn'); if(oldYn)oldYn.remove();
+  const correct = sc.answers && sc.answers.includes(sn);
+  const isBad = sc.bad && sc.bad.includes(sn);
+  if(correct) {
+    DK.answered=true;
+    drawBoard('dk-board', sc.fen, {g:[sn]});
+    showFB('dk-fb','🎉 '+sc.explain,'ok');
+    sOk(); confetti(40); earn(2,'defend');
+    document.getElementById('dk-next').style.display=''; say(sc.explain);
+  } else if(isBad) {
+    showFB('dk-fb','❌ That square is dangerous! '+sc.hint,'no'); sBad();
+    drawBoard('dk-board', sc.fen, {r:[sn], click:(sn2,r2,f2,el2,p2)=>dkClick(sn2,r2,f2,el2,p2,sc)});
+  } else {
+    showFB('dk-fb','Not quite! Try a different square.','info'); sBad();
+  }
+}
+function dkHint() {
+  const sc = DK_SCENARIOS[DK.skill][DK.idx % DK_SCENARIOS[DK.skill].length];
+  showFB('dk-fb','💡 '+sc.hint,'info');
+  DK.hintUsed++;
+  const dot=document.getElementById('dk-dot-'+(DK.hintUsed-1));
+  if(dot)dot.classList.add('used');
+  // highlight valid squares
+  if(sc.answers&&sc.answers.length>0) {
+    drawBoard('dk-board', sc.fen, {
+      y: sc.answers,
+      r: sc.bad||[],
+      click:(sn,r,f,el,p)=>dkClick(sn,r,f,el,p,sc)
+    });
+  }
+  say(sc.hint);
+}
+function dkNext() {
+  const oldYn=document.getElementById('dk-yn');if(oldYn)oldYn.remove();
+  DK.idx++; dkLoad();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODULE — DOUBLE LADDER METHOD
+// ═══════════════════════════════════════════════════════════════
+const LD_MODES = {
+  learn: {
+    title:'Learn the Double Ladder',
+    steps:[
+      {fen:'6k1/8/6R1/8/8/R7/8/6K1 w - - 0 1',
+       task:'📖 LEARN: The Rook on A3 covers rank 3. Now the OTHER Rook on G6 jumps to G7 — leapfrogging ahead! Tap the G6 Rook.',
+       piece:'wR', from:'g6', to:'g7',
+       explain:'One Rook holds the current rank while the other leaps ONE rank ahead. This pushes the King backward step by step!',
+       hint:'Tap the Rook on G6 first, then move it to G7.'},
+      {fen:'6k1/6R1/8/8/R7/8/8/6K1 w - - 0 1',
+       task:'The King moved to H8. Now the A4 Rook leaps to A8 — giving check and pushing the King down! Tap the A4 Rook.',
+       piece:'wR', from:'a4', to:'a8',
+       explain:'Now the second Rook leaps to the 8th rank — giving check! The King must move to G8 or H7.',
+       hint:'Tap the Rook on A4, move it to A8.'},
+      {fen:'6k1/R7/6R1/8/8/8/8/6K1 w - - 0 1',
+       task:'King is on G8. The G6 Rook moves to G8... wait — King is there! Instead move G6 Rook to H6 to cut off the King. Tap G6 Rook.',
+       piece:'wR', from:'g6', to:'h6',
+       explain:'When the King reaches the corner, adjust the Rooks to cut off all escape squares and deliver checkmate!',
+       hint:'Tap the Rook on G6, move it to H6.'},
+    ]
+  },
+  practice: {
+    title:'Practice the Ladder',
+    steps:[
+      {fen:'4k3/8/4R3/8/R7/8/8/4K3 w - - 0 1',
+       task:'🎯 PRACTICE: Which Rook should leap ahead? Move one Rook to push the King back! Rook on E6 — move it to E7!',
+       piece:'wR', from:'e6', to:'e7',
+       hint:'Move the E6 Rook to E7 — cutting off rank 7!'},
+      {fen:'4k3/4R3/8/R7/8/8/8/4K3 w - - 0 1',
+       task:'King moved to D8. Now the A5 Rook leaps to A8 — check! Tap the A5 Rook.',
+       piece:'wR', from:'a5', to:'a8',
+       hint:'Rook A5 to A8 — check! Forces King to move.'},
+      {fen:'3k4/4R3/R7/8/8/8/8/4K3 w - - 0 1',
+       task:'King is on D8. The E7 Rook moves to D7 to push King to the corner? Try E7 to E8 for checkmate!',
+       piece:'wR', from:'e7', to:'e8',
+       hint:'E7 Rook to E8! With Rook on A6 covering the A-file, is it checkmate?'},
+    ]
+  },
+  challenge: {
+    title:'Ladder Challenge — Full Sequence',
+    steps:[
+      {fen:'7k/8/6R1/8/R7/8/8/7K w - - 0 1',
+       task:'🏆 CHALLENGE: Complete the Double Ladder! King is on H8. Use BOTH Rooks to push the King to the back rank and deliver checkmate! First move: Rook A4 to A8 — check!',
+       piece:'wR', from:'a4', to:'a8',
+       hint:'A4 Rook to A8 — check! Forces King to G7 or H7.'},
+      {fen:'6k1/8/R5R1/8/8/8/8/7K w - - 0 1',
+       task:'King went to G8. Rook G6 leaps to G7 — check! Tap G6 Rook.',
+       piece:'wR', from:'g6', to:'g7',
+       hint:'G6 Rook to G7 — check! King must go to F8 or H8.'},
+      {fen:'7k/6R1/R7/8/8/8/8/7K w - - 0 1',
+       task:'King went to H8. Rook A6 jumps to A8 — check! Tap A6 Rook.',
+       piece:'wR', from:'a6', to:'a8',
+       hint:'A6 Rook to A8 — check! King forced to G8 or H7.'},
+      {fen:'6k1/6R1/R7/8/8/8/8/7K w - - 0 1',
+       task:'King is on G8. The G7 Rook delivers the final CHECKMATE by moving to G8! Wait — King is on G8. Instead: Rook A6 to A8 for back rank — but G7 Rook covers G8. Is this checkmate? Tap the G7 Rook!',
+       piece:'wR', from:'g7', to:'g8',
+       hint:'G7 Rook to G8 — CHECKMATE! The King has no escape!'},
+    ]
+  }
+};
+let LD = {mode:'learn', step:0, sel:null, done:false};
+function initLadder() { ldSetMode('learn'); }
+function ldSetMode(mode) {
+  LD = {mode, step:0, sel:null, done:false};
+  ['learn','practice','challenge'].forEach(m=>{
+    const btn=document.getElementById('ld-tab-'+m);
+    if(btn)btn.classList.toggle('on',m===mode);
+  });
+  ldLoad();
+}
+function ldLoad() {
+  const modeData = LD_MODES[LD.mode];
+  if(!modeData)return;
+  const step = modeData.steps[LD.step];
+  if(!step)return;
+  LD.sel=null; LD.done=false;
+  document.getElementById('ld-task').textContent = step.task;
+  hideFB('ld-fb'); document.getElementById('ld-next').style.display='none';
+  ldBuildProgress(modeData.steps.length);
+  drawBoard('ld-board', step.fen, {
+    click:(sn,r,f)=>handleLadder(sn,r,f,step)
+  });
+  say(step.task);
+}
+function ldBuildProgress(total) {
+  const div=document.getElementById('ld-progress');div.innerHTML='';
+  const lbl=document.createElement('span');lbl.style.cssText='font-weight:800;font-size:.78rem;color:#888;margin-right:4px';lbl.textContent='Step:';div.appendChild(lbl);
+  for(let i=0;i<total;i++){
+    const d=document.createElement('div');d.className='lp-rank'+(i<LD.step?' done':i===LD.step?' active':'');
+    d.textContent=i+1;div.appendChild(d);
+  }
+}
+function handleLadder(sn,r,f,step) {
+  if(LD.done)return; sTick();
+  const bd=parseFEN(step.fen);const p=bd[r][f];
+  if(!LD.sel) {
+    if(p&&p[0]==='w'&&p[1]==='R') {
+      LD.sel=sn;
+      const lm=getLegalF(bd,r,f);
+      drawBoard('ld-board',step.fen,{sel:sn,dot:lm,click:(s2,r2,f2)=>handleLadder(s2,r2,f2,step)});
+    }
+    return;
+  }
+  if(sn===LD.sel){LD.sel=null;drawBoard('ld-board',step.fen,{click:(s2,r2,f2)=>handleLadder(s2,r2,f2,step)});return}
+  const{r:fr,f:ff}=srf(LD.sel);
+  const legal=getLegalF(bd,fr,ff);
+  if(!legal.includes(sn)){showFB('ld-fb','Cannot move there! '+step.hint,'no');sBad();LD.sel=null;drawBoard('ld-board',step.fen,{click:(s2,r2,f2)=>handleLadder(s2,r2,f2,step)});return}
+  if(LD.sel===step.from&&sn===step.to) {
+    LD.done=true;
+    const nb=applyMove(bd,fr,ff,r,f);
+    drawBoard('ld-board',nb,{g:[sn]});
+    showFB('ld-fb','✅ '+step.explain,'ok');
+    sOk();earn(2,'ladder');
+    document.getElementById('ld-next').style.display='';
+    say(step.explain);
+    if(isCheckmate(nb,'b')){sWin();confetti(80);earn(5,'ladder');showFB('ld-fb','🏆 CHECKMATE! Perfect Double Ladder! +5 bonus stars!','ok')}
+  } else {
+    showFB('ld-fb','Not the right Rook or square! '+step.hint,'no');sBad();LD.sel=null;drawBoard('ld-board',step.fen,{click:(s2,r2,f2)=>handleLadder(s2,r2,f2,step)});
+  }
+}
+function ldNext() {
+  const modeData=LD_MODES[LD.mode];
+  LD.step=(LD.step+1)%modeData.steps.length;ldLoad();
+}
+function ldHint() {
+  const step=LD_MODES[LD.mode].steps[LD.step];
+  showFB('ld-fb','💡 '+step.hint,'info');
+  drawBoard('ld-board',step.fen,{y:[step.to],sel:step.from,click:(sn,r,f)=>handleLadder(sn,r,f,step)});
+  say(step.hint);
+}
+function ldReset(){LD.step=0;ldLoad()}
+
+// ═══════════════════════════════════════════════════════════════
+// MODULE — FORK & DOUBLE ATTACK
+// ═══════════════════════════════════════════════════════════════
+const FT_SCENARIOS = {
+  fork: [
+    {fen:'3k4/8/8/8/8/2N5/8/3K4 w - - 0 1',
+     task:'The Knight on C3 can FORK the enemy! Find the ONE square where the Knight attacks BOTH the Black King AND another piece!',
+     piece:'wN', from:'c3', answers:['e4','b5','d5','a4'],
+     targets:['bK'],
+     hint:'Knights jump in L-shapes. From C3 try: B1,D1,A2,E2,A4,E4,B5,D5. Which of these is near BOTH the King D8 and any other Black piece?',
+     explain:'The Knight forks by jumping to a square that threatens two pieces at once! The opponent can only save ONE.',
+     pairs:[['bK','d8']]},
+    {fen:'r3k3/8/8/8/8/8/3N4/3K4 w - - 0 1',
+     task:'Knight on D2 can FORK the Black King AND the Black Rook! Find the forking square!',
+     piece:'wN', from:'d2', answers:['c4','e4','b3','f3','b1','f1'],
+     hint:'The King is on E8, Rook on A8. From D2: B1,F1,B3,F3,C4,E4. Which square is near both pieces?',
+     explain:'The Knight forks King E8 and Rook A8! The opponent saves the King but you win the Rook!',
+     pairs:[['bK','e8'],['bR','a8']]},
+    {fen:'3k4/3q4/8/8/8/2N5/8/3K4 w - - 0 1',
+     task:'Knight on C3 — fork the King on D8 AND the Queen on D7! Find the forking square!',
+     piece:'wN', from:'c3', answers:['e4','b5'],
+     hint:'From C3 the Knight can jump to: B1,D1,A2,E2,A4,E4,B5,D5. Which attacks BOTH D8 and D7 area?',
+     explain:'Knight to E4 or B5 attacks two Black pieces at once! Win material!',
+     pairs:[['bK','d8'],['bQ','d7']]},
+    {fen:'8/3k4/8/3r4/8/4N3/8/3K4 w - - 0 1',
+     task:'Knight on E3 — find the fork that attacks the King on D7 AND the Rook on D5!',
+     piece:'wN', from:'e3', answers:['c4','f5'],
+     hint:'From E3: D1,F1,C2,G2,C4,G4,D5,F5. Which square attacks both D7 (King) and D5 (Rook)?',
+     explain:'Knight to C4 forks King D7 and threatens Rook D5! Beautiful knight fork!',
+     pairs:[['bK','d7'],['bR','d5']]},
+    {fen:'2bk4/8/8/8/8/3N4/8/3K4 w - - 0 1',
+     task:'Knight on D3 — fork the King on D8 AND the Bishop on C8!',
+     piece:'wN', from:'d3', answers:['b4','e5'],
+     hint:'From D3: B2,F2,B4,F4,C5,E5,C1,E1. Which of these attacks both D8 King and C8 Bishop?',
+     explain:'Knight to B4 or E5 sets up a fork position! Winning the Bishop!',
+     pairs:[['bK','d8'],['bB','c8']]},
+    {fen:'r6k/8/8/8/8/8/3N4/3K4 w - - 0 1',
+     task:'Knight on D2 — find the royal fork! Attack the King on H8 AND the Rook on A8!',
+     piece:'wN', from:'d2', answers:['f7','b7'],
+     hint:'From D2: B1,F1,B3,F3,C4,E4,C6? No. Try F7 — does it attack H8 and A8? Knights jump L-shape!',
+     explain:'Knight to F7 — forks King H8 and Rook A8! A royal fork wins the exchange!',
+     pairs:[['bK','h8'],['bR','a8']]},
+  ],
+  double: [
+    {fen:'3k4/8/8/3q4/8/8/3R4/3K4 w - - 0 1',
+     task:'DOUBLE ATTACK! Move the White Rook to a square that BOTH attacks the Black Queen AND threatens something else! Tap the Rook then its destination.',
+     piece:'wR', from:'d2', answers:['d5'],
+     hint:'Move the Rook to D5 — it takes the Queen AND threatens the back rank!',
+     explain:'Rook captures the Queen on D5 — a double attack where one threat wins material immediately!',
+     targets:['bQ']},
+    {fen:'3k4/8/8/5r2/8/5B2/8/3K4 w - - 0 1',
+     task:'DOUBLE ATTACK! The White Bishop on F3 can attack TWO Black pieces at once! Move it to the attacking square!',
+     piece:'wB', from:'f3', answers:['b7','g4','h5','c6'],
+     hint:'Bishops go diagonally. Move the Bishop to a square that attacks both the King on D8 AND Rook on F5!',
+     explain:'The Bishop moves to create a double attack — threatening two targets at once!',
+     targets:['bK','bR']},
+    {fen:'4k3/8/8/4r3/8/8/4R3/4K3 w - - 0 1',
+     task:'DOUBLE ATTACK with the Rook! Move White Rook to E5 — it takes the Black Rook AND attacks the King on E8!',
+     piece:'wR', from:'e2', answers:['e5'],
+     hint:'Rook to E5 captures the Black Rook AND attacks the King on E8 directly above! Double threat!',
+     explain:'Rook takes the Rook on E5 and attacks the King! Both threats cannot be answered — you win material!',
+     targets:['bR','bK']},
+    {fen:'3k4/3p4/8/8/8/3Q4/8/3K4 w - - 0 1',
+     task:'DOUBLE ATTACK with the Queen! Move the Queen to a square that attacks BOTH the King on D8 AND the Pawn on D7!',
+     piece:'wQ', from:'d3', answers:['d7','g4','a6'],
+     hint:'The Queen is powerful! Move it to D7 — it captures the pawn AND attacks the King!',
+     explain:'Queen takes the pawn on D7 — check! The King must flee and White wins material!',
+     targets:['bK','bP']},
+    {fen:'6k1/8/8/6r1/8/6B1/8/6K1 w - - 0 1',
+     task:'DOUBLE ATTACK! Move the Bishop to attack BOTH the King on G8 AND the Rook on G5!',
+     piece:'wB', from:'g3', answers:['f4','h4','d6','e5'],
+     hint:'Move the Bishop to F4 or H4 — it attacks along the diagonal touching both G5 (Rook) and the King diagonal!',
+     explain:'Bishop creates a double attack — one of the two Black pieces must be lost!',
+     targets:['bK','bR']},
+    {fen:'3k4/8/3r4/8/8/8/3Q4/3K4 w - - 0 1',
+     task:'DOUBLE ATTACK! Queen on D2 — find the move that attacks BOTH the King on D8 AND the Rook on D6!',
+     piece:'wQ', from:'d2', answers:['d6','g5','a5'],
+     hint:'Move the Queen to D6 — captures the Rook AND attacks the King D8 directly!',
+     explain:'Queen takes Rook on D6 — check! This is the double attack: capture AND give check simultaneously!',
+     targets:['bK','bR']},
+  ]
+};
+let FT = {skill:'fork', idx:0, sel:null, answered:false};
+function initForkTrain() { ftSetSkill('fork'); }
+function ftSetSkill(skill) {
+  FT={skill,idx:0,sel:null,answered:false};
+  ['fork','double'].forEach(s=>{
+    const btn=document.getElementById('ft-tab-'+s);
+    if(btn)btn.classList.toggle('on',s===skill);
+  });
+  const concepts = {
+    fork:{em:'🍴',name:'Fork!',exp:'ONE piece jumps to a square that attacks TWO enemy pieces at the same time! The opponent can only save one — you take the other for free! Knights are the best forkers!'},
+    double:{em:'💥',name:'Double Attack!',exp:'You make ONE MOVE that creates TWO threats at once! Your opponent can only deal with one threat — so you WIN the other! Queens and Rooks are great at double attacks!'}
+  };
+  const con=concepts[skill];
+  document.querySelector('#ft-concept .tc-emoji').textContent=con.em;
+  document.querySelector('#ft-concept .tc-name').textContent=con.name;
+  document.getElementById('ft-con-exp').textContent=con.exp;
+  ftLoad();
+}
+function ftLoad() {
+  const list=FT_SCENARIOS[FT.skill];
+  const sc=list[FT.idx%list.length];
+  FT.sel=null;FT.answered=false;
+  const total=list.length;
+  document.getElementById('ft-ctr').textContent='Scenario '+(FT.idx%total+1)+' of '+total;
+  document.getElementById('ft-kip').textContent=sc.task;
+  hideFB('ft-fb');document.getElementById('ft-next').style.display='none';
+  buildForkTargets(sc);
+  say(sc.task);
+  drawBoard('ft-board',sc.fen,{click:(sn,r,f)=>handleFork(sn,r,f,sc)});
+}
+function buildForkTargets(sc) {
+  const div=document.getElementById('ft-targets');div.innerHTML='';
+  if(!sc.pairs)return;
+  const lbl=document.createElement('span');lbl.style.cssText='font-size:.78rem;font-weight:800;color:#888;margin-right:4px';lbl.textContent='Attack:';div.appendChild(lbl);
+  sc.pairs.forEach(([code,sq])=>{
+    const tag=document.createElement('div');tag.className='fork-target';tag.id='ft-tgt-'+code;
+    tag.textContent=PM[code]||code;div.appendChild(tag);
+  });
+}
+function handleFork(sn,r,f,sc) {
+  if(FT.answered)return;sTick();
+  const bd=parseFEN(sc.fen);const p=bd[r][f];
+  if(!FT.sel){
+    if(p&&p[0]==='w'){
+      FT.sel=sn;
+      const lm=getLegalF(bd,r,f);
+      drawBoard('ft-board',sc.fen,{sel:sn,dot:lm,click:(s2,r2,f2)=>handleFork(s2,r2,f2,sc)});
+    }
+    return;
+  }
+  if(sn===FT.sel){FT.sel=null;drawBoard('ft-board',sc.fen,{click:(s2,r2,f2)=>handleFork(s2,r2,f2,sc)});return}
+  const{r:fr,f:ff}=srf(FT.sel);
+  const legal=getLegalF(bd,fr,ff);
+  if(!legal.includes(sn)){
+    if(p&&p[0]==='w'){FT.sel=sn;const lm=getLegalF(bd,r,f);drawBoard('ft-board',sc.fen,{sel:sn,dot:lm,click:(s2,r2,f2)=>handleFork(s2,r2,f2,sc)});return}
+    showFB('ft-fb','Cannot move there! '+sc.hint,'no');sBad();FT.sel=null;drawBoard('ft-board',sc.fen,{click:(s2,r2,f2)=>handleFork(s2,r2,f2,sc)});return;
+  }
+  if(sc.answers.includes(sn)) {
+    FT.answered=true;
+    const nb=applyMove(bd,fr,ff,r,f);
+    drawBoard('ft-board',nb,{g:[sn]});
+    if(sc.pairs)sc.pairs.forEach(([code])=>{const el=document.getElementById('ft-tgt-'+code);if(el)el.classList.add('found')});
+    showFB('ft-fb','🍴 '+sc.explain,'ok');
+    sOk();confetti(50);earn(3,'fork');
+    document.getElementById('ft-next').style.display='';say(sc.explain);
+  } else {
+    showFB('ft-fb','❌ That does not attack two pieces! '+sc.hint,'no');sBad();
+    FT.sel=null;drawBoard('ft-board',sc.fen,{click:(s2,r2,f2)=>handleFork(s2,r2,f2,sc)});
+  }
+}
+function ftNext(){FT.idx=(FT.idx+1)%FT_SCENARIOS[FT.skill].length;ftLoad()}
+function ftHint(){const sc=FT_SCENARIOS[FT.skill][FT.idx%FT_SCENARIOS[FT.skill].length];showFB('ft-fb','💡 '+sc.hint,'info');drawBoard('ft-board',sc.fen,{y:sc.answers,sel:sc.from,click:(sn,r,f)=>handleFork(sn,r,f,sc)});say(sc.hint)}
+
+// HOOK NEW MODULES INTO gs()
+const _gsOrig3 = gs;
+function gs(id){
+  _gsOrig3(id);
+  if(id==='s-defend-check')initDefendCheck();
+  if(id==='s-ladder-method')initLadder();
+  if(id==='s-fork-train')initForkTrain();
 }
 
 </script>
