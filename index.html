@@ -500,13 +500,13 @@ button{font-family:'Baloo 2',sans-serif;cursor:pointer}
       <div class="ps-num">L1</div><div class="ps-info"><div class="ps-title">Beginner — Foundations</div><div class="ps-sub">Learn pieces, rules, play your first game</div></div>
       <span class="ps-tag ps-tag-free">FREE</span><div style="color:var(--purple);font-weight:900">▶</div>
     </div>
-    <div class="path-step path-locked" onclick="requirePremium('s-curriculum')">
+    <div class="path-step path-locked" id="step-l2" onclick="requirePremium('s-curriculum')">
       <div class="ps-num">L2</div><div class="ps-info"><div class="ps-title">Advanced Beginner</div><div class="ps-sub">Spot tactics, avoid blunders</div></div>
-      <span class="ps-tag ps-tag-pro">👑 PRO</span><div style="color:#ddd;font-weight:900">🔒</div>
+      <span class="ps-tag ps-tag-pro" id="step-l2-tag">👑 PRO</span><div id="step-l2-icon" style="color:#ddd;font-weight:900">🔒</div>
     </div>
-    <div class="path-step path-locked" onclick="requirePremium('s-curriculum')">
+    <div class="path-step path-locked" id="step-l3" onclick="requirePremium('s-curriculum')">
       <div class="ps-num">L3–★</div><div class="ps-info"><div class="ps-title">Intermediate → Master</div><div class="ps-sub">Strategy, tournaments, mastery</div></div>
-      <span class="ps-tag ps-tag-pro">👑 PRO</span><div style="color:#ddd;font-weight:900">🔒</div>
+      <span class="ps-tag ps-tag-pro" id="step-l3-tag">👑 PRO</span><div id="step-l3-icon" style="color:#ddd;font-weight:900">🔒</div>
     </div>
   </div>
 </div>
@@ -884,14 +884,47 @@ function ob_finish(){
 function updateHomePersonalization(){
   const el=document.getElementById('hero-name');if(el)el.textContent=ST.user.name||'friend';
   const lv=document.getElementById('h-level');if(lv)lv.textContent={beginner:'Beginner',some:'Explorer',experienced:'Improver','':'—'}[ST.user.level]||'—';
-  const msgs={beginner:'Hi <strong>'+ST.user.name+'</strong>! Start with <strong>Piece Dojo</strong> to learn how every piece moves! 🐴',some:'Welcome <strong>'+ST.user.name+'</strong>! Try <strong>Play vs Bot</strong> to test your skills! 🤖',experienced:'Ready to level up, <strong>'+ST.user.name+'</strong>? Tackle the <strong>Puzzle Trainer</strong>! 🎯','':'Hi! I'm <strong>Kip</strong>! Pick any game to start learning chess! 🎉'};
+  const msgs = {
+    beginner: "Hi <strong>" + ST.user.name + "</strong>! Start with <strong>Piece Dojo</strong> to learn how every piece moves! 🐴",
+    some: "Welcome <strong>" + ST.user.name + "</strong>! Try <strong>Play vs Bot</strong> to test your skills! 🤖",
+    experienced: "Ready to level up, <strong>" + ST.user.name + "</strong>? Tackle the <strong>Puzzle Trainer</strong>! 🎯",
+    "": "Hi! I'm <strong>Kip</strong>! Pick any game to start learning chess! 🎉"
+  };
   const kipEl=document.getElementById('home-kip-msg');if(kipEl)kipEl.innerHTML=msgs[ST.user.level]||msgs[''];
   updatePremiumUI();
 }
 function updatePremiumUI(){
   const banner=document.getElementById('premium-banner');const navBtn=document.getElementById('nav-premium-btn');
-  if(ST.premium){if(banner)banner.style.display='none';if(navBtn)navBtn.style.display='none'}
-  else{if(banner)banner.style.display='';if(navBtn)navBtn.style.display=''}
+  const l2=document.getElementById('step-l2'),l3=document.getElementById('step-l3');
+  if(ST.premium){
+    if(banner)banner.style.display='none';if(navBtn)navBtn.style.display='none';
+    if(l2){
+      l2.classList.remove('path-locked');l2.onclick=()=>{tabTo('s-curriculum','tab-curr');buildCurriculum()};
+      const t2=document.getElementById('step-l2-tag'),i2=document.getElementById('step-l2-icon');
+      if(t2){t2.className='ps-tag ps-tag-free';t2.textContent='UNLOCKED'}
+      if(i2){i2.innerHTML='▶';i2.style.color='var(--purple)'}
+    }
+    if(l3){
+      l3.classList.remove('path-locked');l3.onclick=()=>{tabTo('s-curriculum','tab-curr');buildCurriculum()};
+      const t3=document.getElementById('step-l3-tag'),i3=document.getElementById('step-l3-icon');
+      if(t3){t3.className='ps-tag ps-tag-free';t3.textContent='UNLOCKED'}
+      if(i3){i3.innerHTML='▶';i3.style.color='var(--purple)'}
+    }
+  }else{
+    if(banner)banner.style.display='';if(navBtn)navBtn.style.display='';
+    if(l2){
+      l2.classList.add('path-locked');l2.onclick=()=>requirePremium('s-curriculum');
+      const t2=document.getElementById('step-l2-tag'),i2=document.getElementById('step-l2-icon');
+      if(t2){t2.className='ps-tag ps-tag-pro';t2.textContent='👑 PRO'}
+      if(i2){i2.innerHTML='🔒';i2.style.color='#ddd'}
+    }
+    if(l3){
+      l3.classList.add('path-locked');l3.onclick=()=>requirePremium('s-curriculum');
+      const t3=document.getElementById('step-l3-tag'),i3=document.getElementById('step-l3-icon');
+      if(t3){t3.className='ps-tag ps-tag-pro';t3.textContent='👑 PRO'}
+      if(i3){i3.innerHTML='🔒';i3.style.color='#ddd'}
+    }
+  }
 }
 
 // ── PREMIUM ──
@@ -1061,7 +1094,7 @@ function handlePuzzleClick(sn,r,f,puz){
   const{r:fr,f:ff}=sqRF(puzState.sel);const moveStr=puzState.sel+sn;
   if(sn===puzState.sel){puzState.sel=null;renderPuzzleBoard();return}
   const legal=getLegalMovesFiltered(puzState.board,fr,ff);
-  if(!legal.includes(sn)){if(p&&p[0]===turnCol){puzState.sel=sn;renderPuzzleBoard();return}showFeedback('puz-feedback','Can't move there!','no');sBad();puzState.sel=null;renderPuzzleBoard();return}
+  if(!legal.includes(sn)){if(p&&p[0]===turnCol){puzState.sel=sn;renderPuzzleBoard();return}showFeedback('puz-feedback',"Can't move there!",'no');sBad();puzState.sel=null;renderPuzzleBoard();return}
   const isSolution=puz.solution.some(s=>s===moveStr||s===puzState.sel+sn);
   if(isSolution){puzState.board=applyMove(puzState.board,fr,ff,r,f);puzState.sel=null;puzState.solved=true;drawBoard('puz-board',puzState.board,{g:[sqName(r,f)]});showFeedback('puz-feedback','🎉 '+puz.okMsg,'ok');sWin();confetti(50);earn(3,'puzzle');say(puz.okMsg);document.getElementById('puz-next').style.display=''}
   else{const nb=applyMove(puzState.board,fr,ff,r,f);puzState.board=nb;puzState.sel=null;renderPuzzleBoard();showFeedback('puz-feedback','❌ '+puz.wrongMsg,'no');sBad();setTimeout(()=>{puzState.board=parseFEN(puz.fen);puzState.sel=null;hideFeedback('puz-feedback');renderPuzzleBoard()},2200)}
@@ -1167,7 +1200,7 @@ let capState={pos:null,board:null,sel:null,movesLeft:3,captured:0,lost:0,done:fa
 function initCapture(){nextCapture()}
 function nextCapture(){capState.pos=CAP_POSITIONS[Math.random()*CAP_POSITIONS.length|0];capState.board=parseFEN(capState.pos.fen);capState.sel=null;capState.movesLeft=capState.pos.moves;capState.captured=0;capState.lost=0;capState.done=false;document.getElementById('cap-task').textContent=capState.pos.task;document.getElementById('cap-moves').textContent=capState.pos.moves;hideFeedback('cap-feedback');document.getElementById('cap-next').style.display='none';updateCapScores();say(capState.pos.task);renderCapBoard()}
 function renderCapBoard(){drawBoard('cap-board',capState.board,{sel:capState.sel,dot:capState.sel?getLegalMovesFiltered(capState.board,...Object.values(sqRF(capState.sel))):[],click:(sn,r,f)=>handleCapClick(sn,r,f)})}
-function handleCapClick(sn,r,f){if(capState.done)return;sTick();const p=capState.board[r][f];if(!capState.sel){if(p&&p[0]==='w'){capState.sel=sn;renderCapBoard()}return}if(sn===capState.sel){capState.sel=null;renderCapBoard();return}const{r:fr,f:ff}=sqRF(capState.sel);const legal=getLegalMovesFiltered(capState.board,fr,ff);if(!legal.includes(sn)){if(p&&p[0]==='w'){capState.sel=sn;renderCapBoard();return}showFeedback('cap-feedback','Can't move there!','no');capState.sel=null;renderCapBoard();return}const target=capState.board[r][f];const nb=applyMove(capState.board,fr,ff,r,f);if(target&&target[0]==='b'){capState.captured++;sOk();showFeedback('cap-feedback','✅ Captured '+PN[target[1]]+'!','ok');earn(1,'capture')}else showFeedback('cap-feedback','Moved!','info');capState.board=nb;capState.sel=null;capState.movesLeft--;updateCapScores();if(capState.movesLeft<=0){capState.done=true;const t=capState.captured;showFeedback('cap-feedback','Done! Captured '+t+'! 💰','ok');sWin();earn(t,'capture');document.getElementById('cap-next').style.display=''};renderCapBoard()}
+function handleCapClick(sn,r,f){if(capState.done)return;sTick();const p=capState.board[r][f];if(!capState.sel){if(p&&p[0]==='w'){capState.sel=sn;renderCapBoard()}return}if(sn===capState.sel){capState.sel=null;renderCapBoard();return}const{r:fr,f:ff}=sqRF(capState.sel);const legal=getLegalMovesFiltered(capState.board,fr,ff);if(!legal.includes(sn)){if(p&&p[0]==='w'){capState.sel=sn;renderCapBoard();return}showFeedback('cap-feedback',"Can't move there!",'no');capState.sel=null;renderCapBoard();return}const target=capState.board[r][f];const nb=applyMove(capState.board,fr,ff,r,f);if(target&&target[0]==='b'){capState.captured++;sOk();showFeedback('cap-feedback','✅ Captured '+PN[target[1]]+'!','ok');earn(1,'capture')}else showFeedback('cap-feedback','Moved!','info');capState.board=nb;capState.sel=null;capState.movesLeft--;updateCapScores();if(capState.movesLeft<=0){capState.done=true;const t=capState.captured;showFeedback('cap-feedback','Done! Captured '+t+'! 💰','ok');sWin();earn(t,'capture');document.getElementById('cap-next').style.display=''};renderCapBoard()}
 function updateCapScores(){document.getElementById('cap-captured').textContent=capState.captured;document.getElementById('cap-lost').textContent=capState.lost;document.getElementById('cap-moves').textContent=capState.movesLeft}
 
 // ── MODULE F: BUILD & DEFEND ──
@@ -1180,7 +1213,7 @@ function renderSetupBoard(){drawBoard('def-setup-board',defState.setupBoard,{g:[
 function handleSetupClick(sn,r,f){if(!defState.armySel)return;if(r>3){showToast('Place on rows 1-4!');return}if(defState.setupBoard[r][f]==='wK'){showToast("That's the King's square!");return}sTick();const code=defState.armySel==='wP2'?'wP':defState.armySel;defState.setupBoard[r][f]=code;defState.placedPieces.push(defState.armySel);const btn=document.getElementById('ap-'+defState.armySel);if(btn)btn.classList.add('placed');defState.armySel=null;document.querySelectorAll('.army-piece').forEach(b=>b.classList.remove('selected-army'));renderSetupBoard()}
 function startDefend(){if(defState.placedPieces.length<2){showToast('Place at least 1 defending piece!');return}defState.battle=defState.setupBoard.map(r=>[...r]);const atk=defState.attack;Object.entries(atk.positions).forEach(([pc,pos])=>{defState.battle[pos.r][pos.f]=pc.replace('2','')});defState.sel=null;defState.turn=0;defState.gameOver=false;document.getElementById('def-setup').classList.add('hidden');document.getElementById('def-battle').classList.remove('hidden');document.getElementById('def-msg').textContent='Defend your King!';document.getElementById('def-hint-text').textContent='💡 '+atk.description;document.getElementById('def-moves').textContent=defState.maxTurns;say(atk.description);renderDefBoard()}
 function renderDefBoard(opts){drawBoard('def-board',defState.battle,{...(opts||{}),click:(sn,r,f)=>handleDefClick(sn,r,f)})}
-function handleDefClick(sn,r,f){if(defState.gameOver)return;sTick();const p=defState.battle[r][f];if(!defState.sel){if(p&&p[0]==='w'){defState.sel=sn;const moves=getLegalMovesFiltered(defState.battle,r,f);renderDefBoard({sel:sn,dot:moves})}return}if(sn===defState.sel){defState.sel=null;renderDefBoard();return}const{r:fr,f:ff}=sqRF(defState.sel);const legal=getLegalMovesFiltered(defState.battle,fr,ff);if(!legal.includes(sn)){if(p&&p[0]==='w'){defState.sel=sn;const mv=getLegalMovesFiltered(defState.battle,r,f);renderDefBoard({sel:sn,dot:mv});return}showFeedback('def-feedback','Can't move there!','no');defState.sel=null;renderDefBoard();return}const captured=defState.battle[r][f];defState.battle=applyMove(defState.battle,fr,ff,r,f);defState.sel=null;defState.turn++;document.getElementById('def-turn-num').textContent=defState.turn;if(captured&&captured[0]==='b'){showFeedback('def-feedback','⚔️ Captured enemy '+PN[captured[1]]+'!','ok');sOk()}if(isCheckmate(defState.battle,'w')){defState.gameOver=true;sBad();showFeedback('def-feedback','❌ Your King was checkmated!','no');showResult('💪','Keep Trying!','Try again!',resetDefend);return}if(defState.turn>=defState.maxTurns){defState.gameOver=true;sWin();confetti(60);earn(5,'defend');document.getElementById('def-msg').textContent='🛡️ You survived!';showResult('🛡️','You Survived!','5 turns defended! +5 stars',resetDefend);return}renderDefBoard({b_:[sn]});setTimeout(()=>doDefendBotMove(),700)}
+function handleDefClick(sn,r,f){if(defState.gameOver)return;sTick();const p=defState.battle[r][f];if(!defState.sel){if(p&&p[0]==='w'){defState.sel=sn;const moves=getLegalMovesFiltered(defState.battle,r,f);renderDefBoard({sel:sn,dot:moves})}return}if(sn===defState.sel){defState.sel=null;renderDefBoard();return}const{r:fr,f:ff}=sqRF(defState.sel);const legal=getLegalMovesFiltered(defState.battle,fr,ff);if(!legal.includes(sn)){if(p&&p[0]==='w'){defState.sel=sn;const mv=getLegalMovesFiltered(defState.battle,r,f);renderDefBoard({sel:sn,dot:mv});return}showFeedback('def-feedback',"Can't move there!",'no');defState.sel=null;renderDefBoard();return}const captured=defState.battle[r][f];defState.battle=applyMove(defState.battle,fr,ff,r,f);defState.sel=null;defState.turn++;document.getElementById('def-turn-num').textContent=defState.turn;if(captured&&captured[0]==='b'){showFeedback('def-feedback','⚔️ Captured enemy '+PN[captured[1]]+'!','ok');sOk()}if(isCheckmate(defState.battle,'w')){defState.gameOver=true;sBad();showFeedback('def-feedback','❌ Your King was checkmated!','no');showResult('💪','Keep Trying!','Try again!',resetDefend);return}if(defState.turn>=defState.maxTurns){defState.gameOver=true;sWin();confetti(60);earn(5,'defend');document.getElementById('def-msg').textContent='🛡️ You survived!';showResult('🛡️','You Survived!','5 turns defended! +5 stars',resetDefend);return}renderDefBoard({b_:[sn]});setTimeout(()=>doDefendBotMove(),700)}
 function doDefendBotMove(){if(defState.gameOver)return;const mv=botMove(defState.battle,1);if(!mv)return;const{r:tr,f:tf}=sqRF(mv.to);defState.battle=applyMove(defState.battle,mv.fr,mv.ff,tr,tf);if(isInCheck(defState.battle,'w')){renderDefBoard({r:[mv.to]});sBad();document.getElementById('def-msg').textContent='⚠️ CHECK! Defend!'}else{renderDefBoard({y:[mv.to]});document.getElementById('def-msg').textContent='Bot moved! Defend!'}}
 function showDefendHint(){const moves=getAllMoves(defState.battle,'w');if(!moves.length)return;const m=moves[Math.random()*moves.length|0];renderDefBoard({sel:sqName(m.fr,m.ff),dot:getLegalMovesFiltered(defState.battle,m.fr,m.ff)});document.getElementById('def-msg').textContent='💡 Try moving from '+sqName(m.fr,m.ff)+'!'}
 function resetDefend(){document.getElementById('def-battle').classList.add('hidden');document.getElementById('def-setup').classList.remove('hidden');initDefend()}
@@ -1230,7 +1263,23 @@ function buildConceptCard(c,container){
 function renderProgress(){
   document.getElementById('prog-stars').textContent=ST.stars;document.getElementById('prog-streak').textContent=(ST.streak||0)+'🔥';
   const cont=document.getElementById('prog-modules');cont.innerHTML='';
-  [['dojo','🐴 Piece Dojo'],['bot','🤖 Play vs Bot'],['puzzle','🎯 Puzzle Trainer'],['threat','👁 Threat Spotter'],['capture','💥 Capture Challenge'],['defend','🛡️ Build & Defend'],['blunder','🔍 Blunder Check'],['patterns','🏆 Checkmate Patterns'],['combo','🔗 Combo Builder'],['endcoach','👑 Endgame Coach'],['opening','🌅 Opening Lab'],['eval','⚖️ Who's Winning'],['pawn','📐 Pawn School'],['ladder','🪜 Double Ladder'],['fork','🍴 Fork & Attack']].forEach(([id,lbl])=>{const row=document.createElement('div');row.className='card-sm';row.style.cssText='margin-bottom:6px;display:flex;align-items:center;gap:10px';const stars=ST.mods[id]||0;row.innerHTML=`<span style="flex:1;font-weight:700;font-size:.82rem">${lbl}</span><span style="font-weight:900;color:${stars>0?'#F5A623':'#ccc'}">⭐ ${stars}</span>`;cont.appendChild(row)});
+  [
+    ['dojo', '🐴 Piece Dojo'],
+    ['bot', '🤖 Play vs Bot'],
+    ['puzzle', '🎯 Puzzle Trainer'],
+    ['threat', '👁 Threat Spotter'],
+    ['capture', '💥 Capture Challenge'],
+    ['defend', '🛡️ Build & Defend'],
+    ['blunder', '🔍 Blunder Check'],
+    ['patterns', '🏆 Checkmate Patterns'],
+    ['combo', '🔗 Combo Builder'],
+    ['endcoach', '👑 Endgame Coach'],
+    ['opening', '🌅 Opening Lab'],
+    ['eval', "⚖️ Who's Winning"],
+    ['pawn', '📐 Pawn School'],
+    ['ladder', '🪜 Double Ladder'],
+    ['fork', '🍴 Fork & Attack']
+  ].forEach(([id, lbl]) => {const row=document.createElement('div');row.className='card-sm';row.style.cssText='margin-bottom:6px;display:flex;align-items:center;gap:10px';const stars=ST.mods[id]||0;row.innerHTML=`<span style="flex:1;font-weight:700;font-size:.82rem">${lbl}</span><span style="font-weight:900;color:${stars>0?'#F5A623':'#ccc'}">⭐ ${stars}</span>`;cont.appendChild(row)});
 }
 
 // ── BLUNDER CHECK ──
@@ -1275,7 +1324,7 @@ let CMB={idx:0,bd:null,step:1,sel:null,solved:false};
 function initCombo(){CMB.idx=Math.floor(Math.random()*COMBOS.length);loadCombo()}
 function loadCombo(){const c=COMBOS[CMB.idx];CMB.bd=parseFEN(c.fen);CMB.step=1;CMB.sel=null;CMB.solved=false;document.getElementById('cmb-kip').textContent=c.task;document.getElementById('cmb-turn').textContent='⬜ Move 1 of '+(c.m1r?2:1);hideFB('cmb-fb');document.getElementById('cmb-next').style.display='none';buildComboSteps(c);drawBoard('cmb-board',CMB.bd,{click:(sn,r,f)=>handleCombo(sn,r,f,c)});say(c.task)}
 function buildComboSteps(c){const div=document.getElementById('cmb-steps');div.innerHTML='';const steps=c.m1r?['Move 1 ⬜','Bot responds ⬛','Move 2 ⬜ — Checkmate!']:['Move 1 ⬜ — Checkmate!'];steps.forEach((s,i)=>{const span=document.createElement('span');span.className='combo-step'+(i===0?' active':'');span.id='cs-'+i;span.textContent=s;div.appendChild(span)})}
-function handleCombo(sn,r,f,c){if(CMB.solved)return;sTick();const p=CMB.bd[r][f];if(!CMB.sel){if(p&&p[0]==='w'){CMB.sel=sn;const lm=getLegalMovesFiltered(CMB.bd,r,f);drawBoard('cmb-board',CMB.bd,{sel:sn,dot:lm,click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)})}return}if(sn===CMB.sel){CMB.sel=null;drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)});return}const move=CMB.step===1?c.m1:c.m2;const{r:fr,f:ff}=srf(CMB.sel);const legal=getLegalMovesFiltered(CMB.bd,fr,ff);if(!legal.includes(sn)){showFB('cmb-fb','Can't move there!','no');sBad();CMB.sel=null;drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)});return}if(CMB.sel===move.f&&sn===move.t){CMB.bd=applyMove(CMB.bd,fr,ff,r,f);CMB.sel=null;const cs=document.getElementById('cs-'+(CMB.step-1));if(cs)cs.className='combo-step done';if(CMB.step===1&&c.m1r){showFB('cmb-fb','✅ Perfect! Watch the bot...','ok');sOk();CMB.step=2;document.getElementById('cmb-turn').textContent='⬛ Bot responds...';drawBoard('cmb-board',CMB.bd,{g:[sn]});const cs1=document.getElementById('cs-1');if(cs1)cs1.className='combo-step active';setTimeout(()=>{const resp=c.m1r;const{r:rr,f:rf}=srf(resp.t);CMB.bd=applyMove(CMB.bd,...Object.values(srf(resp.f)),rr,rf);drawBoard('cmb-board',CMB.bd,{y:[resp.t],click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)});showFB('cmb-fb','Bot played! Find Move 2!','info');document.getElementById('cmb-turn').textContent='⬜ Move 2 — Checkmate!';const cs1b=document.getElementById('cs-1');if(cs1b)cs1b.className='combo-step done';const cs2=document.getElementById('cs-2');if(cs2)cs2.className='combo-step active'},900)}else{if(isCheckmate(CMB.bd,'b')){CMB.solved=true;drawBoard('cmb-board',CMB.bd,{g:[sn]});showFB('cmb-fb','🏆 CHECKMATE! +5 stars!','ok');sWin();confetti(80);earn(5,'combo');document.getElementById('cmb-next').style.display='';say('Checkmate!')}else{showFB('cmb-fb','Good! But find checkmate!','info');sOk();drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)})}}}else{showFB('cmb-fb','❌ Wrong move! '+(CMB.step===1?c.h1:c.h2),'no');sBad();CMB.sel=null;drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)})}}
+function handleCombo(sn,r,f,c){if(CMB.solved)return;sTick();const p=CMB.bd[r][f];if(!CMB.sel){if(p&&p[0]==='w'){CMB.sel=sn;const lm=getLegalMovesFiltered(CMB.bd,r,f);drawBoard('cmb-board',CMB.bd,{sel:sn,dot:lm,click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)})}return}if(sn===CMB.sel){CMB.sel=null;drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)});return}const move=CMB.step===1?c.m1:c.m2;const{r:fr,f:ff}=srf(CMB.sel);const legal=getLegalMovesFiltered(CMB.bd,fr,ff);if(!legal.includes(sn)){showFB('cmb-fb',"Can't move there!",'no');sBad();CMB.sel=null;drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)});return}if(CMB.sel===move.f&&sn===move.t){CMB.bd=applyMove(CMB.bd,fr,ff,r,f);CMB.sel=null;const cs=document.getElementById('cs-'+(CMB.step-1));if(cs)cs.className='combo-step done';if(CMB.step===1&&c.m1r){showFB('cmb-fb','✅ Perfect! Watch the bot...','ok');sOk();CMB.step=2;document.getElementById('cmb-turn').textContent='⬛ Bot responds...';drawBoard('cmb-board',CMB.bd,{g:[sn]});const cs1=document.getElementById('cs-1');if(cs1)cs1.className='combo-step active';setTimeout(()=>{const resp=c.m1r;const{r:rr,f:rf}=srf(resp.t);CMB.bd=applyMove(CMB.bd,...Object.values(srf(resp.f)),rr,rf);drawBoard('cmb-board',CMB.bd,{y:[resp.t],click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)});showFB('cmb-fb','Bot played! Find Move 2!','info');document.getElementById('cmb-turn').textContent='⬜ Move 2 — Checkmate!';const cs1b=document.getElementById('cs-1');if(cs1b)cs1b.className='combo-step done';const cs2=document.getElementById('cs-2');if(cs2)cs2.className='combo-step active'},900)}else{if(isCheckmate(CMB.bd,'b')){CMB.solved=true;drawBoard('cmb-board',CMB.bd,{g:[sn]});showFB('cmb-fb','🏆 CHECKMATE! +5 stars!','ok');sWin();confetti(80);earn(5,'combo');document.getElementById('cmb-next').style.display='';say('Checkmate!')}else{showFB('cmb-fb','Good! But find checkmate!','info');sOk();drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)})}}}else{showFB('cmb-fb','❌ Wrong move! '+(CMB.step===1?c.h1:c.h2),'no');sBad();CMB.sel=null;drawBoard('cmb-board',CMB.bd,{click:(s2,r2,f2)=>handleCombo(s2,r2,f2,c)})}}
 function nextCombo(){CMB.idx=(CMB.idx+1)%COMBOS.length;loadCombo()}
 function comboHint(){const c=COMBOS[CMB.idx];showFB('cmb-fb','💡 '+(CMB.step===1?c.h1:c.h2),'info')}
 
