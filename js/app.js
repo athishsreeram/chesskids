@@ -188,9 +188,26 @@ function redeemCode() {
 }
 
 // ── NAVIGATION ──
+const SCREEN_TAB = {
+  's-home': 'tab-home', 's-dojo': 'tab-home',
+  's-bot': 'tab-bot',
+  's-puzzle': 'tab-puzzle',
+  's-curriculum': 'tab-curr',
+  's-progress': 'tab-prog',
+  // All home-grid module screens keep the Home tab highlighted
+  's-threat': 'tab-home', 's-capture': 'tab-home', 's-defend': 'tab-home',
+  's-blunder': 'tab-home', 's-patterns': 'tab-home', 's-combo': 'tab-home',
+  's-endcoach': 'tab-home', 's-opening': 'tab-home', 's-eval': 'tab-home',
+  's-pawn': 'tab-home', 's-defend-check': 'tab-home',
+  's-ladder-method': 'tab-home', 's-fork-train': 'tab-home',
+};
+
 function goScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id); if (el) el.classList.add('active'); window.scrollTo(0, 0);
+  // Sync bottom-nav tab highlight
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  const targetTab = SCREEN_TAB[id]; if (targetTab) { const t = document.getElementById(targetTab); if (t) t.classList.add('on'); }
   if (id === 's-puzzle') initPuzzle(); 
   if (id === 's-threat') initThreat(); 
   if (id === 's-dojo') initDojo();
@@ -214,10 +231,11 @@ function goScreen(id) {
 function gs(id) { goScreen(id) }
 
 function tabTo(screenId, tabId) { 
+    goScreen(screenId);
+    // Force the explicitly requested tab (overrides SCREEN_TAB mapping)
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('on')); 
     const t = document.getElementById(tabId); 
     if (t) t.classList.add('on'); 
-    goScreen(screenId) 
 }
 
 // ── GLOBAL EXPOSURE (for HTML onclick handlers) ──
@@ -225,11 +243,18 @@ window.ob_next = ob_next;
 window.ob_setAge = ob_setAge;
 window.ob_setLevel = ob_setLevel;
 window.ob_finish = ob_finish;
+window.goScreen = goScreen;
 window.gs = gs;
 window.tabTo = tabTo;
 window.requirePremium = requirePremium;
+window.showPremiumGate = showPremiumGate;
 window.closePremiumGate = closePremiumGate;
 window.redeemCode = redeemCode;
+window.buildCurriculum = buildCurriculum;
+window.renderProgress = renderProgress;
+window.initPuzzle = initPuzzle;
+window.selectDojoPiece = selectDojoPiece;
+window.handleCapClick = handleCapClick;
 window.resetProgress = resetProgress;
 window.nextPuzzle = nextPuzzle;
 window.showPuzzleHint = showPuzzleHint;

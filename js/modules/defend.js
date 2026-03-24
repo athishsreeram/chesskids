@@ -1,6 +1,6 @@
 'use strict';
 
-import { sTick, sOk, sBad, sWin, earn, showFeedback, showResult, showToast, say, PN, sqRF, confetti } from '../utils.js';
+import { sTick, sOk, sBad, sWin, earn, showFeedback, showResult, showToast, say, PN, sqName, sqRF, confetti } from '../utils.js';
 import { drawBoard, applyMove, getLegalMovesFiltered, isInCheck, isCheckmate, botMove, getAllMoves } from '../board.js';
 import { DEFEND_ATTACKS, ARMY_PIECES } from '../data.js';
 

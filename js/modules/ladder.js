@@ -1,6 +1,6 @@
 'use strict';
 
-import { sTick, sOk, sWin, sBad, earn, showFB, say, confetti, srf } from '../utils.js';
+import { sTick, sOk, sWin, sBad, earn, showFB, hideFB, say, confetti, srf } from '../utils.js';
 import { parseFEN, drawBoard, applyMove, getLegalMovesFiltered, isCheckmate } from '../board.js';
 import { LD_MODES } from '../data.js';
 
