@@ -5,9 +5,13 @@ import { drawBoard } from '../board.js';
 import { CURR_DATA } from '../data.js';
 
 let currBuilt = false;
+let lastPremiumState = null;
 
 export function buildCurriculum() {
-  if (currBuilt) return; currBuilt = true; const cont = document.getElementById('curr-levels'); if(!cont) return; cont.innerHTML = '';
+  if (currBuilt && lastPremiumState === ST.premium) return; 
+  currBuilt = true; 
+  lastPremiumState = ST.premium;
+  const cont = document.getElementById('curr-levels'); if(!cont) return; cont.innerHTML = '';
   CURR_DATA.forEach(level => {
     const isLocked = !ST.premium && (level.id === 'l2' || level.id === 'l3');
     const card = document.createElement('div'); card.className = 'level-card' + (isLocked ? ' locked' : '');
