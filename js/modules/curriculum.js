@@ -1,6 +1,6 @@
 'use strict';
 
-import { sOk, sBad, confetti } from '../utils.js';
+import { ST, sOk, sBad, confetti } from '../utils.js';
 import { drawBoard } from '../board.js';
 import { CURR_DATA } from '../data.js';
 
@@ -9,9 +9,20 @@ let currBuilt = false;
 export function buildCurriculum() {
   if (currBuilt) return; currBuilt = true; const cont = document.getElementById('curr-levels'); if(!cont) return; cont.innerHTML = '';
   CURR_DATA.forEach(level => {
-    const card = document.createElement('div'); card.className = 'level-card';
-    card.innerHTML = `<div class="level-head ${level.color}"><div class="level-badge">${level.label}</div><div class="level-info"><h3>${level.title}</h3><p>${level.subtitle}</p></div><div class="level-arrow">▶</div></div><div class="level-body"><p style="font-size:.8rem;font-weight:700;color:#666;margin-bottom:10px">🎯 ${level.goal}</p><div id="sl-${level.id}"></div></div>`;
-    card.querySelector('.level-head').onclick = () => { card.classList.toggle('open'); if (card.classList.contains('open')) buildSessions(level) };
+    const isLocked = !ST.premium && (level.id === 'l2' || level.id === 'l3');
+    const card = document.createElement('div'); card.className = 'level-card' + (isLocked ? ' locked' : '');
+    const lockIcon = isLocked ? '<div class="level-lock">🔒</div>' : '<div class="level-arrow">▶</div>';
+    
+    card.innerHTML = `<div class="level-head ${level.color}">${isLocked ? '' : `<div class="level-badge">${level.label}</div>`}<div class="level-info"><h3>${level.title}${isLocked ? ' 👑' : ''}</h3><p>${level.subtitle}</p></div>${lockIcon}</div><div class="level-body"><p style="font-size:.8rem;font-weight:700;color:#666;margin-bottom:10px">🎯 ${level.goal}</p><div id="sl-${level.id}"></div></div>`;
+    
+    card.querySelector('.level-head').onclick = () => { 
+        if (isLocked) {
+            if (window.requirePremium) window.requirePremium('s-curriculum');
+            return;
+        }
+        card.classList.toggle('open'); 
+        if (card.classList.contains('open')) buildSessions(level);
+    };
     cont.appendChild(card);
   });
 }

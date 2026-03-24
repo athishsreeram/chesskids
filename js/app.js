@@ -79,34 +79,75 @@ function updateHomePersonalization() {
 function updatePremiumUI() {
   const banner = document.getElementById('premium-banner'); const navBtn = document.getElementById('nav-premium-btn');
   const l2 = document.getElementById('step-l2'), l3 = document.getElementById('step-l3');
+  
   if (ST.premium) {
-    if (banner) banner.style.display = 'none'; if (navBtn) navBtn.style.display = 'none';
+    if (banner) banner.style.display = 'none'; 
+    if (navBtn) navBtn.style.display = 'none';
+    
+    // Unlock Structured Course Steps
     if (l2) {
-      l2.classList.remove('path-locked'); l2.onclick = () => { tabTo('s-curriculum', 'tab-curr'); buildCurriculum() };
+      l2.classList.remove('path-locked'); 
+      l2.onclick = () => { tabTo('s-curriculum', 'tab-curr'); buildCurriculum() };
       const t2 = document.getElementById('step-l2-tag'), i2 = document.getElementById('step-l2-icon');
       if (t2) { t2.className = 'ps-tag ps-tag-free'; t2.textContent = 'UNLOCKED' }
       if (i2) { i2.innerHTML = '▶'; i2.style.color = 'var(--purple)' }
     }
     if (l3) {
-      l3.classList.remove('path-locked'); l3.onclick = () => { tabTo('s-curriculum', 'tab-curr'); buildCurriculum() };
+      l3.classList.remove('path-locked'); 
+      l3.onclick = () => { tabTo('s-curriculum', 'tab-curr'); buildCurriculum() };
       const t3 = document.getElementById('step-l3-tag'), i3 = document.getElementById('step-l3-icon');
       if (t3) { t3.className = 'ps-tag ps-tag-free'; t3.textContent = 'UNLOCKED' }
       if (i3) { i3.innerHTML = '▶'; i3.style.color = 'var(--purple)' }
     }
+
+    // Unlock all individual module cards that were premium-gated
+    document.querySelectorAll('.module-card').forEach(card => {
+        const att = card.getAttribute('onclick');
+        if (att && att.includes('requirePremium')) {
+            const screenId = att.match(/'([^']+)'/)[1];
+            card.onclick = () => goScreen(screenId);
+        }
+    });
+
+    // Hide all premium section header badges
+    document.querySelectorAll('.section-badge').forEach(badge => {
+        if (badge.textContent.includes('PREMIUM')) badge.style.display = 'none';
+    });
+
   } else {
-    if (banner) banner.style.display = ''; if (navBtn) navBtn.style.display = '';
+    // Show premium upsells
+    if (banner) banner.style.display = ''; 
+    if (navBtn) navBtn.style.display = '';
+    
     if (l2) {
-      l2.classList.add('path-locked'); l2.onclick = () => requirePremium('s-curriculum');
+      l2.classList.add('path-locked'); 
+      l2.onclick = () => requirePremium('s-curriculum');
       const t2 = document.getElementById('step-l2-tag'), i2 = document.getElementById('step-l2-icon');
       if (t2) { t2.className = 'ps-tag ps-tag-pro'; t2.textContent = '👑 PRO' }
       if (i2) { i2.innerHTML = '🔒'; i2.style.color = '#ddd' }
     }
     if (l3) {
-      l3.classList.add('path-locked'); l3.onclick = () => requirePremium('s-curriculum');
+      l3.classList.add('path-locked'); 
+      l3.onclick = () => requirePremium('s-curriculum');
       const t3 = document.getElementById('step-l3-tag'), i3 = document.getElementById('step-l3-icon');
       if (t3) { t3.className = 'ps-tag ps-tag-pro'; t3.textContent = '👑 PRO' }
       if (i3) { i3.innerHTML = '🔒'; i3.style.color = '#ddd' }
     }
+    
+    // Reset individual module cards to require premium
+    document.querySelectorAll('.module-card').forEach(card => {
+        const att = card.getAttribute('onclick');
+        // Note: we don't want to touch Step 1/2/3 cards which are free
+        if (att && (att.includes('goScreen') || att.includes('requirePremium')) && !card.querySelector('.mc-step')) {
+            const screenId = att.match(/'([^']+)'/)[1];
+            card.onclick = () => requirePremium(screenId);
+        }
+    });
+
+    // Show all premium section header badges
+    document.querySelectorAll('.section-badge').forEach(badge => {
+        if (badge.textContent.includes('PREMIUM')) badge.style.display = '';
+    });
   }
 }
 
