@@ -1,7 +1,7 @@
 'use strict';
 
-import { sTick, sOk, sBad, earn, drawBoard, showFB, say, confetti, PM, srf } from '../utils.js';
-import { parseFEN, applyMove, getLegalMovesFiltered } from '../board.js';
+import { sTick, sOk, sBad, earn, showFB, say, confetti, PM, srf } from '../utils.js';
+import { parseFEN, drawBoard, applyMove, getLegalMovesFiltered } from '../board.js';
 import { FT_SCENARIOS } from '../data.js';
 
 export let FT = { skill: 'fork', idx: 0, sel: null, answered: false };

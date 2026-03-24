@@ -1,7 +1,7 @@
 'use strict';
 
-import { sTick, sOk, sWin, sBad, earn, drawBoard, showFB, say, confetti, srf } from '../utils.js';
-import { parseFEN, applyMove, getLegalMovesFiltered } from '../board.js';
+import { sTick, sOk, sWin, sBad, earn, showFB, say, confetti, srf } from '../utils.js';
+import { parseFEN, drawBoard, applyMove, getLegalMovesFiltered } from '../board.js';
 import { ENDGAMES } from '../data.js';
 
 export let END = { type: null, step: 0, bd: null, sel: null, done: false };

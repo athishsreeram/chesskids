@@ -1,7 +1,7 @@
 'use strict';
 
-import { sTick, sOk, sWin, sBad, earn, drawBoard, showFB, say, confetti, srf } from '../utils.js';
-import { parseFEN, applyMove, getLegalMovesFiltered, isCheckmate } from '../board.js';
+import { sTick, sOk, sWin, sBad, earn, showFB, say, confetti, srf } from '../utils.js';
+import { parseFEN, drawBoard, applyMove, getLegalMovesFiltered, isCheckmate } from '../board.js';
 import { LD_MODES } from '../data.js';
 
 export let LD = { mode: 'learn', step: 0, sel: null, done: false };

@@ -1,7 +1,7 @@
 'use strict';
 
-import { sTick, sOk, sWin, sBad, earn, drawBoard, showFB, hideFB, say, confetti, srf } from '../utils.js';
-import { parseFEN, applyMove, getLegalMovesFiltered, isCheckmate } from '../board.js';
+import { sTick, sOk, sWin, sBad, earn, showFB, hideFB, say, confetti, srf } from '../utils.js';
+import { parseFEN, drawBoard, applyMove, getLegalMovesFiltered, isCheckmate } from '../board.js';
 import { COMBOS } from '../data.js';
 
 export let CMB = { idx: 0, bd: null, step: 1, sel: null, solved: false };

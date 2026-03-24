@@ -1,6 +1,7 @@
 'use strict';
 
-import { sOk, sBad, drawBoard, confetti } from '../utils.js';
+import { sOk, sBad, confetti } from '../utils.js';
+import { drawBoard } from '../board.js';
 import { CURR_DATA } from '../data.js';
 
 let currBuilt = false;

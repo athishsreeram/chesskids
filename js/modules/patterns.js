@@ -1,7 +1,7 @@
 'use strict';
 
-import { sTick, sWin, sBad, earn, drawBoard, showFB, hideFB, say, confetti } from '../utils.js';
-import { parseFEN, applyMove, getLegalMovesFiltered } from '../board.js';
+import { sTick, sWin, sBad, earn, showFB, hideFB, say, confetti } from '../utils.js';
+import { parseFEN, drawBoard, applyMove, getLegalMovesFiltered } from '../board.js';
 import { PAT_DATA } from '../data.js';
 
 export let PAT = { learned: new Set(), current: null, solSel: null, solSolved: false };

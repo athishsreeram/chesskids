@@ -1,6 +1,7 @@
 'use strict';
 
-import { sTick, sOk, sBad, earn, drawBoard, showFB, hideFB, say, confetti } from '../utils.js';
+import { sTick, sOk, sBad, earn, showFB, hideFB, say, confetti } from '../utils.js';
+import { drawBoard } from '../board.js';
 import { EVALS } from '../data.js';
 
 export let EV = { idx: 0, correct: 0, total: 0, answered: false };

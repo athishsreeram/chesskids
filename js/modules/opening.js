@@ -1,7 +1,8 @@
 'use strict';
 
-import { sTick, sOk, sBad, earn, drawBoard, showFB, hideFB, say, confetti } from '../utils.js';
+import { sTick, sOk, sBad, earn, showFB, hideFB, say, confetti } from '../utils.js';
 import { OPENINGS } from '../data.js';
+import { drawBoard } from '../board.js';
 
 export let OP = { cat: 'all', idx: 0, answered: false }; 
 let opBuilt = false;

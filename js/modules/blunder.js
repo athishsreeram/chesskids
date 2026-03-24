@@ -1,6 +1,7 @@
 'use strict';
 
-import { sTick, sOk, sBad, sWin, earn, drawBoard, showFB, hideFB, say, confetti } from '../utils.js';
+import { sTick, sOk, sBad, sWin, earn, showFB, hideFB, say, confetti } from '../utils.js';
+import { drawBoard } from '../board.js';
 import { BLUNDERS } from '../data.js';
 
 export let BLU = { idx: 0, correct: 0, total: 0, phase: 0, answered: false };

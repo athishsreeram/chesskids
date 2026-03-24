@@ -1,6 +1,7 @@
 'use strict';
 
 import { PM, sqName, sqRF } from './utils.js';
+export { sqName, sqRF };
 
 export function parseFEN(fen) { 
     const b = Array.from({ length: 8 }, () => Array(8).fill(null)); 

@@ -1,6 +1,7 @@
 'use strict';
 
-import { sTick, sOk, sBad, earn, drawBoard, showFB, hideFB, say, confetti } from '../utils.js';
+import { sTick, sOk, sBad, earn, showFB, hideFB, say, confetti } from '../utils.js';
+import { drawBoard } from '../board.js';
 import { DK_CONCEPTS, DK_SCENARIOS } from '../data.js';
 
 export let DK = { skill: 'move', idx: 0, answered: false, hintUsed: 0 };
