@@ -1,0 +1,52 @@
+[
+  {
+    "fen": "8/8/8/3q4/8/8/3Q4/3K4 w - - 0 1",
+    "task": "Black Queen on D5 is threatening a White piece! Tap it!",
+    "hint": "Black Queen on D5 can move to D2.",
+    "answers": [
+      "d2"
+    ],
+    "explanation": "Queen on D5 threatens the White Queen on D2!",
+    "level": "easy"
+  },
+  {
+    "fen": "3k4/8/8/5b2/8/3R4/8/3K4 w - - 0 1",
+    "task": "Black Bishop on F5 threatens a White piece! Tap it!",
+    "hint": "Bishops move diagonally from F5.",
+    "answers": [
+      "d3"
+    ],
+    "explanation": "Bishop on F5 threatens Rook on D3!",
+    "level": "easy"
+  },
+  {
+    "fen": "3k4/8/8/8/8/2n5/8/3K1R2 w - - 0 1",
+    "task": "Black Knight on C3 can fork! Which White piece is threatened?",
+    "hint": "From C3, Knight can jump to D1.",
+    "answers": [
+      "d1"
+    ],
+    "explanation": "Knight from C3 jumps to D1 — a fork!",
+    "level": "medium"
+  },
+  {
+    "fen": "6k1/8/8/8/3r4/8/3R4/3K4 w - - 0 1",
+    "task": "Black Rook on D4 threatens a White piece! Tap it!",
+    "hint": "Rook can slide down the D-file.",
+    "answers": [
+      "d2"
+    ],
+    "explanation": "Black Rook threatens White Rook on D2!",
+    "level": "easy"
+  },
+  {
+    "fen": "3k4/8/8/8/4b3/8/8/4K2R w - - 0 1",
+    "task": "Black Bishop on E4 eyes a White piece! Tap it!",
+    "hint": "Bishop moves diagonally toward H.",
+    "answers": [
+      "h1"
+    ],
+    "explanation": "Bishop on E4 threatens Rook on H1!",
+    "level": "easy"
+  }
+]

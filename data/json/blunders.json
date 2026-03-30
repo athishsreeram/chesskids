@@ -1,0 +1,48 @@
+[
+  {
+    "fen": "3k4/8/8/8/3R4/8/3q4/3K4 w - - 0 1",
+    "isB": true,
+    "hang": [
+      "d4"
+    ],
+    "hint": "Black Queen on D2 attacks White Rook on D4!",
+    "exp": "BLUNDER! Rook D4 is attacked by Black Queen D2!",
+    "moved": "Rook to D4"
+  },
+  {
+    "fen": "3k4/8/8/3r4/8/8/8/3RK3 w - - 0 1",
+    "isB": false,
+    "hang": [],
+    "hint": "Black Rook cannot reach D1 in one move.",
+    "exp": "Safe! The Black Rook cannot reach D1 directly.",
+    "moved": "King to E1"
+  },
+  {
+    "fen": "3k4/3q4/8/3N4/8/8/8/3K4 w - - 0 1",
+    "isB": true,
+    "hang": [
+      "d5"
+    ],
+    "hint": "Black Queen D7 attacks Knight on D5!",
+    "exp": "BLUNDER! Knight D5 attacked by Black Queen D7!",
+    "moved": "Knight to D5"
+  },
+  {
+    "fen": "r3k3/8/8/8/8/8/8/R3K3 w - - 0 1",
+    "isB": false,
+    "hang": [],
+    "hint": "No Black piece can reach A1 in one move.",
+    "exp": "Safe!",
+    "moved": "Rook to A1"
+  },
+  {
+    "fen": "3k4/8/8/8/2b5/8/8/3BK3 w - - 0 1",
+    "isB": true,
+    "hang": [
+      "d1"
+    ],
+    "hint": "Black Bishop C4 attacks White Bishop D1!",
+    "exp": "BLUNDER! Black Bishop C4 attacks White Bishop D1!",
+    "moved": "Bishop to D1"
+  }
+]

@@ -1,0 +1,203 @@
+{
+  "concepts": {
+    "move": {
+      "em": "🏃",
+      "name": "Move Away!",
+      "exp": "When your King is attacked, MOVE it to a safe square the enemy cannot reach!"
+    },
+    "block": {
+      "em": "🧱",
+      "name": "Block!",
+      "exp": "If a Rook, Bishop or Queen attacks your King in a straight line, PUT A PIECE IN BETWEEN to block!"
+    },
+    "capture": {
+      "em": "⚔️",
+      "name": "Capture!",
+      "exp": "Sometimes you can TAKE the piece attacking your King! Capture it and the check is over!"
+    },
+    "protect": {
+      "em": "🛡️",
+      "name": "Protect!",
+      "exp": "Before the enemy takes your piece, DEFEND it so if they capture, you can recapture back."
+    }
+  },
+  "scenarios": {
+    "move": [
+      {
+        "fen": "4K3/8/8/8/8/8/8/4r3 w - - 0 1",
+        "task": "King on E8 is in CHECK from Rook on E1! Move to safety!",
+        "hint": "E-file is dangerous! Try D7, D8, F7 or F8.",
+        "answers": [
+          "d7",
+          "f7",
+          "d8",
+          "f8"
+        ],
+        "bad": [
+          "e7"
+        ],
+        "explain": "King escaped the E-file!"
+      },
+      {
+        "fen": "7k/8/7R/8/8/8/8/7K w - - 0 1",
+        "task": "Black King on H8 is in CHECK from Rook H6! Escape!",
+        "hint": "H-file is dangerous! Move to G8 or G7.",
+        "answers": [
+          "g8",
+          "g7"
+        ],
+        "bad": [
+          "h7"
+        ],
+        "explain": "G8 or G7 — off the H-file!"
+      },
+      {
+        "fen": "3K4/8/3q4/8/8/8/8/7k w - - 0 1",
+        "task": "King on D8 in CHECK from Queen D6! Find a safe escape!",
+        "hint": "D-file is dangerous! Try C7 or E7.",
+        "answers": [
+          "c7",
+          "e7"
+        ],
+        "bad": [
+          "d7"
+        ],
+        "explain": "King to C7 or E7 escapes!"
+      }
+    ],
+    "block": [
+      {
+        "fen": "6k1/8/6R1/8/8/8/8/6K1 w - - 0 1",
+        "task": "Black King on G8 in CHECK from Rook G6! Tap the BLOCKING square!",
+        "hint": "Only G7 sits between G6 and G8.",
+        "answers": [
+          "g7"
+        ],
+        "bad": [
+          "g8",
+          "g6"
+        ],
+        "type": "block-sq",
+        "explain": "G7 is the only blocking square!"
+      },
+      {
+        "fen": "3k4/3R4/8/8/8/8/8/3r3K w - - 0 1",
+        "task": "White King on H1 in CHECK from Black Rook D1! Tap a BLOCKING square!",
+        "hint": "Tap E1, F1 or G1.",
+        "answers": [
+          "e1",
+          "f1",
+          "g1"
+        ],
+        "bad": [
+          "h1",
+          "d1"
+        ],
+        "type": "block-sq",
+        "explain": "Placing a piece on E1-G1 blocks the check!"
+      },
+      {
+        "fen": "4K3/8/8/8/8/8/4r3/4q3 w - - 0 1",
+        "task": "King on E8 in CHECK from Queen E1! Tap a BLOCKING square!",
+        "hint": "Any square between E2-E7 blocks it.",
+        "answers": [
+          "e7",
+          "e6",
+          "e5",
+          "e4",
+          "e3",
+          "e2"
+        ],
+        "bad": [
+          "e8"
+        ],
+        "type": "block-sq",
+        "explain": "Blocking puts a piece between attacker and King!"
+      }
+    ],
+    "capture": [
+      {
+        "fen": "6k1/8/8/8/8/8/6r1/6K1 w - - 0 1",
+        "task": "King on G1 in CHECK from Rook G2! King can CAPTURE it — tap the Rook!",
+        "hint": "Rook on G2 is right next to the King — step to G2!",
+        "answers": [
+          "g2"
+        ],
+        "bad": [
+          "g1",
+          "h1"
+        ],
+        "type": "capture-piece",
+        "explain": "King captured the Rook on G2!"
+      },
+      {
+        "fen": "5k2/8/5q2/8/8/8/5R2/5K2 w - - 0 1",
+        "task": "King in CHECK from Queen F6! White Rook can CAPTURE it! Tap the Queen!",
+        "hint": "Rook on F2 slides up to F6!",
+        "answers": [
+          "f6"
+        ],
+        "bad": [
+          "f1",
+          "f2"
+        ],
+        "type": "capture-piece",
+        "explain": "Rook takes Queen — check gone AND you win the Queen!"
+      },
+      {
+        "fen": "3k4/8/8/3r4/8/3K4/8/8 w - - 0 1",
+        "task": "King in CHECK from Rook D5! Go sideways — D4 is still dangerous!",
+        "hint": "Move to C3, E3, C4 or E4.",
+        "answers": [
+          "c3",
+          "e3",
+          "c4",
+          "e4"
+        ],
+        "bad": [
+          "d4"
+        ],
+        "type": "capture-piece",
+        "explain": "Moving sideways escapes the D-file check!"
+      }
+    ],
+    "protect": [
+      {
+        "fen": "3k4/3q4/8/8/8/3R4/8/3K4 w - - 0 1",
+        "task": "Black Queen threatens your Rook D3! PROTECT the Rook — tap a defending piece!",
+        "hint": "King can step closer to D3 to defend it.",
+        "answers": [
+          "d1"
+        ],
+        "protect_sq": "d3",
+        "type": "protect-piece",
+        "explain": "King defends the Rook! Now Queen taking Rook loses to King recapture!"
+      },
+      {
+        "fen": "3k4/8/8/5b2/5P3/8/8/3K4 w - - 0 1",
+        "task": "Black Bishop threatens your Pawn F4! PROTECT it!",
+        "hint": "King on D1 can step to E2 to defend.",
+        "answers": [
+          "d1",
+          "e2"
+        ],
+        "protect_sq": "f4",
+        "type": "protect-piece",
+        "explain": "King stepping to E3 defends the F4 pawn!"
+      },
+      {
+        "fen": "3k4/8/8/3r4/3P4/8/8/3K4 w - - 0 1",
+        "task": "Black Rook attacks your Pawn D4! PROTECT it!",
+        "hint": "King needs to advance toward D3.",
+        "answers": [
+          "d1",
+          "e1",
+          "c1"
+        ],
+        "protect_sq": "d4",
+        "type": "protect-piece",
+        "explain": "Moving the King toward D3 protects the pawn!"
+      }
+    ]
+  }
+}

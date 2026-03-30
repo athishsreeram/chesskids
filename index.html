@@ -1,930 +1,520 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>♞ ChessKids — Learn Real Chess!</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Baloo+2:wght@400;600;700;800&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-  <div id="app">
+<div id="app">
 
-    <div id="onboarding">
-      <div class="ob-card">
-        <div class="ob-step ob-active" id="ob-1">
-          <div class="ob-logo">♞ Chess<span>Kids</span></div>
-          <div class="ob-kip">♞</div>
-          <div class="ob-title">Hi there! I'm Kip! 👋</div>
-          <div class="ob-sub">I'll teach you real chess through puzzles, games & fun! What's your name?</div>
-          <input class="ob-input" id="ob-name-input" type="text" placeholder="Type your name..." maxlength="20"
-            autocomplete="off">
-          <button class="btn btn-purple" onclick="ob_next(1)">Let's go! 🚀</button>
-        </div>
-        <div class="ob-step" id="ob-2">
-          <div class="ob-kip">♞</div>
-          <div class="ob-title" id="ob-age-title">How old are you?</div>
-          <div class="ob-sub">I'll pick the best games for you!</div>
-          <div class="ob-progress">
-            <div class="ob-dot done"></div>
-            <div class="ob-dot active"></div>
-            <div class="ob-dot"></div>
-          </div>
-          <div class="ob-choices">
-            <button class="ob-choice" onclick="ob_setAge('5-7',this)"><span class="oc-icon">🐣</span><span><strong>5 – 7
-                  years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Just starting
-                  out!</span></span></button>
-            <button class="ob-choice" onclick="ob_setAge('8-10',this)"><span class="oc-icon">🎒</span><span><strong>8 –
-                  10 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Ready for a
-                  challenge!</span></span></button>
-            <button class="ob-choice" onclick="ob_setAge('11-14',this)"><span class="oc-icon">🏆</span><span><strong>11
-                  – 14 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Serious player
-                  mode!</span></span></button>
-          </div>
-          <button class="btn btn-purple" onclick="ob_next(2)">Next →</button>
-        </div>
-        <div class="ob-step" id="ob-3">
-          <div class="ob-kip">♞</div>
-          <div class="ob-title">Chess level?</div>
-          <div class="ob-sub">No wrong answer — be honest!</div>
-          <div class="ob-progress">
-            <div class="ob-dot done"></div>
-            <div class="ob-dot done"></div>
-            <div class="ob-dot active"></div>
-          </div>
-          <div class="ob-choices">
-            <button class="ob-choice" onclick="ob_setLevel('beginner',this)"><span
-                class="oc-icon">🌱</span><span><strong>Never played</strong><br><span
-                  style="font-weight:600;font-size:.8rem;color:#888">I don't know the pieces yet</span></span></button>
-            <button class="ob-choice" onclick="ob_setLevel('some',this)"><span
-                class="oc-icon">♟</span><span><strong>Played a little</strong><br><span
-                  style="font-weight:600;font-size:.8rem;color:#888">I know basic moves</span></span></button>
-            <button class="ob-choice" onclick="ob_setLevel('experienced',this)"><span
-                class="oc-icon">♔</span><span><strong>I play chess!</strong><br><span
-                  style="font-weight:600;font-size:.8rem;color:#888">Looking to get better</span></span></button>
-          </div>
-          <button class="btn btn-green" onclick="ob_finish()">Start Learning! 🎉</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="premium-gate" onclick="if(event.target===this)closePremiumGate()">
-      <div class="pg-sheet">
-        <div class="pg-handle"></div>
-        <div class="pg-emoji">👑</div>
-        <div class="pg-title">Unlock All 13 Modules!</div>
-        <div class="pg-sub">This module is part of ChessKids Premium — everything unlocked for one low price.</div>
-        <div class="pg-features">
-          <div class="pg-feat"><span>🎯</span> All 13 interactive chess modules</div>
-          <div class="pg-feat"><span>📚</span> Full structured curriculum (L1 → Master)</div>
-          <div class="pg-feat"><span>📈</span> Parent progress dashboard</div>
-          <div class="pg-feat"><span>🏆</span> Weekly progress reports</div>
-          <div class="pg-feat"><span>🔇</span> Ad-free forever</div>
-        </div>
-        <div class="pg-price-row">
-          <div>
-            <div class="pg-price-label">ChessKids Premium</div>
-            <div style="font-size:.72rem;font-weight:700;color:#aaa">Monthly, cancel anytime</div>
-          </div>
-          <div class="pg-price-val">$6.99<span style="font-size:.9rem;color:#888">/mo</span></div>
-        </div>
-        <a href="https://buy.stripe.com/test_dRmfZj1wldi4eW3gXw0ZW01" target="_blank"
-          style="text-decoration:none;display:block">
-          <button class="btn btn-gold" style="font-size:1.05rem;margin-bottom:6px">👑 Unlock Premium — $6.99/mo</button>
-        </a>
-        <div style="margin-bottom:10px">
-          <div style="font-size:.75rem;font-weight:700;color:#aaa;text-align:center;margin-bottom:6px">Already paid?
-            Enter your access code:</div>
-          <div class="pg-code-row">
-            <input class="pg-code-input" id="pg-code-input" placeholder="Enter access code..." type="text">
-            <button class="pg-code-btn" onclick="redeemCode()">Unlock</button>
-          </div>
-          <div id="pg-code-msg" style="font-size:.78rem;font-weight:800;text-align:center;min-height:18px"></div>
-        </div>
-        <span class="pg-close" onclick="closePremiumGate()">✕ Maybe later</span>
-      </div>
-    </div>
-
-    <nav class="topnav">
-      <div class="topnav-logo">♞ Chess<span>Kids</span></div>
-      <div class="nav-stars">⭐ <span id="nav-star-count">0</span></div>
-      <button class="nav-premium-btn" id="nav-premium-btn" onclick="showPremiumGate()" style="display:none">👑 Go
-        Premium</button>
-    </nav>
-
-    <div class="screen active content" id="s-home">
-      <div class="home-hero">
-        <div class="home-hero-top">
-          <div class="hero-kip-sm">♞</div>
-          <div class="home-hero-text">
-            <h1>Chess<span>Kids!</span></h1>
-            <p>Welcome back, <span class="hero-user-name" id="hero-name">friend</span>! Ready to play? 🎉</p>
-          </div>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-val" id="h-stars">0</div>
-            <div class="hero-stat-lbl">⭐ Stars</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-val" id="h-streak">0🔥</div>
-            <div class="hero-stat-lbl">Streak</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-val" id="h-level">—</div>
-            <div class="hero-stat-lbl">Level</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="premium-banner" id="premium-banner" onclick="showPremiumGate()">
-        <div class="pb-label">👑 ChessKids Premium</div>
-        <div class="pb-title">Unlock All 13 Modules!</div>
-        <div class="pb-sub">3 modules are free. Upgrade to unlock everything — puzzles, tactics, endgames, courses &
-          more.</div>
-        <div class="pb-price">$6.99 <small>/ month</small></div>
-        <div class="pb-features">
-          <div class="pb-feat">✅ All 13 interactive modules</div>
-          <div class="pb-feat">✅ Structured curriculum L1 → Master</div>
-          <div class="pb-feat">✅ Parent dashboard + weekly reports</div>
-        </div>
-        <button class="btn btn-gold" style="font-size:.95rem" onclick="event.stopPropagation();showPremiumGate()">👑
-          Upgrade Now — $6.99/mo</button>
-      </div>
-
-      <div class="section-header">
-        <div class="section-label">🟢 Start Here — Free</div>
-        <div class="section-badge">FREE</div>
-        <div class="section-line"></div>
-      </div>
-      <div class="kip-bubble" style="margin-bottom:10px">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="home-kip-msg">Hi! I'm <strong>Kip</strong>! Start with these 3 free modules to begin
-          your chess journey! 🎉</div>
-      </div>
-      <div class="module-grid" style="margin-bottom:16px">
-        <div class="module-card mc-d" onclick="goScreen('s-dojo')">
-          <div class="mc-step">Step 1</div>
-          <div class="mc-icon">🐴</div>
-          <div class="mc-title">Piece Dojo</div>
-          <div class="mc-desc">Learn how every piece moves</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="dojo">0</span></div>
-        </div>
-        <div class="module-card mc-b" onclick="goScreen('s-bot')">
-          <div class="mc-step">Step 2</div>
-          <div class="mc-icon">🤖</div>
-          <div class="mc-title">Play vs Bot</div>
-          <div class="mc-desc">Play a real chess game!</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="bot">0</span></div>
-        </div>
-        <div class="module-card mc-a" onclick="goScreen('s-puzzle')">
-          <div class="mc-step">Step 3</div>
-          <div class="mc-icon">🎯</div>
-          <div class="mc-title">Puzzle Trainer</div>
-          <div class="mc-desc">Solve real chess puzzles</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="puzzle">0</span></div>
-        </div>
-      </div>
-
-      <div class="section-header">
-        <div class="section-label">⚔️ Tactics Training</div>
-        <div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div>
-        <div class="section-line"></div>
-      </div>
-      <div class="module-grid" style="margin-bottom:16px">
-        <div class="module-card mc-c" onclick="requirePremium('s-threat')">
-          <div class="mc-icon">👁</div>
-          <div class="mc-title">Threat Spotter</div>
-          <div class="mc-desc">Find what they're threatening</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="threat">0</span></div>
-        </div>
-        <div class="module-card mc-e" onclick="requirePremium('s-capture')">
-          <div class="mc-icon">💥</div>
-          <div class="mc-title">Capture Challenge</div>
-          <div class="mc-desc">Grab free pieces safely!</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="capture">0</span></div>
-        </div>
-        <div class="module-card mc-f" onclick="requirePremium('s-blunder')">
-          <div class="mc-icon">🔍</div>
-          <div class="mc-title">Blunder Check</div>
-          <div class="mc-desc">Is it a blunder?</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="blunder">0</span></div>
-        </div>
-        <div class="module-card mc-g" onclick="requirePremium('s-fork-train')">
-          <div class="mc-icon">🍴</div>
-          <div class="mc-title">Fork & Attack</div>
-          <div class="mc-desc">Attack two pieces at once!</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="fork">0</span></div>
-        </div>
-        <div class="module-card mc-h" onclick="requirePremium('s-defend-check')">
-          <div class="mc-icon">🛡️</div>
-          <div class="mc-title">Defend the King</div>
-          <div class="mc-desc">Move, block, capture, protect!</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="defend">0</span></div>
-        </div>
-        <div class="module-card mc-i" onclick="requirePremium('s-patterns')">
-          <div class="mc-icon">🏆</div>
-          <div class="mc-title">Checkmate Patterns</div>
-          <div class="mc-desc">10 classic patterns</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="patterns">0</span></div>
-        </div>
-      </div>
-
-      <div class="section-header">
-        <div class="section-label">♟ Strategy & Openings</div>
-        <div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div>
-        <div class="section-line"></div>
-      </div>
-      <div class="module-grid" style="margin-bottom:16px">
-        <div class="module-card mc-j" onclick="requirePremium('s-opening')">
-          <div class="mc-icon">🌅</div>
-          <div class="mc-title">Opening Lab</div>
-          <div class="mc-desc">Which move is better?</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="opening">0</span></div>
-        </div>
-        <div class="module-card mc-k" onclick="requirePremium('s-pawn')">
-          <div class="mc-icon">📐</div>
-          <div class="mc-title">Pawn School</div>
-          <div class="mc-desc">Passed, isolated, promotion</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="pawn">0</span></div>
-        </div>
-        <div class="module-card mc-l" onclick="requirePremium('s-eval')">
-          <div class="mc-icon">⚖️</div>
-          <div class="mc-title">Who's Winning?</div>
-          <div class="mc-desc">Count material & evaluate</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="eval">0</span></div>
-        </div>
-      </div>
-
-      <div class="section-header">
-        <div class="section-label">👑 Endgames & Combos</div>
-        <div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div>
-        <div class="section-line"></div>
-      </div>
-      <div class="module-grid" style="margin-bottom:16px">
-        <div class="module-card mc-m" onclick="requirePremium('s-defend')">
-          <div class="mc-icon">🏰</div>
-          <div class="mc-title">Build & Defend</div>
-          <div class="mc-desc">Place your army. Survive!</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="defend">0</span></div>
-        </div>
-        <div class="module-card mc-a" onclick="requirePremium('s-combo')">
-          <div class="mc-icon">🔗</div>
-          <div class="mc-title">Combo Builder</div>
-          <div class="mc-desc">Checkmate in 2 moves!</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="combo">0</span></div>
-        </div>
-        <div class="module-card mc-b" onclick="requirePremium('s-endcoach')">
-          <div class="mc-icon">👑</div>
-          <div class="mc-title">Endgame Coach</div>
-          <div class="mc-desc">King+Queen, Rook, Pawn endings</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="endcoach">0</span></div>
-        </div>
-        <div class="module-card mc-c" onclick="requirePremium('s-ladder-method')">
-          <div class="mc-icon">🪜</div>
-          <div class="mc-title">Double Ladder</div>
-          <div class="mc-desc">Two Rooks push the King out!</div>
-          <div class="mc-stars">⭐ <span class="mc-star-val" data-mod="ladder">0</span></div>
-        </div>
-      </div>
-
-      <div class="section-header">
-        <div class="section-label">📚 Structured Course</div>
-        <div class="section-line"></div>
-      </div>
-      <div style="margin-bottom:24px">
-        <div class="path-step path-current" onclick="tabTo('s-curriculum','tab-curr');buildCurriculum()">
-          <div class="ps-num">L1</div>
-          <div class="ps-info">
-            <div class="ps-title">Beginner — Foundations</div>
-            <div class="ps-sub">Learn pieces, rules, play your first game</div>
-          </div>
-          <span class="ps-tag ps-tag-free">FREE</span>
-          <div style="color:var(--purple);font-weight:900">▶</div>
-        </div>
-        <div class="path-step path-locked" id="step-l2" onclick="requirePremium('s-curriculum')">
-          <div class="ps-num">L2</div>
-          <div class="ps-info">
-            <div class="ps-title">Advanced Beginner</div>
-            <div class="ps-sub">Spot tactics, avoid blunders</div>
-          </div>
-          <span class="ps-tag ps-tag-pro" id="step-l2-tag">👑 PRO</span>
-          <div id="step-l2-icon" style="color:#ddd;font-weight:900">🔒</div>
-        </div>
-        <div class="path-step path-locked" id="step-l3" onclick="requirePremium('s-curriculum')">
-          <div class="ps-num">L3–★</div>
-          <div class="ps-info">
-            <div class="ps-title">Intermediate → Master</div>
-            <div class="ps-sub">Strategy, tournaments, mastery</div>
-          </div>
-          <span class="ps-tag ps-tag-pro" id="step-l3-tag">👑 PRO</span>
-          <div id="step-l3-icon" style="color:#ddd;font-weight:900">🔒</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PUZZLE TRAINER -->
-    <div class="screen content" id="s-puzzle">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">🎯 Puzzle Trainer</div>
-        <div class="score-pill">⭐ <span id="puz-stars">0</span></div>
-      </div>
-      <div class="puzzle-nav" id="puz-cats"></div>
-      <div class="puzzle-counter" id="puz-counter">Puzzle 1 of 10</div>
-      <div class="puzzle-layout">
-        <div>
-          <div class="board-wrap">
-            <div class="board" id="puz-board"></div>
-          </div>
-        </div>
-        <div class="puzzle-info">
-          <div class="kip-bubble">
-            <div class="kip-face">♞</div>
-            <div class="kip-text" id="puz-task">Loading puzzle...</div>
-          </div>
-          <div id="puz-turn" class="turn-indicator turn-white">⬜ White to move</div>
-          <div class="feedback-box" id="puz-feedback"></div>
-          <button class="btn btn-amber" id="puz-next" onclick="nextPuzzle()" style="display:none">▶ Next Puzzle</button>
-          <button class="btn btn-white btn-sm" onclick="showPuzzleHint()">💡 Show Hint</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PLAY VS BOT -->
-    <div class="screen content" id="s-bot">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">🤖 Play vs Bot</div>
-        <div class="score-pill" id="bot-status">Your turn</div>
-      </div>
-      <div id="bot-setup">
-        <div class="kip-bubble">
-          <div class="kip-face">♞</div>
-          <div class="kip-text">Pick how strong the bot should be! You play <strong>White ⬜</strong>. Good luck!</div>
-        </div>
-        <div class="diff-grid">
-          <div class="diff-btn on" id="diff-0" onclick="setDiff(0)">🐣<br>Baby Bot<br><small
-              style="font-weight:600;color:#888">Random moves</small></div>
-          <div class="diff-btn" id="diff-1" onclick="setDiff(1)">🐥<br>Chick Bot<br><small
-              style="font-weight:600;color:#888">Avoids blunders</small></div>
-          <div class="diff-btn" id="diff-2" onclick="setDiff(2)">🐔<br>Rooster<br><small
-              style="font-weight:600;color:#888">Plays tactics</small></div>
-        </div>
-        <button class="btn btn-green" onclick="startBotGame()">▶ Start Game!</button>
-      </div>
-      <div id="bot-game" class="hidden">
-        <div class="bot-layout">
-          <div>
-            <div style="margin-bottom:6px;font-weight:800;font-size:.8rem;color:#888">♟ Black's captures:</div>
-            <div class="captured-row" id="bot-cap-black" style="margin-bottom:8px"></div>
-            <div class="board-wrap">
-              <div class="board" id="bot-board"></div>
-            </div>
-            <div style="margin-top:6px;font-weight:800;font-size:.8rem;color:#888">♟ White's captures:</div>
-            <div class="captured-row" id="bot-cap-white" style="margin-top:6px"></div>
-          </div>
-          <div>
-            <div class="kip-bubble">
-              <div class="kip-face">♞</div>
-              <div class="kip-text" id="bot-msg">Pick a White piece!</div>
-            </div>
-            <div id="bot-thinking" class="thinking-indicator hidden">🤔 Bot is thinking...</div>
-            <div class="card-sm" style="margin-bottom:8px">
-              <div style="font-weight:800;font-size:.82rem;margin-bottom:6px">📝 Moves</div>
-              <div class="move-list" id="bot-moves"></div>
-            </div>
-            <button class="btn btn-white btn-sm" onclick="showBotHint()">💡 Hint</button>
-            <button class="btn btn-coral btn-sm" onclick="resetBotGame()">🔄 New Game</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- THREAT SPOTTER -->
-    <div class="screen content" id="s-threat">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">👁 Threat Spotter</div>
-        <div class="score-pill">⭐ <span id="thr-stars">0</span></div>
-      </div>
-      <div class="threat-layout">
-        <div>
-          <div class="board-wrap">
-            <div class="board" id="thr-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="kip-bubble">
-            <div class="kip-face">♞</div>
-            <div class="kip-text" id="thr-task">Loading...</div>
-          </div>
-          <div class="feedback-box" id="thr-feedback"></div>
-          <div class="card-sm" style="margin-bottom:8px">
-            <div style="font-weight:800;font-size:.82rem;color:#888">Progress</div>
-            <div style="font-weight:900;font-size:1.1rem" id="thr-progress">0 / 0 correct</div>
-          </div>
-          <button class="btn btn-sky" id="thr-next" onclick="nextThreat()" style="display:none">▶ Next Position</button>
-          <button class="btn btn-white btn-sm" onclick="showThreatHint()">💡 Hint</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PIECE DOJO -->
-    <div class="screen content" id="s-dojo">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">🐴 Piece Dojo</div>
-        <div class="score-pill">⭐ <span id="dojo-stars">0</span></div>
-      </div>
-      <div class="kip-bubble">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="dojo-msg">Pick a piece to train with!</div>
-      </div>
-      <div class="dojo-pieces" id="dojo-piece-btns"></div>
-      <div class="dojo-stats">
-        <div class="dojo-stat">
-          <div class="dojo-stat-val" id="dojo-moves">0</div>
-          <div class="dojo-stat-lbl">Moves made</div>
-        </div>
-        <div class="dojo-stat">
-          <div class="dojo-stat-val" id="dojo-best">—</div>
-          <div class="dojo-stat-lbl">Best moves</div>
-        </div>
-        <div class="dojo-stat">
-          <div class="dojo-stat-val" id="dojo-done">0/10</div>
-          <div class="dojo-stat-lbl">Challenges</div>
-        </div>
-      </div>
-      <div class="board-wrap">
-        <div class="board" id="dojo-board"></div>
-      </div>
-      <div class="feedback-box" id="dojo-feedback" style="margin-top:10px"></div>
-    </div>
-
-    <!-- CAPTURE CHALLENGE -->
-    <div class="screen content" id="s-capture">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">💥 Capture Challenge</div>
-        <div class="score-pill">⭐ <span id="cap-stars">0</span></div>
-      </div>
-      <div class="score-bar">
-        <div class="score-box">
-          <div class="sv" id="cap-captured">0</div>
-          <div class="sl">Captured 🟢</div>
-        </div>
-        <div class="score-box">
-          <div class="sv" id="cap-lost">0</div>
-          <div class="sl">Lost 🔴</div>
-        </div>
-        <div class="score-box">
-          <div class="sv" id="cap-moves">3</div>
-          <div class="sl">Moves left</div>
-        </div>
-      </div>
-      <div class="cap-layout">
-        <div>
-          <div class="board-wrap">
-            <div class="board" id="cap-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="kip-bubble">
-            <div class="kip-face">♞</div>
-            <div class="kip-text" id="cap-task">Loading...</div>
-          </div>
-          <div class="feedback-box" id="cap-feedback"></div>
-          <button class="btn btn-amber" id="cap-next" onclick="nextCapture()" style="display:none">▶ Next
-            Challenge</button>
-          <button class="btn btn-white btn-sm" onclick="nextCapture()">🔀 New Position</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- BUILD & DEFEND -->
-    <div class="screen content" id="s-defend">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">🛡️ Build & Defend</div>
-        <div class="score-pill">Survive! <span id="def-moves">5</span> turns</div>
-      </div>
-      <div id="def-setup">
-        <div class="kip-bubble">
-          <div class="kip-face">♞</div>
-          <div class="kip-text">Place your pieces to protect your King! Survive <strong>5 turns</strong> to win!</div>
-        </div>
-        <div class="card-sm" style="margin-bottom:10px">
-          <div style="font-weight:800;font-size:.88rem;margin-bottom:8px">🪖 Your Army:</div>
-          <div id="def-army"></div>
-        </div>
-        <div class="board-wrap">
-          <div class="board" id="def-setup-board"></div>
-        </div>
-        <button class="btn btn-coral" style="margin-top:10px" onclick="startDefend()">⚔️ Start Battle!</button>
-      </div>
-      <div id="def-battle" class="hidden">
-        <div class="defend-layout">
-          <div>
-            <div class="board-wrap">
-              <div class="board" id="def-board"></div>
-            </div>
-          </div>
-          <div>
-            <div class="kip-bubble">
-              <div class="kip-face">♞</div>
-              <div class="kip-text" id="def-msg">Defend the King!</div>
-            </div>
-            <div class="feedback-box" id="def-feedback"></div>
-            <div class="card-sm" style="margin-bottom:8px">
-              <div style="font-weight:800">Turn <span id="def-turn-num">1</span> of 5</div>
-              <div style="font-size:.8rem;color:#888;margin-top:4px" id="def-hint-text"></div>
-            </div>
-            <button class="btn btn-white btn-sm" onclick="showDefendHint()">💡 Hint</button>
-            <button class="btn btn-coral btn-sm" onclick="resetDefend()">🔄 Start Over</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CURRICULUM -->
-    <div class="screen content" id="s-curriculum">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">📚 Chess Courses</div>
-      </div>
-      <div class="kip-bubble">
-        <div class="kip-face">♞</div>
-        <div class="kip-text">Tap a level to explore the lessons! 📖</div>
-      </div>
-      <div id="curr-levels"></div>
-    </div>
-
-    <!-- PROGRESS -->
-    <div class="screen content" id="s-progress">
-      <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button>
-        <div class="game-title">⭐ My Progress</div>
-      </div>
-      <div class="two-col" style="margin-bottom:12px">
-        <div class="card" style="text-align:center">
-          <div style="font-family:'Fredoka One',cursive;font-size:2.5rem" id="prog-stars">0</div>
-          <div style="font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase">Total Stars</div>
-        </div>
-        <div class="card" style="text-align:center">
-          <div style="font-family:'Fredoka One',cursive;font-size:2.5rem" id="prog-streak">0🔥</div>
-          <div style="font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase">Day Streak</div>
-        </div>
-      </div>
-      <div id="prog-modules"></div>
-      <button class="btn btn-coral btn-sm" onclick="if(confirm('Reset all progress?'))resetProgress()">🗑 Reset
-        Progress</button>
-    </div>
-
-    <!-- BLUNDER CHECK -->
-    <div class="screen content" id="s-blunder">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">🔍 Blunder Check</div>
-        <div class="spill">⭐<span id="blu-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="blu-kip">White just played. <b>Is it a blunder?</b></div>
-      </div>
-      <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="blu-ctr">Position
-        1</div>
-      <div class="bl">
-        <div>
-          <div class="bw-wrap">
-            <div class="board" id="blu-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="card-sm" style="margin-bottom:8px">
-            <div style="font-weight:800;font-size:.88rem;margin-bottom:6px">⬜ White just moved. Blunder?</div>
-            <div class="yn-row"><button class="yn-btn yn-yes" id="blu-yes" onclick="blunderAnswer(true)">✅
-                Safe!</button><button class="yn-btn yn-no" id="blu-no" onclick="blunderAnswer(false)">❌
-                Blunder!</button></div>
-          </div>
-          <div id="blu-tap-inst" class="hidden"
-            style="font-weight:800;font-size:.88rem;margin-bottom:6px;color:#FF6B6B">👆 Tap the hanging piece for bonus
-            stars!</div>
-          <div class="fb" id="blu-fb"></div>
-          <div class="card-sm" style="margin-bottom:8px">
-            <div style="font-weight:800;font-size:.8rem;color:#888">Score</div>
-            <div style="font-weight:900;font-size:1.1rem" id="blu-prog">0 / 0</div>
-          </div>
-          <button class="btn bt" id="blu-next" onclick="nextBlunder()" style="display:none">▶ Next</button>
-          <button class="btn bw bsm" onclick="blunderHint()">💡 Hint</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- CHECKMATE PATTERNS -->
-    <div class="screen content" id="s-patterns">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">🏆 Checkmate Patterns</div>
-        <div class="spill">⭐<span id="pat-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="pat-kip">Tap a pattern to learn it! 🏆</div>
-      </div>
-      <div class="pat-grid" id="pat-grid"></div>
-      <div id="pat-lesson" class="hidden">
-        <div class="gh" style="margin-bottom:10px"><button class="bk" onclick="closePat()">←</button>
-          <div class="gtitle" id="pat-lesson-title">Pattern</div>
-        </div>
-        <div class="bl">
-          <div>
-            <div class="bw-wrap">
-              <div class="board" id="pat-board"></div>
-            </div>
-          </div>
-          <div>
-            <div class="kip">
-              <div class="kip-face">♞</div>
-              <div class="kip-text" id="pat-explain">Loading...</div>
-            </div>
-            <div class="fb" id="pat-fb"></div>
-            <div id="pat-quiz-area"></div>
-            <button class="btn bpk" id="pat-next" onclick="nextPatternChallenge()" style="display:none">▶ Try
-              Another</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- COMBINATION BUILDER -->
-    <div class="screen content" id="s-combo">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">🔗 Combination Builder</div>
-        <div class="spill">⭐<span id="cmb-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="cmb-kip">Find checkmate in 2 moves! 🔗</div>
-      </div>
-      <div class="combo-steps" id="cmb-steps"></div>
-      <div class="bl">
-        <div>
-          <div class="bw-wrap">
-            <div class="board" id="cmb-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="tind ti-w" id="cmb-turn">⬜ Move 1</div>
-          <div class="fb" id="cmb-fb" style="margin-top:8px"></div>
-          <button class="btn bo" id="cmb-next" onclick="nextCombo()" style="display:none">▶ Next</button>
-          <button class="btn bw bsm" onclick="comboHint()">💡 Hint</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ENDGAME COACH -->
-    <div class="screen content" id="s-endcoach">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">👑 Endgame Coach</div>
-        <div class="spill">⭐<span id="end-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="end-kip">Choose an endgame to learn! 👑</div>
-      </div>
-      <div id="end-menu">
-        <div class="g3" style="margin-bottom:12px">
-          <button class="btn bg" onclick="startEndgame('kqk')">♛ King + Queen vs King</button>
-          <button class="btn bs" onclick="startEndgame('krk')">♜ King + Rook vs King</button>
-          <button class="btn ba" onclick="startEndgame('kpk')">♟ King + Pawn vs King</button>
-        </div>
-      </div>
-      <div id="end-lesson" class="hidden">
-        <div class="step-list" id="end-steps"></div>
-        <div class="bl">
-          <div>
-            <div class="bw-wrap">
-              <div class="board" id="end-board"></div>
-            </div>
-          </div>
-          <div>
-            <div class="fb" id="end-fb"></div>
-            <button class="btn bg" id="end-next" onclick="endgameNext()" style="display:none">▶ Next Step</button>
-            <button class="btn bw bsm" onclick="endgameHint()">💡 Hint</button>
-            <button class="btn bc bsm" onclick="resetEndgame()">🔄 Restart</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- OPENING LAB -->
-    <div class="screen content" id="s-opening">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">🌅 Opening Lab</div>
-        <div class="spill">⭐<span id="op-sc">0</span></div>
-      </div>
-      <div class="pcats" id="op-cats"></div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="op-kip">Which opening move is BETTER?</div>
-      </div>
-      <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="op-ctr">Question
-        1</div>
-      <div class="op-choice" id="op-choices"></div>
-      <div class="fb" id="op-fb"></div>
-      <button class="btn ba" id="op-next" onclick="nextOpening()" style="display:none">▶ Next Question</button>
-    </div>
-
-    <!-- WHO'S WINNING -->
-    <div class="screen content" id="s-eval">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">⚖️ Who's Winning?</div>
-        <div class="spill">⭐<span id="ev-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="ev-kip">Count pieces! P=1 N/B=3 R=5 Q=9. Who has more?</div>
-      </div>
-      <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="ev-ctr">Position
-        1</div>
-      <div class="bl">
-        <div>
-          <div class="bw-wrap">
-            <div class="board" id="ev-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="mat-row" id="ev-mat">Counting...</div>
-          <div class="eval-opts">
-            <div class="eval-opt" id="ev-w" onclick="evalAnswer('white')">⬜ White</div>
-            <div class="eval-opt" id="ev-e" onclick="evalAnswer('equal')">⚖️ Equal</div>
-            <div class="eval-opt" id="ev-b" onclick="evalAnswer('black')">⬛ Black</div>
-          </div>
-          <div class="fb" id="ev-fb"></div>
-          <div class="card-sm" style="margin-bottom:8px">
-            <div style="font-weight:800;font-size:.8rem;color:#888">Score</div>
-            <div style="font-weight:900;font-size:1.1rem" id="ev-prog">0 / 0</div>
-          </div>
-          <button class="btn bp" id="ev-next" onclick="nextEval()" style="display:none">▶ Next</button>
-          <button class="btn bw bsm" onclick="evalHint()">💡 Hint</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PAWN SCHOOL -->
-    <div class="screen content" id="s-pawn">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">📐 Pawn School</div>
-        <div class="spill">⭐<span id="pw-sc">0</span></div>
-      </div>
-      <div class="pcats" id="pw-cats"></div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="pw-kip">Loading...</div>
-      </div>
-      <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="pw-ctr">Q 1</div>
-      <div class="bl">
-        <div>
-          <div class="bw-wrap">
-            <div class="board" id="pw-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="fb" id="pw-fb"></div>
-          <div id="pw-choices"></div><button class="btn bt" id="pw-next" onclick="nextPawn()" style="display:none">▶
-            Next</button><button class="btn bw bsm" onclick="pawnHint()">💡 Hint</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- DEFEND THE KING -->
-    <div class="screen content" id="s-defend-check">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">🛡️ Defend the King!</div>
-        <div class="spill">⭐<span id="dk-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="dk-kip">Your King is in danger!</div>
-      </div>
-      <div class="scenario-tabs">
-        <button class="stab stab-move on" id="dk-tab-move" onclick="dkSetSkill('move')">🏃 Move Away</button>
-        <button class="stab stab-block" id="dk-tab-block" onclick="dkSetSkill('block')">🧱 Block</button>
-        <button class="stab stab-capture" id="dk-tab-capture" onclick="dkSetSkill('capture')">⚔️ Capture</button>
-        <button class="stab stab-protect" id="dk-tab-protect" onclick="dkSetSkill('protect')">🛡️ Protect</button>
-      </div>
-      <div class="scenario-ctr" id="dk-ctr">Scenario 1</div>
-      <div class="bl">
-        <div>
-          <div class="bw-wrap">
-            <div class="board" id="dk-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="tactic-concept">
-            <div class="tc-emoji" id="dk-con-em">🏃</div>
-            <div class="tc-name" id="dk-con-name">Move Away</div>
-            <div class="tc-explain" id="dk-con-exp">Move to a safe square!</div>
-          </div>
-          <div class="fb" id="dk-fb"></div>
-          <div class="hint-dots" id="dk-dots"></div>
-          <button class="btn bg" id="dk-next" onclick="dkNext()" style="display:none">▶ Next</button>
-          <button class="btn bw bsm" onclick="dkHint()">💡 Hint</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- DOUBLE LADDER -->
-    <div class="screen content" id="s-ladder-method">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">🪜 Double Ladder</div>
-        <div class="spill">⭐<span id="ld-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="ld-kip">Use TWO Rooks to push the King to the edge!</div>
-      </div>
-      <div class="scenario-tabs">
-        <button class="stab stab-ladder on" id="ld-tab-learn" onclick="ldSetMode('learn')">📖 Learn</button>
-        <button class="stab stab-ladder" id="ld-tab-practice" onclick="ldSetMode('practice')">🎯 Practice</button>
-        <button class="stab stab-ladder" id="ld-tab-challenge" onclick="ldSetMode('challenge')">🏆 Challenge</button>
-      </div>
-      <div class="ladder-progress" id="ld-progress"></div>
-      <div class="bl">
-        <div>
-          <div class="bw-wrap">
-            <div class="board" id="ld-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="kip">
-            <div class="kip-face">♞</div>
-            <div class="kip-text" id="ld-task">Select a Rook!</div>
-          </div>
-          <div class="fb" id="ld-fb"></div>
-          <button class="btn bs" id="ld-next" onclick="ldNext()" style="display:none">▶ Next Step</button>
-          <button class="btn bw bsm" onclick="ldHint()">💡 Hint</button>
-          <button class="btn bc bsm" onclick="ldReset()">🔄 Restart</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- FORK & DOUBLE ATTACK -->
-    <div class="screen content" id="s-fork-train">
-      <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button>
-        <div class="gtitle">🍴 Fork & Double Attack</div>
-        <div class="spill">⭐<span id="ft-sc">0</span></div>
-      </div>
-      <div class="kip">
-        <div class="kip-face">♞</div>
-        <div class="kip-text" id="ft-kip">Attack TWO pieces at once!</div>
-      </div>
-      <div class="scenario-tabs">
-        <button class="stab stab-fork on" id="ft-tab-fork" onclick="ftSetSkill('fork')">🍴 Fork</button>
-        <button class="stab stab-double" id="ft-tab-double" onclick="ftSetSkill('double')">💥 Double Attack</button>
-      </div>
-      <div class="scenario-ctr" id="ft-ctr">Scenario 1</div>
-      <div class="bl">
-        <div>
-          <div class="bw-wrap">
-            <div class="board" id="ft-board"></div>
-          </div>
-        </div>
-        <div>
-          <div class="tactic-concept" id="ft-concept">
-            <div class="tc-emoji">🍴</div>
-            <div class="tc-name">Fork!</div>
-            <div class="tc-explain" id="ft-con-exp">Attack TWO pieces at once!</div>
-          </div>
-          <div class="fork-targets" id="ft-targets"></div>
-          <div class="fb" id="ft-fb"></div>
-          <button class="btn bpk" id="ft-next" onclick="ftNext()" style="display:none">▶ Next</button>
-          <button class="btn bw bsm" onclick="ftHint()">💡 Hint</button>
-        </div>
+  <div id="onboarding">
+    <div class="ob-card">
+      <div class="ob-step ob-active" id="ob-1">
+        <div class="ob-logo">♞ Chess<span>Kids</span></div>
+        <div class="ob-kip">♞</div>
+        <div class="ob-title">Hi there! I'm Kip! 👋</div>
+        <div class="ob-sub">I'll teach you real chess through puzzles, games & fun! What's your name?</div>
+        <input class="ob-input" id="ob-name-input" type="text" placeholder="Type your name..." maxlength="20" autocomplete="off">
+        <button class="btn btn-purple" onclick="ob_next(1)">Let's go! 🚀</button>
+      </div>
+      <div class="ob-step" id="ob-2">
+        <div class="ob-kip">♞</div>
+        <div class="ob-title" id="ob-age-title">How old are you?</div>
+        <div class="ob-sub">I'll pick the best games for you!</div>
+        <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot active"></div><div class="ob-dot"></div></div>
+        <div class="ob-choices">
+          <button class="ob-choice" onclick="ob_setAge('5-7',this)"><span class="oc-icon">🐣</span><span><strong>5 – 7 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Just starting out!</span></span></button>
+          <button class="ob-choice" onclick="ob_setAge('8-10',this)"><span class="oc-icon">🎒</span><span><strong>8 – 10 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Ready for a challenge!</span></span></button>
+          <button class="ob-choice" onclick="ob_setAge('11-14',this)"><span class="oc-icon">🏆</span><span><strong>11 – 14 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Serious player mode!</span></span></button>
+        </div>
+        <button class="btn btn-purple" onclick="ob_next(2)">Next →</button>
+      </div>
+      <div class="ob-step" id="ob-3">
+        <div class="ob-kip">♞</div>
+        <div class="ob-title">Chess level?</div>
+        <div class="ob-sub">No wrong answer — be honest!</div>
+        <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot active"></div></div>
+        <div class="ob-choices">
+          <button class="ob-choice" onclick="ob_setLevel('beginner',this)"><span class="oc-icon">🌱</span><span><strong>Never played</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">I don't know the pieces yet</span></span></button>
+          <button class="ob-choice" onclick="ob_setLevel('some',this)"><span class="oc-icon">♟</span><span><strong>Played a little</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">I know basic moves</span></span></button>
+          <button class="ob-choice" onclick="ob_setLevel('experienced',this)"><span class="oc-icon">♔</span><span><strong>I play chess!</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Looking to get better</span></span></button>
+        </div>
+        <button class="btn btn-green" onclick="ob_finish()">Start Learning! 🎉</button>
       </div>
-    </div>
-
-    <!-- BOTTOM TAB BAR -->
-    <nav class="tabbar">
-      <button class="tab on" id="tab-home" onclick="tabTo('s-home','tab-home')"><span class="tbi">🏠</span><span
-          class="tbl">Home</span></button>
-      <button class="tab" id="tab-puzzle" onclick="tabTo('s-puzzle','tab-puzzle');initPuzzle()"><span
-          class="tbi">🎯</span><span class="tbl">Puzzles</span></button>
-      <button class="tab" id="tab-bot" onclick="tabTo('s-bot','tab-bot')"><span class="tbi">🤖</span><span
-          class="tbl">Play</span></button>
-      <button class="tab" id="tab-curr" onclick="tabTo('s-curriculum','tab-curr');buildCurriculum()"><span
-          class="tbi">📚</span><span class="tbl">Learn</span></button>
-      <button class="tab" id="tab-prog" onclick="tabTo('s-progress','tab-prog');renderProgress()"><span
-          class="tbi">⭐</span><span class="tbl">Progress</span></button>
-    </nav>
-  </div>
-
-  <div class="result-overlay" id="rover">
-    <div class="result-card">
-      <span class="result-emoji" id="r-emoji">🏆</span>
-      <div class="result-title" id="r-title">Great Job!</div>
-      <div class="result-sub" id="r-sub">You earned 3 stars!</div>
-      <button class="btn btn-green" onclick="closeResult(true)" style="margin-bottom:8px">▶ Play Again!</button>
-      <button class="btn btn-white btn-sm" onclick="closeResult(false)">🏠 Home</button>
     </div>
   </div>
-  <div class="toast" id="toast"></div>
 
-  <script type="module" src="js/app.js"></script>
+  <div id="premium-gate" onclick="if(event.target===this)closePremiumGate()">
+    <div class="pg-sheet">
+      <div class="pg-handle"></div>
+      <div class="pg-emoji">👑</div>
+      <div class="pg-title">Unlock All 13 Modules!</div>
+      <div class="pg-sub">This module is part of ChessKids Premium — everything unlocked for one low price.</div>
+      <div class="pg-features">
+        <div class="pg-feat"><span>🎯</span> All 13 interactive chess modules</div>
+        <div class="pg-feat"><span>📚</span> Full structured curriculum (L1 → Master)</div>
+        <div class="pg-feat"><span>📈</span> Parent progress dashboard</div>
+        <div class="pg-feat"><span>🏆</span> Weekly progress reports</div>
+        <div class="pg-feat"><span>🔇</span> Ad-free forever</div>
+      </div>
+      <div class="pg-price-row">
+        <div><div class="pg-price-label">ChessKids Premium</div><div style="font-size:.72rem;font-weight:700;color:#aaa">Monthly, cancel anytime</div></div>
+        <div class="pg-price-val">$6.99<span style="font-size:.9rem;color:#888">/mo</span></div>
+      </div>
+      <a href="https://buy.stripe.com/test_dRmfZj1wldi4eW3gXw0ZW01" target="_blank" style="text-decoration:none;display:block">
+        <button class="btn btn-gold" style="font-size:1.05rem;margin-bottom:6px">👑 Unlock Premium — $6.99/mo</button>
+      </a>
+      <div style="margin-bottom:10px">
+        <div style="font-size:.75rem;font-weight:700;color:#aaa;text-align:center;margin-bottom:6px">Already paid? Enter your access code:</div>
+        <div class="pg-code-row">
+          <input class="pg-code-input" id="pg-code-input" placeholder="Enter access code..." type="text">
+          <button class="pg-code-btn" onclick="redeemCode()">Unlock</button>
+        </div>
+        <div id="pg-code-msg" style="font-size:.78rem;font-weight:800;text-align:center;min-height:18px"></div>
+      </div>
+      <span class="pg-close" onclick="closePremiumGate()">✕ Maybe later</span>
+    </div>
+  </div>
+
+  <nav class="topnav">
+    <div class="topnav-logo">♞ Chess<span>Kids</span></div>
+    <div class="nav-stars">⭐ <span id="nav-star-count">0</span></div>
+    <button class="nav-premium-btn" id="nav-premium-btn" onclick="showPremiumGate()" style="display:none">👑 Go Premium</button>
+  </nav>
+
+  <!-- HOME -->
+  <div class="screen active content" id="s-home">
+    <div class="home-hero">
+      <div class="home-hero-top">
+        <div class="hero-kip-sm">♞</div>
+        <div class="home-hero-text">
+          <h1>Chess<span>Kids!</span></h1>
+          <p>Welcome back, <span class="hero-user-name" id="hero-name">friend</span>! Ready to play? 🎉</p>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val" id="h-stars">0</div><div class="hero-stat-lbl">⭐ Stars</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="h-streak">0🔥</div><div class="hero-stat-lbl">Streak</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="h-level">—</div><div class="hero-stat-lbl">Level</div></div>
+      </div>
+    </div>
+    <div class="premium-banner" id="premium-banner" onclick="showPremiumGate()">
+      <div class="pb-label">👑 ChessKids Premium</div>
+      <div class="pb-title">Unlock All 13 Modules!</div>
+      <div class="pb-sub">3 modules are free. Upgrade to unlock everything.</div>
+      <div class="pb-price">$6.99 <small>/ month</small></div>
+      <div class="pb-features">
+        <div class="pb-feat">✅ All 13 interactive modules</div>
+        <div class="pb-feat">✅ Structured curriculum L1 → Master</div>
+        <div class="pb-feat">✅ Parent dashboard + weekly reports</div>
+      </div>
+      <button class="btn btn-gold" style="font-size:.95rem" onclick="event.stopPropagation();showPremiumGate()">👑 Upgrade Now — $6.99/mo</button>
+    </div>
+    <div class="section-header"><div class="section-label">🟢 Start Here — Free</div><div class="section-badge">FREE</div><div class="section-line"></div></div>
+    <div class="kip-bubble" style="margin-bottom:10px"><div class="kip-face">♞</div><div class="kip-text" id="home-kip-msg">Hi! I'm <strong>Kip</strong>! Start with these 3 free modules! 🎉</div></div>
+    <div class="module-grid" style="margin-bottom:16px">
+      <div class="module-card mc-d" onclick="goScreen('s-dojo')"><div class="mc-step">Step 1</div><div class="mc-icon">🐴</div><div class="mc-title">Piece Dojo</div><div class="mc-desc">Learn how every piece moves</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="dojo">0</span></div></div>
+      <div class="module-card mc-b" onclick="goScreen('s-bot')"><div class="mc-step">Step 2</div><div class="mc-icon">🤖</div><div class="mc-title">Play vs Bot</div><div class="mc-desc">Play a real chess game!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="bot">0</span></div></div>
+      <div class="module-card mc-a" onclick="goScreen('s-puzzle')"><div class="mc-step">Step 3</div><div class="mc-icon">🎯</div><div class="mc-title">Puzzle Trainer</div><div class="mc-desc">Solve real chess puzzles</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="puzzle">0</span></div></div>
+    </div>
+    <div class="section-header"><div class="section-label">⚔️ Tactics Training</div><div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div><div class="section-line"></div></div>
+    <div class="module-grid" style="margin-bottom:16px">
+      <div class="module-card mc-c" onclick="requirePremium('s-threat')"><div class="mc-icon">👁</div><div class="mc-title">Threat Spotter</div><div class="mc-desc">Find what they're threatening</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="threat">0</span></div></div>
+      <div class="module-card mc-e" onclick="requirePremium('s-capture')"><div class="mc-icon">💥</div><div class="mc-title">Capture Challenge</div><div class="mc-desc">Grab free pieces safely!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="capture">0</span></div></div>
+      <div class="module-card mc-f" onclick="requirePremium('s-blunder')"><div class="mc-icon">🔍</div><div class="mc-title">Blunder Check</div><div class="mc-desc">Is it a blunder?</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="blunder">0</span></div></div>
+      <div class="module-card mc-g" onclick="requirePremium('s-fork-train')"><div class="mc-icon">🍴</div><div class="mc-title">Fork & Attack</div><div class="mc-desc">Attack two pieces at once!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="fork">0</span></div></div>
+      <div class="module-card mc-h" onclick="requirePremium('s-defend-check')"><div class="mc-icon">🛡️</div><div class="mc-title">Defend the King</div><div class="mc-desc">Move, block, capture, protect!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="defend">0</span></div></div>
+      <div class="module-card mc-i" onclick="requirePremium('s-patterns')"><div class="mc-icon">🏆</div><div class="mc-title">Checkmate Patterns</div><div class="mc-desc">10 classic patterns</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="patterns">0</span></div></div>
+    </div>
+    <div class="section-header"><div class="section-label">♟ Strategy & Openings</div><div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div><div class="section-line"></div></div>
+    <div class="module-grid" style="margin-bottom:16px">
+      <div class="module-card mc-j" onclick="requirePremium('s-opening')"><div class="mc-icon">🌅</div><div class="mc-title">Opening Lab</div><div class="mc-desc">Which move is better?</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="opening">0</span></div></div>
+      <div class="module-card mc-k" onclick="requirePremium('s-pawn')"><div class="mc-icon">📐</div><div class="mc-title">Pawn School</div><div class="mc-desc">Passed, isolated, promotion</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="pawn">0</span></div></div>
+      <div class="module-card mc-l" onclick="requirePremium('s-eval')"><div class="mc-icon">⚖️</div><div class="mc-title">Who's Winning?</div><div class="mc-desc">Count material & evaluate</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="eval">0</span></div></div>
+    </div>
+    <div class="section-header"><div class="section-label">👑 Endgames & Combos</div><div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div><div class="section-line"></div></div>
+    <div class="module-grid" style="margin-bottom:16px">
+      <div class="module-card mc-m" onclick="requirePremium('s-defend')"><div class="mc-icon">🏰</div><div class="mc-title">Build & Defend</div><div class="mc-desc">Place your army. Survive!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="defend">0</span></div></div>
+      <div class="module-card mc-a" onclick="requirePremium('s-combo')"><div class="mc-icon">🔗</div><div class="mc-title">Combo Builder</div><div class="mc-desc">Checkmate in 2 moves!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="combo">0</span></div></div>
+      <div class="module-card mc-b" onclick="requirePremium('s-endcoach')"><div class="mc-icon">👑</div><div class="mc-title">Endgame Coach</div><div class="mc-desc">King+Queen, Rook, Pawn endings</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="endcoach">0</span></div></div>
+      <div class="module-card mc-c" onclick="requirePremium('s-ladder-method')"><div class="mc-icon">🪜</div><div class="mc-title">Double Ladder</div><div class="mc-desc">Two Rooks push the King out!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="ladder">0</span></div></div>
+    </div>
+    <div class="section-header"><div class="section-label">📚 Structured Course</div><div class="section-line"></div></div>
+    <div style="margin-bottom:24px">
+      <div class="path-step path-current" onclick="tabTo('s-curriculum','tab-curr');buildCurriculum()">
+        <div class="ps-num">L1</div><div class="ps-info"><div class="ps-title">Beginner — Foundations</div><div class="ps-sub">Learn pieces, rules, play your first game</div></div>
+        <span class="ps-tag ps-tag-free">FREE</span><div style="color:var(--purple);font-weight:900">▶</div>
+      </div>
+      <div class="path-step path-locked" id="step-l2" onclick="requirePremium('s-curriculum')">
+        <div class="ps-num">L2</div><div class="ps-info"><div class="ps-title">Advanced Beginner</div><div class="ps-sub">Spot tactics, avoid blunders</div></div>
+        <span class="ps-tag ps-tag-pro" id="step-l2-tag">👑 PRO</span><div id="step-l2-icon" style="color:#ddd;font-weight:900">🔒</div>
+      </div>
+      <div class="path-step path-locked" id="step-l3" onclick="requirePremium('s-curriculum')">
+        <div class="ps-num">L3–★</div><div class="ps-info"><div class="ps-title">Intermediate → Master</div><div class="ps-sub">Strategy, tournaments, mastery</div></div>
+        <span class="ps-tag ps-tag-pro" id="step-l3-tag">👑 PRO</span><div id="step-l3-icon" style="color:#ddd;font-weight:900">🔒</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUZZLE TRAINER -->
+  <div class="screen content" id="s-puzzle">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🎯 Puzzle Trainer</div><div class="score-pill">⭐ <span id="puz-stars">0</span></div></div>
+    <div class="puzzle-nav" id="puz-cats"></div>
+    <div class="puzzle-counter" id="puz-counter">Puzzle 1 of 7</div>
+    <div class="puzzle-layout">
+      <div><div class="board-wrap"><div class="board" id="puz-board"></div></div></div>
+      <div class="puzzle-info">
+        <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="puz-task">Loading...</div></div>
+        <div id="puz-turn" class="turn-indicator turn-white">⬜ White to move</div>
+        <div class="feedback-box" id="puz-feedback"></div>
+        <button class="btn btn-amber" id="puz-next" onclick="nextPuzzle()" style="display:none">▶ Next Puzzle</button>
+        <button class="btn btn-white btn-sm" onclick="showPuzzleHint()">💡 Show Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAY VS BOT -->
+  <div class="screen content" id="s-bot">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🤖 Play vs Bot</div><div class="score-pill" id="bot-status">Your turn</div></div>
+    <div id="bot-setup">
+      <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text">Pick how strong the bot should be! You play <strong>White ⬜</strong>. Good luck!</div></div>
+      <div class="diff-grid">
+        <div class="diff-btn on" id="diff-0" onclick="setDiff(0)">🐣<br>Baby Bot<br><small style="font-weight:600;color:#888">Random moves</small></div>
+        <div class="diff-btn" id="diff-1" onclick="setDiff(1)">🐥<br>Chick Bot<br><small style="font-weight:600;color:#888">Avoids blunders</small></div>
+        <div class="diff-btn" id="diff-2" onclick="setDiff(2)">🐔<br>Rooster<br><small style="font-weight:600;color:#888">Plays tactics</small></div>
+      </div>
+      <button class="btn btn-green" onclick="startBotGame()">▶ Start Game!</button>
+    </div>
+    <div id="bot-game" class="hidden">
+      <div class="bot-layout">
+        <div>
+          <div style="margin-bottom:6px;font-weight:800;font-size:.8rem;color:#888">♟ Black's captures:</div>
+          <div class="captured-row" id="bot-cap-black" style="margin-bottom:8px"></div>
+          <div class="board-wrap"><div class="board" id="bot-board"></div></div>
+          <div style="margin-top:6px;font-weight:800;font-size:.8rem;color:#888">♟ White's captures:</div>
+          <div class="captured-row" id="bot-cap-white" style="margin-top:6px"></div>
+        </div>
+        <div>
+          <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="bot-msg">Pick a White piece!</div></div>
+          <div id="bot-thinking" class="thinking-indicator hidden">🤔 Bot is thinking...</div>
+          <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.82rem;margin-bottom:6px">📝 Moves</div><div class="move-list" id="bot-moves"></div></div>
+          <button class="btn btn-white btn-sm" onclick="showBotHint()">💡 Hint</button>
+          <button class="btn btn-coral btn-sm" onclick="resetBotGame()">🔄 New Game</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREAT SPOTTER -->
+  <div class="screen content" id="s-threat">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">👁 Threat Spotter</div><div class="score-pill">⭐ <span id="thr-stars">0</span></div></div>
+    <div class="threat-layout">
+      <div><div class="board-wrap"><div class="board" id="thr-board"></div></div></div>
+      <div>
+        <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="thr-task">Loading...</div></div>
+        <div class="feedback-box" id="thr-feedback"></div>
+        <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.82rem;color:#888">Progress</div><div style="font-weight:900;font-size:1.1rem" id="thr-progress">0 / 0 correct</div></div>
+        <button class="btn btn-sky" id="thr-next" onclick="nextThreat()" style="display:none">▶ Next Position</button>
+        <button class="btn btn-white btn-sm" onclick="showThreatHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIECE DOJO -->
+  <div class="screen content" id="s-dojo">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🐴 Piece Dojo</div><div class="score-pill">⭐ <span id="dojo-stars">0</span></div></div>
+    <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="dojo-msg">Pick a piece to train with!</div></div>
+    <div class="dojo-pieces" id="dojo-piece-btns"></div>
+    <div class="dojo-stats">
+      <div class="dojo-stat"><div class="dojo-stat-val" id="dojo-moves">0</div><div class="dojo-stat-lbl">Moves made</div></div>
+      <div class="dojo-stat"><div class="dojo-stat-val" id="dojo-best">—</div><div class="dojo-stat-lbl">Best moves</div></div>
+      <div class="dojo-stat"><div class="dojo-stat-val" id="dojo-done">0/10</div><div class="dojo-stat-lbl">Challenges</div></div>
+    </div>
+    <div class="board-wrap"><div class="board" id="dojo-board"></div></div>
+    <div class="feedback-box" id="dojo-feedback" style="margin-top:10px"></div>
+  </div>
+
+  <!-- CAPTURE CHALLENGE -->
+  <div class="screen content" id="s-capture">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">💥 Capture Challenge</div><div class="score-pill">⭐ <span id="cap-stars">0</span></div></div>
+    <div class="score-bar">
+      <div class="score-box"><div class="sv" id="cap-captured">0</div><div class="sl">Captured 🟢</div></div>
+      <div class="score-box"><div class="sv" id="cap-lost">0</div><div class="sl">Lost 🔴</div></div>
+      <div class="score-box"><div class="sv" id="cap-moves">3</div><div class="sl">Moves left</div></div>
+    </div>
+    <div class="cap-layout">
+      <div><div class="board-wrap"><div class="board" id="cap-board"></div></div></div>
+      <div>
+        <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="cap-task">Loading...</div></div>
+        <div class="feedback-box" id="cap-feedback"></div>
+        <button class="btn btn-amber" id="cap-next" onclick="nextCapture()" style="display:none">▶ Next Challenge</button>
+        <button class="btn btn-white btn-sm" onclick="nextCapture()">🔀 New Position</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD & DEFEND -->
+  <div class="screen content" id="s-defend">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🛡️ Build & Defend</div><div class="score-pill">Survive! <span id="def-moves">5</span> turns</div></div>
+    <div id="def-setup">
+      <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text">Place your pieces to protect your King! Survive <strong>5 turns</strong> to win!</div></div>
+      <div class="card-sm" style="margin-bottom:10px"><div style="font-weight:800;font-size:.88rem;margin-bottom:8px">🪖 Your Army:</div><div id="def-army"></div></div>
+      <div class="board-wrap"><div class="board" id="def-setup-board"></div></div>
+      <button class="btn btn-coral" style="margin-top:10px" onclick="startDefend()">⚔️ Start Battle!</button>
+    </div>
+    <div id="def-battle" class="hidden">
+      <div class="defend-layout">
+        <div><div class="board-wrap"><div class="board" id="def-board"></div></div></div>
+        <div>
+          <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="def-msg">Defend the King!</div></div>
+          <div class="feedback-box" id="def-feedback"></div>
+          <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800">Turn <span id="def-turn-num">1</span> of 5</div><div style="font-size:.8rem;color:#888;margin-top:4px" id="def-hint-text"></div></div>
+          <button class="btn btn-white btn-sm" onclick="showDefendHint()">💡 Hint</button>
+          <button class="btn btn-coral btn-sm" onclick="resetDefend()">🔄 Start Over</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CURRICULUM -->
+  <div class="screen content" id="s-curriculum">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">📚 Chess Courses</div></div>
+    <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text">Tap a level to explore the lessons! 📖</div></div>
+    <div id="curr-levels"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="screen content" id="s-progress">
+    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">⭐ My Progress</div></div>
+    <div class="two-col" style="margin-bottom:12px">
+      <div class="card" style="text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:2.5rem" id="prog-stars">0</div><div style="font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase">Total Stars</div></div>
+      <div class="card" style="text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:2.5rem" id="prog-streak">0🔥</div><div style="font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase">Day Streak</div></div>
+    </div>
+    <div id="prog-modules"></div>
+    <button class="btn btn-coral btn-sm" onclick="if(confirm('Reset all progress?'))resetProgress()">🗑 Reset Progress</button>
+  </div>
+
+  <!-- BLUNDER CHECK -->
+  <div class="screen content" id="s-blunder">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🔍 Blunder Check</div><div class="spill">⭐<span id="blu-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="blu-kip">White just played. <b>Is it a blunder?</b></div></div>
+    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="blu-ctr">Position 1</div>
+    <div class="bl">
+      <div><div class="bw-wrap"><div class="board" id="blu-board"></div></div></div>
+      <div>
+        <div class="card-sm" style="margin-bottom:8px">
+          <div style="font-weight:800;font-size:.88rem;margin-bottom:6px">⬜ White just moved. Blunder?</div>
+          <div class="yn-row"><button class="yn-btn yn-yes" id="blu-yes" onclick="blunderAnswer(true)">✅ Safe!</button><button class="yn-btn yn-no" id="blu-no" onclick="blunderAnswer(false)">❌ Blunder!</button></div>
+        </div>
+        <div id="blu-tap-inst" class="hidden" style="font-weight:800;font-size:.88rem;margin-bottom:6px;color:#FF6B6B">👆 Tap the hanging piece for bonus stars!</div>
+        <div class="fb" id="blu-fb"></div>
+        <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.8rem;color:#888">Score</div><div style="font-weight:900;font-size:1.1rem" id="blu-prog">0 / 0</div></div>
+        <button class="btn bt" id="blu-next" onclick="nextBlunder()" style="display:none">▶ Next</button>
+        <button class="btn bw bsm" onclick="blunderHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKMATE PATTERNS -->
+  <div class="screen content" id="s-patterns">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🏆 Checkmate Patterns</div><div class="spill">⭐<span id="pat-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="pat-kip">Tap a pattern to learn it! 🏆</div></div>
+    <div class="pat-grid" id="pat-grid"></div>
+    <div id="pat-lesson" class="hidden">
+      <div class="gh" style="margin-bottom:10px"><button class="bk" onclick="closePat()">←</button><div class="gtitle" id="pat-lesson-title">Pattern</div></div>
+      <div class="bl">
+        <div><div class="bw-wrap"><div class="board" id="pat-board"></div></div></div>
+        <div>
+          <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="pat-explain">Loading...</div></div>
+          <div class="fb" id="pat-fb"></div>
+          <div id="pat-quiz-area"></div>
+          <button class="btn bpk" id="pat-next" onclick="nextPatternChallenge()" style="display:none">▶ Try Another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMBINATION BUILDER -->
+  <div class="screen content" id="s-combo">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🔗 Combination Builder</div><div class="spill">⭐<span id="cmb-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="cmb-kip">Find checkmate in 2 moves! 🔗</div></div>
+    <div class="combo-steps" id="cmb-steps"></div>
+    <div class="bl">
+      <div><div class="bw-wrap"><div class="board" id="cmb-board"></div></div></div>
+      <div>
+        <div class="tind ti-w" id="cmb-turn">⬜ Move 1</div>
+        <div class="fb" id="cmb-fb" style="margin-top:8px"></div>
+        <button class="btn bo" id="cmb-next" onclick="nextCombo()" style="display:none">▶ Next</button>
+        <button class="btn bw bsm" onclick="comboHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENDGAME COACH -->
+  <div class="screen content" id="s-endcoach">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">👑 Endgame Coach</div><div class="spill">⭐<span id="end-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="end-kip">Choose an endgame to learn! 👑</div></div>
+    <div id="end-menu">
+      <div class="g3" style="margin-bottom:12px">
+        <button class="btn bg" onclick="startEndgame('kqk')">♛ King + Queen vs King</button>
+        <button class="btn bs" onclick="startEndgame('krk')">♜ King + Rook vs King</button>
+        <button class="btn ba" onclick="startEndgame('kpk')">♟ King + Pawn vs King</button>
+      </div>
+    </div>
+    <div id="end-lesson" class="hidden">
+      <div class="step-list" id="end-steps"></div>
+      <div class="bl">
+        <div><div class="bw-wrap"><div class="board" id="end-board"></div></div></div>
+        <div>
+          <div class="fb" id="end-fb"></div>
+          <button class="btn bg" id="end-next" onclick="endgameNext()" style="display:none">▶ Next Step</button>
+          <button class="btn bw bsm" onclick="endgameHint()">💡 Hint</button>
+          <button class="btn bc bsm" onclick="resetEndgame()">🔄 Restart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPENING LAB -->
+  <div class="screen content" id="s-opening">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🌅 Opening Lab</div><div class="spill">⭐<span id="op-sc">0</span></div></div>
+    <div class="pcats" id="op-cats"></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="op-kip">Which opening move is BETTER?</div></div>
+    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="op-ctr">Question 1</div>
+    <div class="op-choice" id="op-choices"></div>
+    <div class="fb" id="op-fb"></div>
+    <button class="btn ba" id="op-next" onclick="nextOpening()" style="display:none">▶ Next Question</button>
+  </div>
+
+  <!-- WHO'S WINNING -->
+  <div class="screen content" id="s-eval">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">⚖️ Who's Winning?</div><div class="spill">⭐<span id="ev-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ev-kip">Count pieces! P=1 N/B=3 R=5 Q=9. Who has more?</div></div>
+    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="ev-ctr">Position 1</div>
+    <div class="bl">
+      <div><div class="bw-wrap"><div class="board" id="ev-board"></div></div></div>
+      <div>
+        <div class="mat-row" id="ev-mat">Counting...</div>
+        <div class="eval-opts">
+          <div class="eval-opt" id="ev-w" onclick="evalAnswer('white')">⬜ White</div>
+          <div class="eval-opt" id="ev-e" onclick="evalAnswer('equal')">⚖️ Equal</div>
+          <div class="eval-opt" id="ev-b" onclick="evalAnswer('black')">⬛ Black</div>
+        </div>
+        <div class="fb" id="ev-fb"></div>
+        <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.8rem;color:#888">Score</div><div style="font-weight:900;font-size:1.1rem" id="ev-prog">0 / 0</div></div>
+        <button class="btn bp" id="ev-next" onclick="nextEval()" style="display:none">▶ Next</button>
+        <button class="btn bw bsm" onclick="evalHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAWN SCHOOL -->
+  <div class="screen content" id="s-pawn">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">📐 Pawn School</div><div class="spill">⭐<span id="pw-sc">0</span></div></div>
+    <div class="pcats" id="pw-cats"></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="pw-kip">Loading...</div></div>
+    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="pw-ctr">Q 1</div>
+    <div class="bl">
+      <div><div class="bw-wrap"><div class="board" id="pw-board"></div></div></div>
+      <div>
+        <div class="fb" id="pw-fb"></div>
+        <div id="pw-choices"></div>
+        <button class="btn bt" id="pw-next" onclick="nextPawn()" style="display:none">▶ Next</button>
+        <button class="btn bw bsm" onclick="pawnHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEFEND THE KING -->
+  <div class="screen content" id="s-defend-check">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🛡️ Defend the King!</div><div class="spill">⭐<span id="dk-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="dk-kip">Your King is in danger!</div></div>
+    <div class="scenario-tabs">
+      <button class="stab stab-move on" id="dk-tab-move" onclick="dkSetSkill('move')">🏃 Move Away</button>
+      <button class="stab stab-block" id="dk-tab-block" onclick="dkSetSkill('block')">🧱 Block</button>
+      <button class="stab stab-capture" id="dk-tab-capture" onclick="dkSetSkill('capture')">⚔️ Capture</button>
+      <button class="stab stab-protect" id="dk-tab-protect" onclick="dkSetSkill('protect')">🛡️ Protect</button>
+    </div>
+    <div class="scenario-ctr" id="dk-ctr">Scenario 1</div>
+    <div class="bl">
+      <div><div class="bw-wrap"><div class="board" id="dk-board"></div></div></div>
+      <div>
+        <div class="tactic-concept"><div class="tc-emoji" id="dk-con-em">🏃</div><div class="tc-name" id="dk-con-name">Move Away</div><div class="tc-explain" id="dk-con-exp">Move to a safe square!</div></div>
+        <div class="fb" id="dk-fb"></div>
+        <div class="hint-dots" id="dk-dots"></div>
+        <button class="btn bg" id="dk-next" onclick="dkNext()" style="display:none">▶ Next</button>
+        <button class="btn bw bsm" onclick="dkHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOUBLE LADDER -->
+  <div class="screen content" id="s-ladder-method">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🪜 Double Ladder</div><div class="spill">⭐<span id="ld-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ld-kip">Use TWO Rooks to push the King to the edge!</div></div>
+    <div class="scenario-tabs">
+      <button class="stab stab-ladder on" id="ld-tab-learn" onclick="ldSetMode('learn')">📖 Learn</button>
+      <button class="stab stab-ladder" id="ld-tab-practice" onclick="ldSetMode('practice')">🎯 Practice</button>
+      <button class="stab stab-ladder" id="ld-tab-challenge" onclick="ldSetMode('challenge')">🏆 Challenge</button>
+    </div>
+    <div class="ladder-progress" id="ld-progress"></div>
+    <div class="bl">
+      <div><div class="bw-wrap"><div class="board" id="ld-board"></div></div></div>
+      <div>
+        <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ld-task">Select a Rook!</div></div>
+        <div class="fb" id="ld-fb"></div>
+        <button class="btn bs" id="ld-next" onclick="ldNext()" style="display:none">▶ Next Step</button>
+        <button class="btn bw bsm" onclick="ldHint()">💡 Hint</button>
+        <button class="btn bc bsm" onclick="ldReset()">🔄 Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORK & DOUBLE ATTACK -->
+  <div class="screen content" id="s-fork-train">
+    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🍴 Fork & Double Attack</div><div class="spill">⭐<span id="ft-sc">0</span></div></div>
+    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ft-kip">Attack TWO pieces at once!</div></div>
+    <div class="scenario-tabs">
+      <button class="stab stab-fork on" id="ft-tab-fork" onclick="ftSetSkill('fork')">🍴 Fork</button>
+      <button class="stab stab-double" id="ft-tab-double" onclick="ftSetSkill('double')">💥 Double Attack</button>
+    </div>
+    <div class="scenario-ctr" id="ft-ctr">Scenario 1</div>
+    <div class="bl">
+      <div><div class="bw-wrap"><div class="board" id="ft-board"></div></div></div>
+      <div>
+        <div class="tactic-concept" id="ft-concept"><div class="tc-emoji">🍴</div><div class="tc-name">Fork!</div><div class="tc-explain" id="ft-con-exp">Attack TWO pieces at once!</div></div>
+        <div class="fork-targets" id="ft-targets"></div>
+        <div class="fb" id="ft-fb"></div>
+        <button class="btn bpk" id="ft-next" onclick="ftNext()" style="display:none">▶ Next</button>
+        <button class="btn bw bsm" onclick="ftHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM TAB BAR -->
+  <nav class="tabbar">
+    <button class="tab on" id="tab-home" onclick="tabTo('s-home','tab-home')"><span class="tbi">🏠</span><span class="tbl">Home</span></button>
+    <button class="tab" id="tab-puzzle" onclick="tabTo('s-puzzle','tab-puzzle');initPuzzle()"><span class="tbi">🎯</span><span class="tbl">Puzzles</span></button>
+    <button class="tab" id="tab-bot" onclick="tabTo('s-bot','tab-bot')"><span class="tbi">🤖</span><span class="tbl">Play</span></button>
+    <button class="tab" id="tab-curr" onclick="tabTo('s-curriculum','tab-curr');buildCurriculum()"><span class="tbi">📚</span><span class="tbl">Learn</span></button>
+    <button class="tab" id="tab-prog" onclick="tabTo('s-progress','tab-prog');renderProgress()"><span class="tbi">⭐</span><span class="tbl">Progress</span></button>
+  </nav>
+</div>
+
+<div class="result-overlay" id="rover">
+  <div class="result-card">
+    <span class="result-emoji" id="r-emoji">🏆</span>
+    <div class="result-title" id="r-title">Great Job!</div>
+    <div class="result-sub" id="r-sub">You earned 3 stars!</div>
+    <button class="btn btn-green" onclick="closeResult(true)" style="margin-bottom:8px">▶ Play Again!</button>
+    <button class="btn btn-white btn-sm" onclick="closeResult(false)">🏠 Home</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/app.js"></script>
 </body>
-
 </html>

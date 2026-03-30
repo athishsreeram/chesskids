@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "files": {
+    "puzzles": "data/json/puzzles.json",
+    "pcats": "data/json/pcats.json",
+    "dojo": "data/json/dojo.json",
+    "threats": "data/json/threats.json",
+    "capture": "data/json/capture.json",
+    "defend": "data/json/defend.json",
+    "blunders": "data/json/blunders.json",
+    "patterns": "data/json/patterns.json",
+    "combos": "data/json/combos.json",
+    "endgames": "data/json/endgames.json",
+    "openings": "data/json/openings.json",
+    "evals": "data/json/evals.json",
+    "pawns": "data/json/pawns.json",
+    "defend_check": "data/json/defend_check.json",
+    "ladder": "data/json/ladder.json",
+    "fork": "data/json/fork.json"
+  }
+}

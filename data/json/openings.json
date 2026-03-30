@@ -1,0 +1,53 @@
+[
+  {
+    "cat": "principles",
+    "q": "Which first move is BETTER for White?",
+    "hint": "Control the center!",
+    "o1": {
+      "label": "1. e4 ✅",
+      "fen": "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1",
+      "ok": true,
+      "why": "E4 controls the center!"
+    },
+    "o2": {
+      "label": "1. a4 ❌",
+      "fen": "rnbqkbnr/pppppppp/8/8/P7/8/1PPPPPPP/RNBQKBNR b KQkq - 0 1",
+      "ok": false,
+      "why": "A4 does nothing for center!"
+    }
+  },
+  {
+    "cat": "principles",
+    "q": "After 1.e4 e5, which move is better?",
+    "hint": "Develop toward center!",
+    "o1": {
+      "label": "2. Nf3 ✅",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
+      "ok": true,
+      "why": "Knight develops AND attacks!"
+    },
+    "o2": {
+      "label": "2. h3 ❌",
+      "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/7P/PPPP1PP1/RNBQKBNR b KQkq - 0 2",
+      "ok": false,
+      "why": "H3 wastes a move!"
+    }
+  },
+  {
+    "cat": "castling",
+    "q": "Your King is in the center. What should you do?",
+    "hint": "Castle early for safety!",
+    "o1": {
+      "label": "Castle Kingside ✅",
+      "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w - - 0 6",
+      "ok": true,
+      "why": "Castle! King to safety!"
+    },
+    "o2": {
+      "label": "Keep King in center ❌",
+      "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 5",
+      "ok": false,
+      "why": "King in center is dangerous!"
+    }
+  }
+]

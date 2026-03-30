@@ -1,0 +1,52 @@
+[
+  {
+    "id": "backrank",
+    "name": "Back Rank Mate",
+    "icon": "🏰",
+    "explain": "The enemy King is trapped on its back rank by its OWN pawns! Rook or Queen slides in.",
+    "fen": "5rk1/5ppp/8/8/8/8/8/R5K1 w - - 0 1",
+    "sol": "a1a8",
+    "hint": "Rook to A8!",
+    "task": "Deliver the Back Rank Mate!"
+  },
+  {
+    "id": "smothered",
+    "name": "Smothered Mate",
+    "icon": "😤",
+    "explain": "The King is smothered by its OWN pieces! Only a Knight delivers this special mate!",
+    "fen": "6rk/6pp/7N/8/8/8/8/6K1 w - - 0 1",
+    "sol": "h6f7",
+    "hint": "Knight to F7!",
+    "task": "Find the Smothered Mate!"
+  },
+  {
+    "id": "ladder",
+    "name": "Ladder Mate",
+    "icon": "🪜",
+    "explain": "Two Rooks take turns pushing the King to the edge — like climbing a ladder!",
+    "fen": "6k1/8/6RR/8/8/8/8/6K1 w - - 0 1",
+    "sol": "h6h8",
+    "hint": "Move one Rook to H8!",
+    "task": "Ladder Mate!"
+  },
+  {
+    "id": "arabian",
+    "name": "Arabian Mate",
+    "icon": "🐎",
+    "explain": "Rook and Knight team up in the corner! Knight covers escapes, Rook delivers check.",
+    "fen": "5Rrk/8/6N1/8/8/8/8/6K1 w - - 0 1",
+    "sol": "f8g8",
+    "hint": "Rook to G8!",
+    "task": "Arabian Mate!"
+  },
+  {
+    "id": "scholars",
+    "name": "Scholar's Mate",
+    "icon": "🎓",
+    "explain": "Learn this to AVOID it — Queen+Bishop attack F7! Defend with Nf6!",
+    "fen": "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4",
+    "sol": "f7",
+    "hint": "Queen on F7 is checkmate.",
+    "task": "Scholar's Mate — tap the Queen!"
+  }
+]

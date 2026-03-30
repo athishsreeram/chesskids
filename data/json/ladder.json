@@ -1,0 +1,94 @@
+{
+  "learn": {
+    "steps": [
+      {
+        "fen": "6k1/8/6R1/8/8/R7/8/6K1 w - - 0 1",
+        "task": "📖 Rook on G6 leaps to G7 — leapfrogging ahead! Tap G6 Rook.",
+        "from": "g6",
+        "to": "g7",
+        "explain": "One Rook holds the rank while the other leaps ONE rank ahead!",
+        "hint": "G6 → G7"
+      },
+      {
+        "fen": "6k1/6R1/8/8/R7/8/8/6K1 w - - 0 1",
+        "task": "A4 Rook to A8 — check! Tap the A4 Rook.",
+        "from": "a4",
+        "to": "a8",
+        "explain": "Second Rook leaps to the 8th rank — check! King must move.",
+        "hint": "A4 → A8"
+      },
+      {
+        "fen": "6k1/R7/6R1/8/8/8/8/6K1 w - - 0 1",
+        "task": "G6 Rook to H6 — cut off all escapes!",
+        "from": "g6",
+        "to": "h6",
+        "explain": "Adjust Rooks to cover all corner escape squares!",
+        "hint": "G6 → H6"
+      }
+    ]
+  },
+  "practice": {
+    "steps": [
+      {
+        "fen": "4k3/8/4R3/8/R7/8/8/4K3 w - - 0 1",
+        "task": "🎯 E6 Rook to E7 — push the King back!",
+        "from": "e6",
+        "to": "e7",
+        "explain": "Push the King rank by rank!",
+        "hint": "E6 → E7"
+      },
+      {
+        "fen": "4k3/4R3/8/R7/8/8/8/4K3 w - - 0 1",
+        "task": "A5 Rook to A8 — check!",
+        "from": "a5",
+        "to": "a8",
+        "explain": "Check forces King to move!",
+        "hint": "A5 → A8"
+      },
+      {
+        "fen": "3k4/4R3/R7/8/8/8/8/4K3 w - - 0 1",
+        "task": "E7 Rook to E8!",
+        "from": "e7",
+        "to": "e8",
+        "explain": "Push the King to the back!",
+        "hint": "E7 → E8"
+      }
+    ]
+  },
+  "challenge": {
+    "steps": [
+      {
+        "fen": "7k/8/6R1/8/R7/8/8/7K w - - 0 1",
+        "task": "🏆 A4 Rook to A8 — check!",
+        "from": "a4",
+        "to": "a8",
+        "explain": "Check! King must move.",
+        "hint": "A4 → A8"
+      },
+      {
+        "fen": "6k1/8/R5R1/8/8/8/8/7K w - - 0 1",
+        "task": "G6 Rook to G7 — check!",
+        "from": "g6",
+        "to": "g7",
+        "explain": "Ladder step 2!",
+        "hint": "G6 → G7"
+      },
+      {
+        "fen": "7k/6R1/R7/8/8/8/8/7K w - - 0 1",
+        "task": "A6 Rook to A8 — check!",
+        "from": "a6",
+        "to": "a8",
+        "explain": "Ladder step 3!",
+        "hint": "A6 → A8"
+      },
+      {
+        "fen": "6k1/6R1/R7/8/8/8/8/7K w - - 0 1",
+        "task": "G7 Rook to G8 — CHECKMATE!",
+        "from": "g7",
+        "to": "g8",
+        "explain": "Checkmate! Perfect Double Ladder!",
+        "hint": "G7 → G8"
+      }
+    ]
+  }
+}
