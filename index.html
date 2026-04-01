@@ -561,21 +561,21 @@ const CATEGORIES=[
 const BOOKS=[
   {id:'b1',icon:'📘',coverClass:'b1',title:'Book 1: Meet the Chess Family',desc:'Learn all 6 pieces — FREE!',stars:0,premium:false,
    sessions:[
-    {title:'Who are the Chess Pieces?',sub:'Meet all 6 members',emoji:'♟️',content:`<span class="lesson-emoji">♟️👑♜♝♞♛</span><h4>Welcome to the Chess Family!</h4><p>Chess has 6 piece types, each with their own superpower!</p><div class="tip">💡 Every player starts with 16 pieces — 8 pawns and 8 special pieces!</div><p>👑 <b>King</b> — Most important!<br>♛ <b>Queen</b> — Most powerful!<br>♜ <b>Rook</b> — Straight lines!<br>♝ <b>Bishop</b> — Diagonals!<br>♞ <b>Knight</b> — L-shape jumper!<br>♟️ <b>Pawn</b> — March forward!</p>`},
-    {title:'The Mighty King',sub:'How the King moves',emoji:'👑',content:`<span class="lesson-emoji">👑</span><h4>The King — Most Important!</h4><p>The King moves <b>one square in any direction</b>.</p><div class="tip">💡 If your King is attacked — CHECK! You must escape!</div><p>When the King is trapped — that's <b>CHECKMATE</b> — game over! 🎉</p>`},
-    {title:'The Powerful Queen',sub:'How the Queen moves',emoji:'♛',content:`<span class="lesson-emoji">♛</span><h4>The Queen — Most Powerful!</h4><p>Moves <b>any number of squares</b> in any direction — straight or diagonal.</p><div class="tip">💡 Protect your Queen! She's worth 9 pawns!</div>`},
-    {title:'The Rook Castle',sub:'How the Rook moves',emoji:'♜',content:`<span class="lesson-emoji">♜</span><h4>The Rook — Straight Line Power!</h4><p>Moves in <b>straight lines</b> — left, right, up, or down — as far as it wants.</p><div class="tip">💡 Rooks are strongest on open files!</div>`},
-    {title:'The Sneaky Knight',sub:'L-shape jumper!',emoji:'♞',content:`<span class="lesson-emoji">♞</span><h4>The Knight — L-Shape Jumper!</h4><p>Moves in an <b>L-shape</b>: 2 squares one way, 1 sideways. It can <b>jump over</b> other pieces!</p><div class="tip">💡 Knights are best in the CENTER of the board!</div>`},
+    {title:'Who are the Chess Pieces?',sub:'Meet all 6 members',emoji:'♟️',fen:'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',content:`<span class="lesson-emoji">♟️👑♜♝♞♛</span><h4>Welcome to the Chess Family!</h4><p>Chess has 6 piece types, each with their own superpower!</p><div class="tip">💡 Every player starts with 16 pieces — 8 pawns and 8 special pieces!</div><p>👑 <b>King</b> — Most important!<br>♛ <b>Queen</b> — Most powerful!<br>♜ <b>Rook</b> — Straight lines!<br>♝ <b>Bishop</b> — Diagonals!<br>♞ <b>Knight</b> — L-shape jumper!<br>♟️ <b>Pawn</b> — March forward!</p>`},
+    {title:'The Mighty King',sub:'How the King moves',emoji:'👑',fen:'8/8/8/3K4/8/8/8/4k3 w - - 0 1',content:`<span class="lesson-emoji">👑</span><h4>The King — Most Important!</h4><p>The King moves <b>one square in any direction</b>.</p><div class="tip">💡 If your King is attacked — CHECK! You must escape!</div><p>When the King is trapped — that's <b>CHECKMATE</b> — game over! 🎉</p>`},
+    {title:'The Powerful Queen',sub:'How the Queen moves',emoji:'♛',fen:'8/3Q4/8/8/8/8/8/4k3 w - - 0 1',content:`<span class="lesson-emoji">♛</span><h4>The Queen — Most Powerful!</h4><p>Moves <b>any number of squares</b> in any direction — straight or diagonal.</p><div class="tip">💡 Protect your Queen! She's worth 9 pawns!</div>`},
+    {title:'The Rook Castle',sub:'How the Rook moves',emoji:'♜',fen:'8/8/8/8/8/8/8/R3K3 w Q - 0 1',content:`<span class="lesson-emoji">♜</span><h4>The Rook — Straight Line Power!</h4><p>Moves in <b>straight lines</b> — left, right, up, or down — as far as it wants.</p><div class="tip">💡 Rooks are strongest on open files!</div>`},
+    {title:'The Sneaky Knight',sub:'L-shape jumper!',emoji:'♞',fen:'8/8/8/3N4/8/8/8/4k3 w - - 0 1',content:`<span class="lesson-emoji">♞</span><h4>The Knight — L-Shape Jumper!</h4><p>Moves in an <b>L-shape</b>: 2 squares one way, 1 sideways. It can <b>jump over</b> other pieces!</p><div class="tip">💡 Knights are best in the CENTER of the board!</div>`},
    ]},
   {id:'b2',icon:'📗',coverClass:'b2',title:'Book 2: Tricky Tactics',desc:'Learn pins, forks & win material!',stars:3,premium:true,
    sessions:[
-    {title:'What is a Fork?',sub:'Attack two at once!',emoji:'🍴',content:`<span class="lesson-emoji">🍴</span><h4>The Fork — Attack Two at Once!</h4><p>A fork is when ONE piece attacks TWO enemy pieces. The enemy can only save one!</p><div class="tip">💡 Knights are the BEST forking pieces!</div>`},
-    {title:'What is a Pin?',sub:'Stuck in place!',emoji:'📌',content:`<span class="lesson-emoji">📌</span><h4>The Pin — Stuck in Place!</h4><p>A pin is when a piece can't move because it's shielding a more valuable piece behind it.</p><div class="tip">💡 Bishops and Rooks are great at pinning!</div>`},
-    {title:"What's a Skewer?",sub:'Force the big piece to move!',emoji:'🗡️',content:`<span class="lesson-emoji">🗡️</span><h4>The Skewer — Move or Lose!</h4><p>You attack a VALUABLE piece, and when it moves, you capture what was behind it!</p><div class="tip">💡 Skewers often work against the King!</div>`},
+    {title:'What is a Fork?',sub:'Attack two at once!',emoji:'🍴',fen:'r1bqkbnr/pppp1ppp/8/4p3/4n3/2N2N2/PPPPBPPP/R1BQK2R w KQkq - 0 1',content:`<span class="lesson-emoji">🍴</span><h4>The Fork — Attack Two at Once!</h4><p>A fork is when ONE piece attacks TWO enemy pieces. The enemy can only save one!</p><div class="tip">💡 Knights are the BEST forking pieces!</div>`},
+    {title:'What is a Pin?',sub:'Stuck in place!',emoji:'📌',fen:'r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 2 5',content:`<span class="lesson-emoji">📌</span><h4>The Pin — Stuck in Place!</h4><p>A pin is when a piece can't move because it's shielding a more valuable piece behind it.</p><div class="tip">💡 Bishops and Rooks are great at pinning!</div>`},
+    {title:"What's a Skewer?",sub:'Force the big piece to move!',emoji:'🗡️',fen:'4k3/8/8/8/8/8/8/R3K3 w Q - 0 1',content:`<span class="lesson-emoji">🗡️</span><h4>The Skewer — Move or Lose!</h4><p>You attack a VALUABLE piece, and when it moves, you capture what was behind it!</p><div class="tip">💡 Skewers often work against the King!</div>`},
    ]},
   {id:'b3',icon:'📕',coverClass:'b3',title:"Book 3: King's Secrets",desc:'Master checkmates & King power!',stars:10,premium:true,
    sessions:[
-    {title:'Checkmate Patterns',sub:'The most important patterns!',emoji:'♚',content:`<span class="lesson-emoji">♚</span><h4>Checkmate Patterns</h4><p>Famous checkmate patterns that great players use over and over!</p><div class="tip">💡 The most common: the BACK RANK MATE!</div>`},
+    {title:'Checkmate Patterns',sub:'The most important patterns!',emoji:'♚',fen:'6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1',content:`<span class="lesson-emoji">♚</span><h4>Checkmate Patterns</h4><p>Famous checkmate patterns that great players use over and over!</p><div class="tip">💡 The most common: the BACK RANK MATE!</div>`},
    ]},
 ];
 
@@ -608,6 +608,10 @@ function recordPlayToday(){const today=new Date().toDateString();if(state.lastPl
 function isPremium(){return state.premium;}
 
 function updateUI(){
+  // Ensure state types are normalized before updating the UI
+  normalizeState();
+  // Debug: expose current state in console when UI updates
+  try{console.log('chesskids state:', JSON.parse(JSON.stringify(state)));}catch(e){}
   document.getElementById('stars-count').textContent=state.stars;
   document.getElementById('streak-count').textContent=state.streak;
   document.getElementById('tr-stars').textContent=state.stars;
@@ -621,6 +625,9 @@ function updateUI(){
   const bar=document.getElementById('chest-premium-bar');
   if(bar)bar.style.display=isPremium()?'none':'flex';
 }
+
+// Helper for quick debugging from the browser console
+window.debugState = function(){console.log('chesskids runtime state:', JSON.parse(JSON.stringify(state))); return state;};
 
 /* ════════════ MODALS ════════════ */
 function openModal(id){document.getElementById(id).classList.add('active');}
@@ -822,7 +829,16 @@ function learnClick(e){
     if(rr===ls.starRow&&cc===ls.starCol){
       res.textContent='⭐ Amazing! You moved the '+ls.piece.name+'!';res.className='learn-result success';
       ls.pieceRow=ls.starRow;ls.pieceCol=ls.starCol;ls.selected=false;drawLearnBoard(canvas);
-      if(!state.learnedPieces.includes(ls.piece.name)){state.learnedPieces.push(ls.piece.name);if(state.learnedPieces.length===6){state.stars+=2;checkBadges();}saveState();showLearn();}
+        if(!state.learnedPieces.includes(ls.piece.name)){
+          state.learnedPieces.push(ls.piece.name);
+          // Award 1 star for learning a piece
+          state.stars = (state.stars||0) + 1;
+          // Bonus for learning all pieces
+          if(state.learnedPieces.length===6){ state.stars += 1; }
+          checkBadges();
+          saveState();
+          showLearn();
+        }
       celebrate();
       setTimeout(()=>{placePieceAndStar();ls.selected=false;drawLearnBoard(canvas);res.textContent='Great job! Try again!';res.className='learn-result success';},1400);
     } else if(vm.some(([vr,vc])=>vr===rr&&vc===cc)){
@@ -901,7 +917,28 @@ function openBook(book){
   openModal('book-modal');
 }
 
-function openLesson(s){closeModal('book-modal');document.getElementById('lesson-icon').textContent=s.emoji;document.getElementById('lesson-title').textContent=s.title;document.getElementById('lesson-body').innerHTML=s.content;openModal('lesson-modal');}
+function openLesson(s){
+  closeModal('book-modal');
+  document.getElementById('lesson-icon').textContent=s.emoji;
+  document.getElementById('lesson-title').textContent=s.title;
+  // Insert lesson content
+  const body=document.getElementById('lesson-body');
+  body.innerHTML=s.content||'';
+  openModal('lesson-modal');
+  // If the session contains a FEN, render a small board below the content
+  if(s.fen){
+    setTimeout(()=>{
+      // create canvas and attach
+      const canvas=document.createElement('canvas');
+      canvas.id='lesson-canvas';
+      canvas.width=Math.min(320,body.offsetWidth-20);
+      canvas.height=canvas.width;
+      canvas.style.display='block';canvas.style.margin='12px auto 0';
+      body.appendChild(canvas);
+      try{const ch=new Chess(s.fen);drawBoard(canvas,ch,null,[],ch.turn()==='b');}catch(e){console.warn('Invalid FEN for lesson',e);}    
+    },80);
+  }
+}
 
 /* ════════════ CATEGORIES ════════════ */
 function renderCategories(){
