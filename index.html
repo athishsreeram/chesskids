@@ -1,520 +1,959 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>♞ ChessKids — Learn Real Chess!</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎠 ChessKids Playground</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<style>
+:root{--cream:#FFF9F0;--yellow:#FFD966;--orange:#FF8C42;--green:#4CAF50;--blue:#5BA4CF;--purple:#9B59B6;--light-sq:#F0D9B5;--dark-sq:#B58863;--shadow:0 4px 20px rgba(0,0,0,0.13);--shadow-lg:0 8px 40px rgba(0,0,0,0.18);--radius:20px;--radius-sm:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#FEF3E2;background-image:radial-gradient(circle at 10% 20%,#FFE0B2 0%,transparent 40%),radial-gradient(circle at 90% 80%,#E3F2FD 0%,transparent 40%),radial-gradient(circle at 50% 50%,#F3E5F5 0%,transparent 60%);min-height:100vh;color:#2D2D2D;}
+header{background:linear-gradient(135deg,#FF8C42,#FFD966);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(255,140,66,0.4);}
+.header-left{display:flex;align-items:center;gap:12px;}
+.menu-btn{background:rgba(255,255,255,0.3);border:none;border-radius:12px;width:42px;height:42px;font-size:20px;cursor:pointer;transition:transform .2s;}
+.menu-btn:hover{transform:scale(1.1);}
+.app-title{font-family:'Fredoka One',cursive;font-size:1.5rem;color:white;text-shadow:2px 2px 0 rgba(0,0,0,0.15);}
+.header-stats{display:flex;align-items:center;gap:8px;}
+.stat-badge{background:rgba(255,255,255,0.35);border-radius:50px;padding:6px 14px;font-weight:800;font-size:1rem;color:white;display:flex;align-items:center;gap:4px;}
+.premium-btn-header{background:white;color:#FF8C42;border:none;border-radius:50px;padding:7px 14px;font-weight:800;font-size:0.82rem;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform .15s;}
+.premium-btn-header:hover{transform:scale(1.05);}
+main{max-width:900px;margin:0 auto;padding:0 16px 60px;}
+.greeting{text-align:center;padding:22px 20px 10px;}
+.greeting h2{font-family:'Fredoka One',cursive;font-size:1.6rem;color:#FF8C42;}
+.greeting p{color:#888;font-size:0.9rem;margin-top:4px;}
+.section-title{font-family:'Fredoka One',cursive;font-size:1.1rem;color:#5B4033;margin:24px 0 12px;display:flex;align-items:center;gap:8px;}
+.section-title::after{content:'';flex:1;height:2px;background:linear-gradient(to right,rgba(91,64,51,0.2),transparent);border-radius:2px;}
+.free-banner{background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:var(--radius-sm);padding:12px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(76,175,80,0.15);}
+.free-banner-left{font-size:0.88rem;color:#2E7D32;font-weight:700;}
+.free-banner-left span{display:block;font-weight:400;font-size:0.78rem;color:#4CAF50;margin-top:2px;}
+.upgrade-link{font-size:0.82rem;font-weight:800;color:#FF8C42;background:white;border:none;border-radius:50px;padding:6px 14px;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.1);transition:transform .15s;white-space:nowrap;}
+.upgrade-link:hover{transform:scale(1.05);}
+.quick-start{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.qs-btn{background:white;border:none;border-radius:var(--radius);padding:22px 12px;cursor:pointer;text-align:center;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;}
+.qs-btn:hover{transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow-lg);}
+.qs-btn:active{transform:scale(0.97);}
+.qs-btn.learn{background:linear-gradient(145deg,#E8F5E9,#C8E6C9);}
+.qs-btn.play{background:linear-gradient(145deg,#E3F2FD,#BBDEFB);}
+.qs-btn.solve{background:linear-gradient(145deg,#FFF9C4,#FFF176);}
+.qs-emoji{font-size:2.6rem;display:block;margin-bottom:8px;}
+.qs-label{font-family:'Fredoka One',cursive;font-size:1.05rem;color:#4A4A4A;display:block;}
+.qs-sub{font-size:0.72rem;color:#888;margin-top:4px;display:block;}
+.books-list{display:flex;flex-direction:column;gap:10px;}
+.book-item{background:white;border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 12px rgba(0,0,0,0.08);cursor:pointer;transition:transform .15s;}
+.book-item:hover:not(.locked){transform:translateX(4px);}
+.book-item.locked{opacity:0.6;cursor:pointer;}
+.book-cover{font-size:2rem;width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.book-cover.b1{background:#BBDEFB;}.book-cover.b2{background:#F8BBD0;}.book-cover.b3{background:#DCEDC8;}
+.book-info{flex:1;}
+.book-title{font-weight:800;font-size:0.95rem;}
+.book-desc{font-size:0.78rem;color:#888;margin-top:2px;}
+.book-badge{font-size:0.78rem;font-weight:700;padding:4px 10px;border-radius:50px;background:#E8F5E9;color:#388E3C;white-space:nowrap;}
+.book-badge.lock{background:#F5F5F5;color:#9E9E9E;}
+.book-badge.premium-lock{background:linear-gradient(135deg,#FFD966,#FF8C42);color:white;}
+.chest-toggle{background:linear-gradient(135deg,#FF8C42,#FFD966);border:none;border-radius:var(--radius);padding:16px 24px;width:100%;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:'Fredoka One',cursive;font-size:1.15rem;color:white;box-shadow:var(--shadow);transition:transform .2s;}
+.chest-toggle:hover{transform:scale(1.01);}
+.chest-arrow{transition:transform .3s;font-size:1.2rem;}
+.chest-arrow.open{transform:rotate(90deg);}
+.chest-body{background:white;border-radius:0 0 var(--radius) var(--radius);overflow:hidden;max-height:0;transition:max-height .5s ease;box-shadow:var(--shadow);}
+.chest-body.open{max-height:9999px;}
+.category-group{border-bottom:1px solid #F0F0F0;}
+.category-group:last-child{border-bottom:none;}
+.cat-header{padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;background:white;transition:background .15s;user-select:none;}
+.cat-header:hover{background:#FAFAFA;}
+.cat-icon{font-size:1.3rem;}
+.cat-name{font-weight:800;font-size:0.95rem;flex:1;}
+.cat-count{font-size:0.72rem;color:#AAA;margin-right:6px;}
+.cat-arrow{font-size:0.9rem;transition:transform .25s;color:#BBB;}
+.cat-arrow.open{transform:rotate(90deg);}
+.cat-items{display:none;flex-wrap:wrap;gap:8px;padding:0 18px 16px;}
+.cat-items.open{display:flex;}
+.puzzle-chip{background:#F5F5F5;border:2px solid transparent;border-radius:50px;padding:6px 14px;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all .15s;color:#555;}
+.puzzle-chip:hover{background:#FFF9C4;border-color:#FFD966;color:#333;transform:scale(1.04);}
+.puzzle-chip.solved{background:#E8F5E9;border-color:#81C784;color:#388E3C;}
+.puzzle-chip.solved::after{content:' ✓';}
+.puzzle-chip.locked-chip{background:#F5F5F5;color:#BBB;border-style:dashed;border-color:#DDD;}
+.puzzle-chip.locked-chip:hover{background:#FFF3E0;border-color:#FFD966;color:#FF8C42;}
+.chest-premium-bar{background:linear-gradient(135deg,#fff7e6,#ffecb3);border-top:2px solid #FFD966;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.chest-premium-bar p{font-size:0.82rem;font-weight:700;color:#7B4F00;}
+.chest-premium-bar p span{display:block;font-weight:400;font-size:0.75rem;color:#AD6800;margin-top:2px;}
+.chest-upgrade-btn{background:linear-gradient(135deg,#FF8C42,#FFD966);color:white;border:none;border-radius:50px;padding:8px 18px;font-weight:800;font-size:0.82rem;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(255,140,66,0.4);transition:transform .15s;}
+.chest-upgrade-btn:hover{transform:scale(1.05);}
+.trophy-card{background:linear-gradient(135deg,#9B59B6,#6C3483);border-radius:var(--radius);padding:20px 24px;color:white;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:var(--shadow);transition:transform .2s;}
+.trophy-card:hover{transform:translateY(-2px);}
+.trophy-left h3{font-family:'Fredoka One',cursive;font-size:1.1rem;margin-bottom:6px;}
+.progress-bar-wrap{background:rgba(255,255,255,0.2);border-radius:50px;height:10px;width:200px;overflow:hidden;margin-top:6px;}
+.progress-bar-fill{height:100%;background:#FFD966;border-radius:50px;transition:width 1s;}
+.trophy-stat-row{display:flex;gap:14px;font-size:0.85rem;margin-top:6px;}
+.trophy-stat{display:flex;align-items:center;gap:4px;}
+.trophy-right{font-size:3rem;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px);}
+.modal-overlay.active{opacity:1;pointer-events:all;}
+.modal{background:var(--cream);border-radius:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);transform:scale(0.9);transition:transform .25s;}
+.modal-overlay.active .modal{transform:scale(1);}
+.modal-header{padding:22px 24px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid #F0EEE8;}
+.modal-title{font-family:'Fredoka One',cursive;font-size:1.3rem;flex:1;color:#333;}
+.modal-close{background:#F5F5F5;border:none;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;transition:background .15s;}
+.modal-close:hover{background:#FFE0B2;}
+.modal-body{padding:20px 24px 24px;}
+
+/* ── PREMIUM MODAL ── */
+.premium-modal .modal{max-width:420px;background:white;}
+.premium-hero{text-align:center;padding:32px 24px 18px;}
+.premium-hero .big-emoji{font-size:3.5rem;display:block;margin-bottom:8px;}
+.premium-hero h2{font-family:'Fredoka One',cursive;font-size:1.7rem;color:#333;margin-bottom:6px;}
+.premium-hero .price-tag{font-size:1rem;color:#FF8C42;font-weight:800;margin-bottom:4px;}
+.premium-hero .sub-line{font-size:0.82rem;color:#AAA;}
+.premium-perks{padding:0 24px;margin-bottom:16px;}
+.perk-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F5F5F5;font-size:0.88rem;font-weight:600;color:#444;}
+.perk-row:last-child{border-bottom:none;}
+.perk-icon{font-size:1.2rem;flex-shrink:0;}
+.premium-cta{padding:0 24px 28px;}
+.subscribe-btn{width:100%;background:linear-gradient(135deg,#FF8C42,#FFD966);color:white;border:none;border-radius:16px;padding:17px;font-family:'Fredoka One',cursive;font-size:1.15rem;cursor:pointer;box-shadow:0 4px 16px rgba(255,140,66,0.45);transition:transform .15s,box-shadow .15s;margin-bottom:14px;display:block;}
+.subscribe-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,140,66,0.5);}
+.divider-or{text-align:center;color:#CCC;font-size:0.82rem;font-weight:700;margin:2px 0 14px;position:relative;}
+.divider-or::before,.divider-or::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:#EEE;}
+.divider-or::before{left:0;}.divider-or::after{right:0;}
+.already-paid-btn{width:100%;background:#F0F9F0;color:#388E3C;border:2px solid #A5D6A7;border-radius:14px;padding:12px;font-weight:800;font-size:0.92rem;cursor:pointer;transition:background .15s;margin-bottom:10px;display:block;}
+.already-paid-btn:hover{background:#E8F5E9;}
+.maybe-later-btn{width:100%;background:none;border:none;color:#BBB;font-size:0.82rem;font-weight:700;cursor:pointer;padding:6px;transition:color .15s;display:block;}
+.maybe-later-btn:hover{color:#888;}
+.cancel-note{text-align:center;font-size:0.72rem;color:#CCC;margin-top:10px;}
+
+/* ── PUZZLE ── */
+.puzzle-info{background:white;border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.puzzle-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.puzzle-title-text{font-family:'Fredoka One',cursive;font-size:1.05rem;color:#333;}
+.turn-badge{font-size:0.78rem;font-weight:700;padding:4px 10px;border-radius:50px;}
+.turn-badge.white{background:#F5F5F5;color:#333;border:2px solid #DDD;}
+.turn-badge.black{background:#333;color:white;}
+.puzzle-msg{font-size:0.88rem;font-weight:600;color:#888;min-height:20px;}
+.puzzle-msg.success{color:#388E3C;}.puzzle-msg.error{color:#E53935;}
+#board-canvas{display:block;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.2);cursor:pointer;max-width:100%;}
+.board-wrap{display:flex;justify-content:center;margin-bottom:16px;}
+.puzzle-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;}
+.p-btn{border:none;border-radius:var(--radius-sm);padding:12px 8px;font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 3px 8px rgba(0,0,0,0.12);}
+.p-btn:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,0.15);}
+.p-btn:active{transform:scale(0.96);}
+.p-btn.reset{background:#F5F5F5;color:#555;}
+.p-btn.hint{background:#FFF9C4;color:#F57F17;}
+.p-btn.next{background:#E8F5E9;color:#2E7D32;}
+
+/* ── LEARN ── */
+.pieces-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.piece-card{background:white;border-radius:var(--radius-sm);padding:12px 6px;text-align:center;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.08);transition:transform .2s;border:3px solid transparent;}
+.piece-card:hover{transform:scale(1.05);}
+.piece-card.viewed{border-color:#81C784;background:#F1F8E9;}
+.piece-card.selected-piece{border-color:#FFD966;background:#FFF9C4;}
+.piece-symbol{font-size:2.2rem;display:block;}
+.piece-name{font-family:'Fredoka One',cursive;font-size:0.85rem;margin-top:3px;display:block;color:#555;}
+.piece-tag{font-size:0.6rem;border-radius:50px;padding:2px 6px;font-weight:700;display:inline-block;margin-top:3px;}
+.piece-tag.free-tag{background:#E8F5E9;color:#388E3C;}
+.piece-tag.lock-tag{background:linear-gradient(135deg,#FFD966,#FF8C42);color:white;}
+.learn-area{background:white;border-radius:var(--radius-sm);padding:14px;box-shadow:0 2px 10px rgba(0,0,0,0.08);}
+.learn-area h3{font-family:'Fredoka One',cursive;font-size:1rem;margin-bottom:4px;color:#333;}
+.learn-area p{font-size:0.8rem;color:#666;line-height:1.5;margin-bottom:10px;}
+.learn-instructions{font-size:0.8rem;font-weight:700;color:#FF8C42;background:#FFF9C4;border-radius:8px;padding:8px 12px;margin-bottom:10px;text-align:center;}
+#piece-learn-canvas{display:block;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);cursor:pointer;max-width:100%;}
+.learn-result{text-align:center;font-weight:800;font-size:0.95rem;margin-top:10px;min-height:24px;}
+.learn-result.success{color:#388E3C;}.learn-result.error{color:#E53935;}
+
+/* ── BOT ── */
+#bot-board-canvas{display:block;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.2);cursor:pointer;max-width:100%;}
+.bot-status{text-align:center;font-weight:700;font-size:0.92rem;padding:10px;border-radius:var(--radius-sm);background:#F5F5F5;margin:12px 0;color:#555;}
+.bot-btns{display:flex;gap:10px;margin-top:10px;}
+.bot-btns .p-btn{flex:1;}
+
+/* ── TROPHY ── */
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+.badge-item{text-align:center;padding:14px 8px;background:white;border-radius:var(--radius-sm);box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.badge-icon{font-size:2rem;display:block;}
+.badge-label{font-size:0.68rem;font-weight:700;color:#888;margin-top:4px;display:block;}
+.badge-item.earned{background:linear-gradient(135deg,#FFF9C4,#FFF176);}
+.badge-item.earned .badge-label{color:#F57F17;}
+.trophy-progress{margin-top:16px;}
+.trophy-progress-row{display:flex;align-items:center;justify-content:space-between;font-size:0.85rem;font-weight:700;color:#666;margin-bottom:6px;}
+.tp-bar{height:14px;background:#F0F0F0;border-radius:50px;overflow:hidden;margin-bottom:14px;}
+.tp-fill{height:100%;border-radius:50px;background:linear-gradient(to right,#4CAF50,#81C784);transition:width 1s;}
+
+/* ── BOOKS ── */
+.session-list{display:flex;flex-direction:column;gap:10px;}
+.session-item{background:white;border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .15s;box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+.session-item:hover{transform:translateX(4px);}
+.session-num{width:32px;height:32px;background:#FFD966;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:0.95rem;flex-shrink:0;}
+.session-title{font-weight:800;font-size:0.9rem;}
+.session-sub{font-size:0.75rem;color:#AAA;margin-top:2px;}
+.lesson-body{font-size:0.92rem;line-height:1.7;color:#555;}
+.lesson-body h4{font-family:'Fredoka One',cursive;font-size:1.1rem;color:#333;margin:14px 0 8px;}
+.lesson-body .tip{background:#FFF9C4;border-left:4px solid #FFD966;border-radius:0 10px 10px 0;padding:10px 14px;margin:12px 0;font-weight:600;}
+.lesson-emoji{font-size:3rem;text-align:center;display:block;margin:10px 0;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#333;color:white;border-radius:50px;padding:12px 24px;font-weight:700;font-size:0.9rem;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;}
+
+@media(max-width:480px){.quick-start{gap:8px;}.qs-btn{padding:14px 6px;}.qs-emoji{font-size:2rem;}.qs-label{font-size:0.82rem;}.badge-grid{grid-template-columns:repeat(3,1fr);}.pieces-grid{grid-template-columns:repeat(3,1fr);}.progress-bar-wrap{width:130px;}}
+.fade-in{opacity:0;transform:translateY(20px);animation:fadeUp .5s ease forwards;}
+@keyframes fadeUp{to{opacity:1;transform:none;}}
+.fade-in:nth-child(1){animation-delay:.05s;}.fade-in:nth-child(2){animation-delay:.1s;}.fade-in:nth-child(3){animation-delay:.15s;}
+</style>
 </head>
 <body>
-<div id="app">
 
-  <div id="onboarding">
-    <div class="ob-card">
-      <div class="ob-step ob-active" id="ob-1">
-        <div class="ob-logo">♞ Chess<span>Kids</span></div>
-        <div class="ob-kip">♞</div>
-        <div class="ob-title">Hi there! I'm Kip! 👋</div>
-        <div class="ob-sub">I'll teach you real chess through puzzles, games & fun! What's your name?</div>
-        <input class="ob-input" id="ob-name-input" type="text" placeholder="Type your name..." maxlength="20" autocomplete="off">
-        <button class="btn btn-purple" onclick="ob_next(1)">Let's go! 🚀</button>
+<header>
+  <div class="header-left">
+    <button class="menu-btn" onclick="showTrophy()">🏆</button>
+    <div class="app-title">🎠 ChessKids</div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-badge">⭐ <span id="stars-count">0</span></div>
+    <div class="stat-badge">🔥 <span id="streak-count">0</span></div>
+    <button class="premium-btn-header" onclick="showPremium()">🚀 Go Premium</button>
+  </div>
+</header>
+
+<main>
+  <div class="greeting fade-in">
+    <h2>Hi, Chess Champion! 👋</h2>
+    <p>What would you like to do today?</p>
+  </div>
+
+  <div class="free-banner">
+    <div class="free-banner-left">
+      🎉 Free Plan · 3 activities unlocked
+      <span>Start free · Upgrade to unlock everything for $9.99/mo</span>
+    </div>
+    <button class="upgrade-link" onclick="showPremium()">🚀 Go Premium</button>
+  </div>
+
+  <div class="section-title">🌟 Your Quick Start</div>
+  <div class="quick-start">
+    <button class="qs-btn learn fade-in" onclick="showLearn()">
+      <span class="qs-emoji">🐴</span>
+      <span class="qs-label">Learn Pieces</span>
+      <span class="qs-sub">Move to the ⭐!</span>
+    </button>
+    <button class="qs-btn play fade-in" onclick="showBot()">
+      <span class="qs-emoji">🤖</span>
+      <span class="qs-label">Play Bot</span>
+      <span class="qs-sub">vs. random moves</span>
+    </button>
+    <button class="qs-btn solve fade-in" onclick="showPuzzle(null,null,'random')">
+      <span class="qs-emoji">🎯</span>
+      <span class="qs-label">Solve Puzzles</span>
+      <span class="qs-sub">Mate in one!</span>
+    </button>
+  </div>
+
+  <div class="section-title">📚 Story Books</div>
+  <div class="books-list" id="books-list"></div>
+
+  <div class="section-title">🎁 Puzzle Treasure Chest</div>
+  <button class="chest-toggle" id="chest-toggle" onclick="toggleChest()">
+    <span>🎁 Open the Treasure Chest!</span>
+    <span class="chest-arrow" id="chest-arrow">▶</span>
+  </button>
+  <div class="chest-body" id="chest-body">
+    <div id="categories-container"></div>
+    <div class="chest-premium-bar" id="chest-premium-bar">
+      <div>
+        <p>🔒 More puzzles are locked</p>
+        <span>Unlock all 75+ puzzles for $9.99/mo · Cancel anytime</span>
       </div>
-      <div class="ob-step" id="ob-2">
-        <div class="ob-kip">♞</div>
-        <div class="ob-title" id="ob-age-title">How old are you?</div>
-        <div class="ob-sub">I'll pick the best games for you!</div>
-        <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot active"></div><div class="ob-dot"></div></div>
-        <div class="ob-choices">
-          <button class="ob-choice" onclick="ob_setAge('5-7',this)"><span class="oc-icon">🐣</span><span><strong>5 – 7 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Just starting out!</span></span></button>
-          <button class="ob-choice" onclick="ob_setAge('8-10',this)"><span class="oc-icon">🎒</span><span><strong>8 – 10 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Ready for a challenge!</span></span></button>
-          <button class="ob-choice" onclick="ob_setAge('11-14',this)"><span class="oc-icon">🏆</span><span><strong>11 – 14 years</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Serious player mode!</span></span></button>
-        </div>
-        <button class="btn btn-purple" onclick="ob_next(2)">Next →</button>
-      </div>
-      <div class="ob-step" id="ob-3">
-        <div class="ob-kip">♞</div>
-        <div class="ob-title">Chess level?</div>
-        <div class="ob-sub">No wrong answer — be honest!</div>
-        <div class="ob-progress"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot active"></div></div>
-        <div class="ob-choices">
-          <button class="ob-choice" onclick="ob_setLevel('beginner',this)"><span class="oc-icon">🌱</span><span><strong>Never played</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">I don't know the pieces yet</span></span></button>
-          <button class="ob-choice" onclick="ob_setLevel('some',this)"><span class="oc-icon">♟</span><span><strong>Played a little</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">I know basic moves</span></span></button>
-          <button class="ob-choice" onclick="ob_setLevel('experienced',this)"><span class="oc-icon">♔</span><span><strong>I play chess!</strong><br><span style="font-weight:600;font-size:.8rem;color:#888">Looking to get better</span></span></button>
-        </div>
-        <button class="btn btn-green" onclick="ob_finish()">Start Learning! 🎉</button>
-      </div>
+      <button class="chest-upgrade-btn" onclick="showPremium()">🚀 Unlock All</button>
     </div>
   </div>
 
-  <div id="premium-gate" onclick="if(event.target===this)closePremiumGate()">
-    <div class="pg-sheet">
-      <div class="pg-handle"></div>
-      <div class="pg-emoji">👑</div>
-      <div class="pg-title">Unlock All 13 Modules!</div>
-      <div class="pg-sub">This module is part of ChessKids Premium — everything unlocked for one low price.</div>
-      <div class="pg-features">
-        <div class="pg-feat"><span>🎯</span> All 13 interactive chess modules</div>
-        <div class="pg-feat"><span>📚</span> Full structured curriculum (L1 → Master)</div>
-        <div class="pg-feat"><span>📈</span> Parent progress dashboard</div>
-        <div class="pg-feat"><span>🏆</span> Weekly progress reports</div>
-        <div class="pg-feat"><span>🔇</span> Ad-free forever</div>
+  <div class="section-title">🏆 Trophy Room</div>
+  <div class="trophy-card" onclick="showTrophy()">
+    <div class="trophy-left">
+      <h3>Your Progress</h3>
+      <div class="trophy-stat-row">
+        <div class="trophy-stat">⭐ <span id="tr-stars">0</span> Stars</div>
+        <div class="trophy-stat">🔥 <span id="tr-streak">0</span> Days</div>
+        <div class="trophy-stat">✅ <span id="tr-solved">0</span> Puzzles</div>
       </div>
-      <div class="pg-price-row">
-        <div><div class="pg-price-label">ChessKids Premium</div><div style="font-size:.72rem;font-weight:700;color:#aaa">Monthly, cancel anytime</div></div>
-        <div class="pg-price-val">$6.99<span style="font-size:.9rem;color:#888">/mo</span></div>
-      </div>
-      <a href="https://buy.stripe.com/test_dRmfZj1wldi4eW3gXw0ZW01" target="_blank" style="text-decoration:none;display:block">
-        <button class="btn btn-gold" style="font-size:1.05rem;margin-bottom:6px">👑 Unlock Premium — $6.99/mo</button>
-      </a>
-      <div style="margin-bottom:10px">
-        <div style="font-size:.75rem;font-weight:700;color:#aaa;text-align:center;margin-bottom:6px">Already paid? Enter your access code:</div>
-        <div class="pg-code-row">
-          <input class="pg-code-input" id="pg-code-input" placeholder="Enter access code..." type="text">
-          <button class="pg-code-btn" onclick="redeemCode()">Unlock</button>
-        </div>
-        <div id="pg-code-msg" style="font-size:.78rem;font-weight:800;text-align:center;min-height:18px"></div>
-      </div>
-      <span class="pg-close" onclick="closePremiumGate()">✕ Maybe later</span>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="trophy-bar" style="width:0%"></div></div>
+      <div style="font-size:.72rem;color:rgba(255,255,255,.7);margin-top:4px" id="next-unlock-label"></div>
+    </div>
+    <div class="trophy-right">🏆</div>
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<!-- PREMIUM MODAL -->
+<div class="modal-overlay premium-modal" id="premium-modal">
+  <div class="modal">
+    <div style="position:relative;">
+      <button class="modal-close" style="position:absolute;top:14px;right:14px;z-index:2;" onclick="closeModal('premium-modal')">✕</button>
+    </div>
+    <div class="premium-hero">
+      <span class="big-emoji">🚀</span>
+      <h2>Go Premium</h2>
+      <div class="price-tag">Unlock all activities for $9.99/month</div>
+      <div class="sub-line">Start free with 3 activities · Cancel anytime</div>
+    </div>
+    <div class="premium-perks">
+      <div class="perk-row"><span class="perk-icon">♟️</span> All 6 piece lessons with interactive training</div>
+      <div class="perk-row"><span class="perk-icon">🎁</span> All 75+ puzzles across every category</div>
+      <div class="perk-row"><span class="perk-icon">📚</span> All 3 Story Books unlocked instantly</div>
+      <div class="perk-row"><span class="perk-icon">🏆</span> Exclusive badges &amp; trophy rewards</div>
+      <div class="perk-row"><span class="perk-icon">🔥</span> Streak tracking &amp; progress analytics</div>
+    </div>
+    <div class="premium-cta">
+      <button class="subscribe-btn" onclick="activatePremium()">🚀 Subscribe $9.99/mo</button>
+      <div class="divider-or">── or ──</div>
+      <button class="already-paid-btn" onclick="alreadyPaid()">✅ I already paid — unlock now</button>
+      <button class="maybe-later-btn" onclick="closeModal('premium-modal')">✕ Maybe later</button>
+      <div class="cancel-note">Cancel anytime · No hidden fees · Instant access</div>
     </div>
   </div>
+</div>
 
-  <nav class="topnav">
-    <div class="topnav-logo">♞ Chess<span>Kids</span></div>
-    <div class="nav-stars">⭐ <span id="nav-star-count">0</span></div>
-    <button class="nav-premium-btn" id="nav-premium-btn" onclick="showPremiumGate()" style="display:none">👑 Go Premium</button>
-  </nav>
-
-  <!-- HOME -->
-  <div class="screen active content" id="s-home">
-    <div class="home-hero">
-      <div class="home-hero-top">
-        <div class="hero-kip-sm">♞</div>
-        <div class="home-hero-text">
-          <h1>Chess<span>Kids!</span></h1>
-          <p>Welcome back, <span class="hero-user-name" id="hero-name">friend</span>! Ready to play? 🎉</p>
-        </div>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-val" id="h-stars">0</div><div class="hero-stat-lbl">⭐ Stars</div></div>
-        <div class="hero-stat"><div class="hero-stat-val" id="h-streak">0🔥</div><div class="hero-stat-lbl">Streak</div></div>
-        <div class="hero-stat"><div class="hero-stat-val" id="h-level">—</div><div class="hero-stat-lbl">Level</div></div>
-      </div>
+<!-- PUZZLE MODAL -->
+<div class="modal-overlay" id="puzzle-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="puzzle-modal-icon" style="font-size:1.6rem">🎯</span>
+      <div class="modal-title" id="puzzle-modal-title">Solve Puzzles</div>
+      <button class="modal-close" onclick="closeModal('puzzle-modal')">✕</button>
     </div>
-    <div class="premium-banner" id="premium-banner" onclick="showPremiumGate()">
-      <div class="pb-label">👑 ChessKids Premium</div>
-      <div class="pb-title">Unlock All 13 Modules!</div>
-      <div class="pb-sub">3 modules are free. Upgrade to unlock everything.</div>
-      <div class="pb-price">$6.99 <small>/ month</small></div>
-      <div class="pb-features">
-        <div class="pb-feat">✅ All 13 interactive modules</div>
-        <div class="pb-feat">✅ Structured curriculum L1 → Master</div>
-        <div class="pb-feat">✅ Parent dashboard + weekly reports</div>
-      </div>
-      <button class="btn btn-gold" style="font-size:.95rem" onclick="event.stopPropagation();showPremiumGate()">👑 Upgrade Now — $6.99/mo</button>
-    </div>
-    <div class="section-header"><div class="section-label">🟢 Start Here — Free</div><div class="section-badge">FREE</div><div class="section-line"></div></div>
-    <div class="kip-bubble" style="margin-bottom:10px"><div class="kip-face">♞</div><div class="kip-text" id="home-kip-msg">Hi! I'm <strong>Kip</strong>! Start with these 3 free modules! 🎉</div></div>
-    <div class="module-grid" style="margin-bottom:16px">
-      <div class="module-card mc-d" onclick="goScreen('s-dojo')"><div class="mc-step">Step 1</div><div class="mc-icon">🐴</div><div class="mc-title">Piece Dojo</div><div class="mc-desc">Learn how every piece moves</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="dojo">0</span></div></div>
-      <div class="module-card mc-b" onclick="goScreen('s-bot')"><div class="mc-step">Step 2</div><div class="mc-icon">🤖</div><div class="mc-title">Play vs Bot</div><div class="mc-desc">Play a real chess game!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="bot">0</span></div></div>
-      <div class="module-card mc-a" onclick="goScreen('s-puzzle')"><div class="mc-step">Step 3</div><div class="mc-icon">🎯</div><div class="mc-title">Puzzle Trainer</div><div class="mc-desc">Solve real chess puzzles</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="puzzle">0</span></div></div>
-    </div>
-    <div class="section-header"><div class="section-label">⚔️ Tactics Training</div><div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div><div class="section-line"></div></div>
-    <div class="module-grid" style="margin-bottom:16px">
-      <div class="module-card mc-c" onclick="requirePremium('s-threat')"><div class="mc-icon">👁</div><div class="mc-title">Threat Spotter</div><div class="mc-desc">Find what they're threatening</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="threat">0</span></div></div>
-      <div class="module-card mc-e" onclick="requirePremium('s-capture')"><div class="mc-icon">💥</div><div class="mc-title">Capture Challenge</div><div class="mc-desc">Grab free pieces safely!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="capture">0</span></div></div>
-      <div class="module-card mc-f" onclick="requirePremium('s-blunder')"><div class="mc-icon">🔍</div><div class="mc-title">Blunder Check</div><div class="mc-desc">Is it a blunder?</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="blunder">0</span></div></div>
-      <div class="module-card mc-g" onclick="requirePremium('s-fork-train')"><div class="mc-icon">🍴</div><div class="mc-title">Fork & Attack</div><div class="mc-desc">Attack two pieces at once!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="fork">0</span></div></div>
-      <div class="module-card mc-h" onclick="requirePremium('s-defend-check')"><div class="mc-icon">🛡️</div><div class="mc-title">Defend the King</div><div class="mc-desc">Move, block, capture, protect!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="defend">0</span></div></div>
-      <div class="module-card mc-i" onclick="requirePremium('s-patterns')"><div class="mc-icon">🏆</div><div class="mc-title">Checkmate Patterns</div><div class="mc-desc">10 classic patterns</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="patterns">0</span></div></div>
-    </div>
-    <div class="section-header"><div class="section-label">♟ Strategy & Openings</div><div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div><div class="section-line"></div></div>
-    <div class="module-grid" style="margin-bottom:16px">
-      <div class="module-card mc-j" onclick="requirePremium('s-opening')"><div class="mc-icon">🌅</div><div class="mc-title">Opening Lab</div><div class="mc-desc">Which move is better?</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="opening">0</span></div></div>
-      <div class="module-card mc-k" onclick="requirePremium('s-pawn')"><div class="mc-icon">📐</div><div class="mc-title">Pawn School</div><div class="mc-desc">Passed, isolated, promotion</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="pawn">0</span></div></div>
-      <div class="module-card mc-l" onclick="requirePremium('s-eval')"><div class="mc-icon">⚖️</div><div class="mc-title">Who's Winning?</div><div class="mc-desc">Count material & evaluate</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="eval">0</span></div></div>
-    </div>
-    <div class="section-header"><div class="section-label">👑 Endgames & Combos</div><div class="section-badge" style="background:var(--gold-d)">👑 PREMIUM</div><div class="section-line"></div></div>
-    <div class="module-grid" style="margin-bottom:16px">
-      <div class="module-card mc-m" onclick="requirePremium('s-defend')"><div class="mc-icon">🏰</div><div class="mc-title">Build & Defend</div><div class="mc-desc">Place your army. Survive!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="defend">0</span></div></div>
-      <div class="module-card mc-a" onclick="requirePremium('s-combo')"><div class="mc-icon">🔗</div><div class="mc-title">Combo Builder</div><div class="mc-desc">Checkmate in 2 moves!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="combo">0</span></div></div>
-      <div class="module-card mc-b" onclick="requirePremium('s-endcoach')"><div class="mc-icon">👑</div><div class="mc-title">Endgame Coach</div><div class="mc-desc">King+Queen, Rook, Pawn endings</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="endcoach">0</span></div></div>
-      <div class="module-card mc-c" onclick="requirePremium('s-ladder-method')"><div class="mc-icon">🪜</div><div class="mc-title">Double Ladder</div><div class="mc-desc">Two Rooks push the King out!</div><div class="mc-stars">⭐ <span class="mc-star-val" data-mod="ladder">0</span></div></div>
-    </div>
-    <div class="section-header"><div class="section-label">📚 Structured Course</div><div class="section-line"></div></div>
-    <div style="margin-bottom:24px">
-      <div class="path-step path-current" onclick="tabTo('s-curriculum','tab-curr');buildCurriculum()">
-        <div class="ps-num">L1</div><div class="ps-info"><div class="ps-title">Beginner — Foundations</div><div class="ps-sub">Learn pieces, rules, play your first game</div></div>
-        <span class="ps-tag ps-tag-free">FREE</span><div style="color:var(--purple);font-weight:900">▶</div>
-      </div>
-      <div class="path-step path-locked" id="step-l2" onclick="requirePremium('s-curriculum')">
-        <div class="ps-num">L2</div><div class="ps-info"><div class="ps-title">Advanced Beginner</div><div class="ps-sub">Spot tactics, avoid blunders</div></div>
-        <span class="ps-tag ps-tag-pro" id="step-l2-tag">👑 PRO</span><div id="step-l2-icon" style="color:#ddd;font-weight:900">🔒</div>
-      </div>
-      <div class="path-step path-locked" id="step-l3" onclick="requirePremium('s-curriculum')">
-        <div class="ps-num">L3–★</div><div class="ps-info"><div class="ps-title">Intermediate → Master</div><div class="ps-sub">Strategy, tournaments, mastery</div></div>
-        <span class="ps-tag ps-tag-pro" id="step-l3-tag">👑 PRO</span><div id="step-l3-icon" style="color:#ddd;font-weight:900">🔒</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PUZZLE TRAINER -->
-  <div class="screen content" id="s-puzzle">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🎯 Puzzle Trainer</div><div class="score-pill">⭐ <span id="puz-stars">0</span></div></div>
-    <div class="puzzle-nav" id="puz-cats"></div>
-    <div class="puzzle-counter" id="puz-counter">Puzzle 1 of 7</div>
-    <div class="puzzle-layout">
-      <div><div class="board-wrap"><div class="board" id="puz-board"></div></div></div>
+    <div class="modal-body">
       <div class="puzzle-info">
-        <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="puz-task">Loading...</div></div>
-        <div id="puz-turn" class="turn-indicator turn-white">⬜ White to move</div>
-        <div class="feedback-box" id="puz-feedback"></div>
-        <button class="btn btn-amber" id="puz-next" onclick="nextPuzzle()" style="display:none">▶ Next Puzzle</button>
-        <button class="btn btn-white btn-sm" onclick="showPuzzleHint()">💡 Show Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PLAY VS BOT -->
-  <div class="screen content" id="s-bot">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🤖 Play vs Bot</div><div class="score-pill" id="bot-status">Your turn</div></div>
-    <div id="bot-setup">
-      <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text">Pick how strong the bot should be! You play <strong>White ⬜</strong>. Good luck!</div></div>
-      <div class="diff-grid">
-        <div class="diff-btn on" id="diff-0" onclick="setDiff(0)">🐣<br>Baby Bot<br><small style="font-weight:600;color:#888">Random moves</small></div>
-        <div class="diff-btn" id="diff-1" onclick="setDiff(1)">🐥<br>Chick Bot<br><small style="font-weight:600;color:#888">Avoids blunders</small></div>
-        <div class="diff-btn" id="diff-2" onclick="setDiff(2)">🐔<br>Rooster<br><small style="font-weight:600;color:#888">Plays tactics</small></div>
-      </div>
-      <button class="btn btn-green" onclick="startBotGame()">▶ Start Game!</button>
-    </div>
-    <div id="bot-game" class="hidden">
-      <div class="bot-layout">
-        <div>
-          <div style="margin-bottom:6px;font-weight:800;font-size:.8rem;color:#888">♟ Black's captures:</div>
-          <div class="captured-row" id="bot-cap-black" style="margin-bottom:8px"></div>
-          <div class="board-wrap"><div class="board" id="bot-board"></div></div>
-          <div style="margin-top:6px;font-weight:800;font-size:.8rem;color:#888">♟ White's captures:</div>
-          <div class="captured-row" id="bot-cap-white" style="margin-top:6px"></div>
+        <div class="puzzle-title-row">
+          <span class="puzzle-title-text" id="puzzle-label">Mate in One · White to play</span>
+          <span class="turn-badge white" id="turn-badge">White ♙</span>
         </div>
-        <div>
-          <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="bot-msg">Pick a White piece!</div></div>
-          <div id="bot-thinking" class="thinking-indicator hidden">🤔 Bot is thinking...</div>
-          <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.82rem;margin-bottom:6px">📝 Moves</div><div class="move-list" id="bot-moves"></div></div>
-          <button class="btn btn-white btn-sm" onclick="showBotHint()">💡 Hint</button>
-          <button class="btn btn-coral btn-sm" onclick="resetBotGame()">🔄 New Game</button>
-        </div>
+        <div class="puzzle-msg" id="puzzle-msg">Find the best move!</div>
+      </div>
+      <div class="board-wrap"><canvas id="board-canvas" width="360" height="360"></canvas></div>
+      <div class="puzzle-btns">
+        <button class="p-btn reset" onclick="resetPuzzle()">🔄 Reset</button>
+        <button class="p-btn hint" onclick="showHint()">💡 Hint</button>
+        <button class="p-btn next" onclick="nextPuzzle()">➡️ Next</button>
       </div>
     </div>
   </div>
-
-  <!-- THREAT SPOTTER -->
-  <div class="screen content" id="s-threat">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">👁 Threat Spotter</div><div class="score-pill">⭐ <span id="thr-stars">0</span></div></div>
-    <div class="threat-layout">
-      <div><div class="board-wrap"><div class="board" id="thr-board"></div></div></div>
-      <div>
-        <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="thr-task">Loading...</div></div>
-        <div class="feedback-box" id="thr-feedback"></div>
-        <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.82rem;color:#888">Progress</div><div style="font-weight:900;font-size:1.1rem" id="thr-progress">0 / 0 correct</div></div>
-        <button class="btn btn-sky" id="thr-next" onclick="nextThreat()" style="display:none">▶ Next Position</button>
-        <button class="btn btn-white btn-sm" onclick="showThreatHint()">💡 Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PIECE DOJO -->
-  <div class="screen content" id="s-dojo">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🐴 Piece Dojo</div><div class="score-pill">⭐ <span id="dojo-stars">0</span></div></div>
-    <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="dojo-msg">Pick a piece to train with!</div></div>
-    <div class="dojo-pieces" id="dojo-piece-btns"></div>
-    <div class="dojo-stats">
-      <div class="dojo-stat"><div class="dojo-stat-val" id="dojo-moves">0</div><div class="dojo-stat-lbl">Moves made</div></div>
-      <div class="dojo-stat"><div class="dojo-stat-val" id="dojo-best">—</div><div class="dojo-stat-lbl">Best moves</div></div>
-      <div class="dojo-stat"><div class="dojo-stat-val" id="dojo-done">0/10</div><div class="dojo-stat-lbl">Challenges</div></div>
-    </div>
-    <div class="board-wrap"><div class="board" id="dojo-board"></div></div>
-    <div class="feedback-box" id="dojo-feedback" style="margin-top:10px"></div>
-  </div>
-
-  <!-- CAPTURE CHALLENGE -->
-  <div class="screen content" id="s-capture">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">💥 Capture Challenge</div><div class="score-pill">⭐ <span id="cap-stars">0</span></div></div>
-    <div class="score-bar">
-      <div class="score-box"><div class="sv" id="cap-captured">0</div><div class="sl">Captured 🟢</div></div>
-      <div class="score-box"><div class="sv" id="cap-lost">0</div><div class="sl">Lost 🔴</div></div>
-      <div class="score-box"><div class="sv" id="cap-moves">3</div><div class="sl">Moves left</div></div>
-    </div>
-    <div class="cap-layout">
-      <div><div class="board-wrap"><div class="board" id="cap-board"></div></div></div>
-      <div>
-        <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="cap-task">Loading...</div></div>
-        <div class="feedback-box" id="cap-feedback"></div>
-        <button class="btn btn-amber" id="cap-next" onclick="nextCapture()" style="display:none">▶ Next Challenge</button>
-        <button class="btn btn-white btn-sm" onclick="nextCapture()">🔀 New Position</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- BUILD & DEFEND -->
-  <div class="screen content" id="s-defend">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">🛡️ Build & Defend</div><div class="score-pill">Survive! <span id="def-moves">5</span> turns</div></div>
-    <div id="def-setup">
-      <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text">Place your pieces to protect your King! Survive <strong>5 turns</strong> to win!</div></div>
-      <div class="card-sm" style="margin-bottom:10px"><div style="font-weight:800;font-size:.88rem;margin-bottom:8px">🪖 Your Army:</div><div id="def-army"></div></div>
-      <div class="board-wrap"><div class="board" id="def-setup-board"></div></div>
-      <button class="btn btn-coral" style="margin-top:10px" onclick="startDefend()">⚔️ Start Battle!</button>
-    </div>
-    <div id="def-battle" class="hidden">
-      <div class="defend-layout">
-        <div><div class="board-wrap"><div class="board" id="def-board"></div></div></div>
-        <div>
-          <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text" id="def-msg">Defend the King!</div></div>
-          <div class="feedback-box" id="def-feedback"></div>
-          <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800">Turn <span id="def-turn-num">1</span> of 5</div><div style="font-size:.8rem;color:#888;margin-top:4px" id="def-hint-text"></div></div>
-          <button class="btn btn-white btn-sm" onclick="showDefendHint()">💡 Hint</button>
-          <button class="btn btn-coral btn-sm" onclick="resetDefend()">🔄 Start Over</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CURRICULUM -->
-  <div class="screen content" id="s-curriculum">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">📚 Chess Courses</div></div>
-    <div class="kip-bubble"><div class="kip-face">♞</div><div class="kip-text">Tap a level to explore the lessons! 📖</div></div>
-    <div id="curr-levels"></div>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="screen content" id="s-progress">
-    <div class="game-header"><button class="back-btn" onclick="goScreen('s-home')">←</button><div class="game-title">⭐ My Progress</div></div>
-    <div class="two-col" style="margin-bottom:12px">
-      <div class="card" style="text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:2.5rem" id="prog-stars">0</div><div style="font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase">Total Stars</div></div>
-      <div class="card" style="text-align:center"><div style="font-family:'Fredoka One',cursive;font-size:2.5rem" id="prog-streak">0🔥</div><div style="font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase">Day Streak</div></div>
-    </div>
-    <div id="prog-modules"></div>
-    <button class="btn btn-coral btn-sm" onclick="if(confirm('Reset all progress?'))resetProgress()">🗑 Reset Progress</button>
-  </div>
-
-  <!-- BLUNDER CHECK -->
-  <div class="screen content" id="s-blunder">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🔍 Blunder Check</div><div class="spill">⭐<span id="blu-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="blu-kip">White just played. <b>Is it a blunder?</b></div></div>
-    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="blu-ctr">Position 1</div>
-    <div class="bl">
-      <div><div class="bw-wrap"><div class="board" id="blu-board"></div></div></div>
-      <div>
-        <div class="card-sm" style="margin-bottom:8px">
-          <div style="font-weight:800;font-size:.88rem;margin-bottom:6px">⬜ White just moved. Blunder?</div>
-          <div class="yn-row"><button class="yn-btn yn-yes" id="blu-yes" onclick="blunderAnswer(true)">✅ Safe!</button><button class="yn-btn yn-no" id="blu-no" onclick="blunderAnswer(false)">❌ Blunder!</button></div>
-        </div>
-        <div id="blu-tap-inst" class="hidden" style="font-weight:800;font-size:.88rem;margin-bottom:6px;color:#FF6B6B">👆 Tap the hanging piece for bonus stars!</div>
-        <div class="fb" id="blu-fb"></div>
-        <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.8rem;color:#888">Score</div><div style="font-weight:900;font-size:1.1rem" id="blu-prog">0 / 0</div></div>
-        <button class="btn bt" id="blu-next" onclick="nextBlunder()" style="display:none">▶ Next</button>
-        <button class="btn bw bsm" onclick="blunderHint()">💡 Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- CHECKMATE PATTERNS -->
-  <div class="screen content" id="s-patterns">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🏆 Checkmate Patterns</div><div class="spill">⭐<span id="pat-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="pat-kip">Tap a pattern to learn it! 🏆</div></div>
-    <div class="pat-grid" id="pat-grid"></div>
-    <div id="pat-lesson" class="hidden">
-      <div class="gh" style="margin-bottom:10px"><button class="bk" onclick="closePat()">←</button><div class="gtitle" id="pat-lesson-title">Pattern</div></div>
-      <div class="bl">
-        <div><div class="bw-wrap"><div class="board" id="pat-board"></div></div></div>
-        <div>
-          <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="pat-explain">Loading...</div></div>
-          <div class="fb" id="pat-fb"></div>
-          <div id="pat-quiz-area"></div>
-          <button class="btn bpk" id="pat-next" onclick="nextPatternChallenge()" style="display:none">▶ Try Another</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- COMBINATION BUILDER -->
-  <div class="screen content" id="s-combo">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🔗 Combination Builder</div><div class="spill">⭐<span id="cmb-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="cmb-kip">Find checkmate in 2 moves! 🔗</div></div>
-    <div class="combo-steps" id="cmb-steps"></div>
-    <div class="bl">
-      <div><div class="bw-wrap"><div class="board" id="cmb-board"></div></div></div>
-      <div>
-        <div class="tind ti-w" id="cmb-turn">⬜ Move 1</div>
-        <div class="fb" id="cmb-fb" style="margin-top:8px"></div>
-        <button class="btn bo" id="cmb-next" onclick="nextCombo()" style="display:none">▶ Next</button>
-        <button class="btn bw bsm" onclick="comboHint()">💡 Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ENDGAME COACH -->
-  <div class="screen content" id="s-endcoach">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">👑 Endgame Coach</div><div class="spill">⭐<span id="end-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="end-kip">Choose an endgame to learn! 👑</div></div>
-    <div id="end-menu">
-      <div class="g3" style="margin-bottom:12px">
-        <button class="btn bg" onclick="startEndgame('kqk')">♛ King + Queen vs King</button>
-        <button class="btn bs" onclick="startEndgame('krk')">♜ King + Rook vs King</button>
-        <button class="btn ba" onclick="startEndgame('kpk')">♟ King + Pawn vs King</button>
-      </div>
-    </div>
-    <div id="end-lesson" class="hidden">
-      <div class="step-list" id="end-steps"></div>
-      <div class="bl">
-        <div><div class="bw-wrap"><div class="board" id="end-board"></div></div></div>
-        <div>
-          <div class="fb" id="end-fb"></div>
-          <button class="btn bg" id="end-next" onclick="endgameNext()" style="display:none">▶ Next Step</button>
-          <button class="btn bw bsm" onclick="endgameHint()">💡 Hint</button>
-          <button class="btn bc bsm" onclick="resetEndgame()">🔄 Restart</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- OPENING LAB -->
-  <div class="screen content" id="s-opening">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🌅 Opening Lab</div><div class="spill">⭐<span id="op-sc">0</span></div></div>
-    <div class="pcats" id="op-cats"></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="op-kip">Which opening move is BETTER?</div></div>
-    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="op-ctr">Question 1</div>
-    <div class="op-choice" id="op-choices"></div>
-    <div class="fb" id="op-fb"></div>
-    <button class="btn ba" id="op-next" onclick="nextOpening()" style="display:none">▶ Next Question</button>
-  </div>
-
-  <!-- WHO'S WINNING -->
-  <div class="screen content" id="s-eval">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">⚖️ Who's Winning?</div><div class="spill">⭐<span id="ev-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ev-kip">Count pieces! P=1 N/B=3 R=5 Q=9. Who has more?</div></div>
-    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="ev-ctr">Position 1</div>
-    <div class="bl">
-      <div><div class="bw-wrap"><div class="board" id="ev-board"></div></div></div>
-      <div>
-        <div class="mat-row" id="ev-mat">Counting...</div>
-        <div class="eval-opts">
-          <div class="eval-opt" id="ev-w" onclick="evalAnswer('white')">⬜ White</div>
-          <div class="eval-opt" id="ev-e" onclick="evalAnswer('equal')">⚖️ Equal</div>
-          <div class="eval-opt" id="ev-b" onclick="evalAnswer('black')">⬛ Black</div>
-        </div>
-        <div class="fb" id="ev-fb"></div>
-        <div class="card-sm" style="margin-bottom:8px"><div style="font-weight:800;font-size:.8rem;color:#888">Score</div><div style="font-weight:900;font-size:1.1rem" id="ev-prog">0 / 0</div></div>
-        <button class="btn bp" id="ev-next" onclick="nextEval()" style="display:none">▶ Next</button>
-        <button class="btn bw bsm" onclick="evalHint()">💡 Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAWN SCHOOL -->
-  <div class="screen content" id="s-pawn">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">📐 Pawn School</div><div class="spill">⭐<span id="pw-sc">0</span></div></div>
-    <div class="pcats" id="pw-cats"></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="pw-kip">Loading...</div></div>
-    <div style="text-align:center;font-weight:800;font-size:.82rem;color:#888;margin-bottom:8px" id="pw-ctr">Q 1</div>
-    <div class="bl">
-      <div><div class="bw-wrap"><div class="board" id="pw-board"></div></div></div>
-      <div>
-        <div class="fb" id="pw-fb"></div>
-        <div id="pw-choices"></div>
-        <button class="btn bt" id="pw-next" onclick="nextPawn()" style="display:none">▶ Next</button>
-        <button class="btn bw bsm" onclick="pawnHint()">💡 Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DEFEND THE KING -->
-  <div class="screen content" id="s-defend-check">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🛡️ Defend the King!</div><div class="spill">⭐<span id="dk-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="dk-kip">Your King is in danger!</div></div>
-    <div class="scenario-tabs">
-      <button class="stab stab-move on" id="dk-tab-move" onclick="dkSetSkill('move')">🏃 Move Away</button>
-      <button class="stab stab-block" id="dk-tab-block" onclick="dkSetSkill('block')">🧱 Block</button>
-      <button class="stab stab-capture" id="dk-tab-capture" onclick="dkSetSkill('capture')">⚔️ Capture</button>
-      <button class="stab stab-protect" id="dk-tab-protect" onclick="dkSetSkill('protect')">🛡️ Protect</button>
-    </div>
-    <div class="scenario-ctr" id="dk-ctr">Scenario 1</div>
-    <div class="bl">
-      <div><div class="bw-wrap"><div class="board" id="dk-board"></div></div></div>
-      <div>
-        <div class="tactic-concept"><div class="tc-emoji" id="dk-con-em">🏃</div><div class="tc-name" id="dk-con-name">Move Away</div><div class="tc-explain" id="dk-con-exp">Move to a safe square!</div></div>
-        <div class="fb" id="dk-fb"></div>
-        <div class="hint-dots" id="dk-dots"></div>
-        <button class="btn bg" id="dk-next" onclick="dkNext()" style="display:none">▶ Next</button>
-        <button class="btn bw bsm" onclick="dkHint()">💡 Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DOUBLE LADDER -->
-  <div class="screen content" id="s-ladder-method">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🪜 Double Ladder</div><div class="spill">⭐<span id="ld-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ld-kip">Use TWO Rooks to push the King to the edge!</div></div>
-    <div class="scenario-tabs">
-      <button class="stab stab-ladder on" id="ld-tab-learn" onclick="ldSetMode('learn')">📖 Learn</button>
-      <button class="stab stab-ladder" id="ld-tab-practice" onclick="ldSetMode('practice')">🎯 Practice</button>
-      <button class="stab stab-ladder" id="ld-tab-challenge" onclick="ldSetMode('challenge')">🏆 Challenge</button>
-    </div>
-    <div class="ladder-progress" id="ld-progress"></div>
-    <div class="bl">
-      <div><div class="bw-wrap"><div class="board" id="ld-board"></div></div></div>
-      <div>
-        <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ld-task">Select a Rook!</div></div>
-        <div class="fb" id="ld-fb"></div>
-        <button class="btn bs" id="ld-next" onclick="ldNext()" style="display:none">▶ Next Step</button>
-        <button class="btn bw bsm" onclick="ldHint()">💡 Hint</button>
-        <button class="btn bc bsm" onclick="ldReset()">🔄 Restart</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FORK & DOUBLE ATTACK -->
-  <div class="screen content" id="s-fork-train">
-    <div class="gh"><button class="bk" onclick="goScreen('s-home')">←</button><div class="gtitle">🍴 Fork & Double Attack</div><div class="spill">⭐<span id="ft-sc">0</span></div></div>
-    <div class="kip"><div class="kip-face">♞</div><div class="kip-text" id="ft-kip">Attack TWO pieces at once!</div></div>
-    <div class="scenario-tabs">
-      <button class="stab stab-fork on" id="ft-tab-fork" onclick="ftSetSkill('fork')">🍴 Fork</button>
-      <button class="stab stab-double" id="ft-tab-double" onclick="ftSetSkill('double')">💥 Double Attack</button>
-    </div>
-    <div class="scenario-ctr" id="ft-ctr">Scenario 1</div>
-    <div class="bl">
-      <div><div class="bw-wrap"><div class="board" id="ft-board"></div></div></div>
-      <div>
-        <div class="tactic-concept" id="ft-concept"><div class="tc-emoji">🍴</div><div class="tc-name">Fork!</div><div class="tc-explain" id="ft-con-exp">Attack TWO pieces at once!</div></div>
-        <div class="fork-targets" id="ft-targets"></div>
-        <div class="fb" id="ft-fb"></div>
-        <button class="btn bpk" id="ft-next" onclick="ftNext()" style="display:none">▶ Next</button>
-        <button class="btn bw bsm" onclick="ftHint()">💡 Hint</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- BOTTOM TAB BAR -->
-  <nav class="tabbar">
-    <button class="tab on" id="tab-home" onclick="tabTo('s-home','tab-home')"><span class="tbi">🏠</span><span class="tbl">Home</span></button>
-    <button class="tab" id="tab-puzzle" onclick="tabTo('s-puzzle','tab-puzzle');initPuzzle()"><span class="tbi">🎯</span><span class="tbl">Puzzles</span></button>
-    <button class="tab" id="tab-bot" onclick="tabTo('s-bot','tab-bot')"><span class="tbi">🤖</span><span class="tbl">Play</span></button>
-    <button class="tab" id="tab-curr" onclick="tabTo('s-curriculum','tab-curr');buildCurriculum()"><span class="tbi">📚</span><span class="tbl">Learn</span></button>
-    <button class="tab" id="tab-prog" onclick="tabTo('s-progress','tab-prog');renderProgress()"><span class="tbi">⭐</span><span class="tbl">Progress</span></button>
-  </nav>
 </div>
 
-<div class="result-overlay" id="rover">
-  <div class="result-card">
-    <span class="result-emoji" id="r-emoji">🏆</span>
-    <div class="result-title" id="r-title">Great Job!</div>
-    <div class="result-sub" id="r-sub">You earned 3 stars!</div>
-    <button class="btn btn-green" onclick="closeResult(true)" style="margin-bottom:8px">▶ Play Again!</button>
-    <button class="btn btn-white btn-sm" onclick="closeResult(false)">🏠 Home</button>
+<!-- LEARN MODAL -->
+<div class="modal-overlay" id="learn-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span style="font-size:1.6rem">🐴</span>
+      <div class="modal-title">Learn the Pieces!</div>
+      <button class="modal-close" onclick="closeModal('learn-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pieces-grid" id="pieces-grid"></div>
+      <div class="learn-area">
+        <h3 id="pd-title">👆 Tap a piece to start!</h3>
+        <p id="pd-desc">Pick a chess piece above — then move it to the ⭐ star on the board to score!</p>
+        <div class="learn-instructions" id="learn-instructions" style="display:none">Tap the piece, then tap the ⭐ star!</div>
+        <div class="board-wrap"><canvas id="piece-learn-canvas" width="300" height="300"></canvas></div>
+        <div class="learn-result" id="learn-result"></div>
+      </div>
+    </div>
   </div>
 </div>
-<div class="toast" id="toast"></div>
 
-<script type="module" src="js/app.js"></script>
+<!-- BOT MODAL -->
+<div class="modal-overlay" id="bot-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span style="font-size:1.6rem">🤖</span>
+      <div class="modal-title">Play vs. Bot</div>
+      <button class="modal-close" onclick="closeModal('bot-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bot-status" id="bot-status">You play White! Make your first move! ♙</div>
+      <div class="board-wrap"><canvas id="bot-board-canvas" width="360" height="360"></canvas></div>
+      <div class="bot-btns">
+        <button class="p-btn reset" onclick="resetBot()">🔄 New Game</button>
+        <button class="p-btn hint" onclick="botHint()">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TROPHY MODAL -->
+<div class="modal-overlay" id="trophy-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span style="font-size:1.6rem">🏆</span>
+      <div class="modal-title">Your Trophy Room</div>
+      <button class="modal-close" onclick="closeModal('trophy-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="trophy-progress">
+        <div class="trophy-progress-row"><span>⭐ Stars Earned</span><span id="t-stars">0</span></div>
+        <div class="tp-bar"><div class="tp-fill" id="t-stars-bar" style="width:0%"></div></div>
+        <div class="trophy-progress-row"><span>✅ Puzzles Solved</span><span id="t-puzzles">0</span></div>
+        <div class="tp-bar"><div class="tp-fill" id="t-puzzles-bar" style="width:0%;background:linear-gradient(to right,#2196F3,#64B5F6)"></div></div>
+        <div class="trophy-progress-row"><span>🔥 Day Streak</span><span id="t-streak">0</span></div>
+        <div class="tp-bar"><div class="tp-fill" id="t-streak-bar" style="width:0%;background:linear-gradient(to right,#FF5722,#FF8A65)"></div></div>
+      </div>
+      <div class="section-title" style="margin-top:16px">🥇 Badges</div>
+      <div class="badge-grid" id="badge-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK MODAL -->
+<div class="modal-overlay" id="book-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="book-modal-icon" style="font-size:1.6rem">📘</span>
+      <div class="modal-title" id="book-modal-title">Book Title</div>
+      <button class="modal-close" onclick="closeModal('book-modal')">✕</button>
+    </div>
+    <div class="modal-body"><div class="session-list" id="session-list"></div></div>
+  </div>
+</div>
+
+<!-- LESSON MODAL -->
+<div class="modal-overlay" id="lesson-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="lesson-icon" style="font-size:1.6rem">📖</span>
+      <div class="modal-title" id="lesson-title">Lesson</div>
+      <button class="modal-close" onclick="closeModal('lesson-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="lesson-body" id="lesson-body"></div>
+      <button class="p-btn next" style="width:100%;margin-top:16px" onclick="closeModal('lesson-modal')">✅ Got it!</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════ DATA ════════════ */
+const PIECES_DATA=[
+  {symbol:'♔',name:'King',  free:true, desc:'Moves ONE square in any direction. The most important piece — protect him!',moves:'king'},
+  {symbol:'♕',name:'Queen', free:true, desc:'Moves ANY number of squares in any direction. The most powerful piece!',moves:'queen'},
+  {symbol:'♖',name:'Rook',  free:true, desc:'Moves in straight lines — up, down, left, right. Great in open files!',moves:'rook'},
+  {symbol:'♗',name:'Bishop',free:false,desc:'Moves diagonally any distance. Always stays on its own color!',moves:'bishop'},
+  {symbol:'♘',name:'Knight',free:false,desc:'Moves in an L-shape: 2+1 squares. The ONLY piece that jumps over others!',moves:'knight'},
+  {symbol:'♙',name:'Pawn',  free:false,desc:'Moves 1 forward (2 on first move), captures diagonally. Can become a Queen!',moves:'pawn'},
+];
+
+const PUZZLES={
+  mate1:[
+    {id:'m1a',fen:'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 0 4',move:'f3f7',label:'Mate in One · White to play',cat:'mate1'},
+    {id:'m1b',fen:'6k1/5ppp/8/8/8/8/5PPP/4R1K1 w - - 0 1',move:'e1e8',label:'Mate in One · White to play',cat:'mate1'},
+    {id:'m1c',fen:'3k4/3Q4/3K4/8/8/8/8/8 w - - 0 1',move:'d7d8',label:'Mate in One · White to play',cat:'mate1'},
+  ],
+  mate2:[
+    {id:'m2a',fen:'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPPBPPP/RNBQK2R w KQkq - 2 3',move:'f3e5',label:'Mate in Two · White to play',cat:'mate2'},
+    {id:'m2b',fen:'6k1/5ppp/8/8/8/5N2/5PPP/5RK1 w - - 0 1',move:'f1f8',label:'Mate in Two · White to play',cat:'mate2'},
+  ],
+  mate3:[{id:'m3a',fen:'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/3P1N2/PPP2PPP/RNBQK2R w KQkq - 0 5',move:'f3g5',label:'Mate in Three · White to play',cat:'mate3'}],
+  backrank:[
+    {id:'brA',fen:'6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1',move:'d1d8',label:'Back Rank Mate · White to play',cat:'backrank'},
+    {id:'brB',fen:'r5k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1',move:'a1a8',label:'Back Rank Mate · White to play',cat:'backrank'},
+  ],
+  smothered:[{id:'smA',fen:'6k1/6pp/6p1/8/8/8/8/3NK2N w - - 0 1',move:'h1f2',label:'Smothered Mate',cat:'smothered'}],
+  anastasia:[{id:'anA',fen:'5rk1/4Nppp/8/8/8/8/6PP/6K1 w - - 0 1',move:'e7f5',label:'Anastasia Mate',cat:'anastasia'}],
+  arabian:[{id:'arA',fen:'6k1/6N1/6KR/8/8/8/8/8 w - - 0 1',move:'h6h8',label:'Arabian Mate',cat:'arabian'}],
+  boden:[{id:'bdA',fen:'r1bqk2r/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 6',move:'c4f7',label:"Boden's Mate",cat:'boden'}],
+  doubleBishop:[{id:'dbA',fen:'r4rk1/ppp2ppp/2n5/3qb3/8/2N2N2/PPP2PPP/R1BQR1K1 w - - 0 1',move:'f3e5',label:'Double Bishop Mate',cat:'doubleBishop'}],
+  dovetail:[{id:'dvA',fen:'6k1/Q7/6K1/8/8/8/8/8 w - - 0 1',move:'a7f7',label:'Dovetail Mate',cat:'dovetail'}],
+  hook:[{id:'hkA',fen:'5rk1/6pp/7N/8/8/8/6PP/5RK1 w - - 0 1',move:'h6f7',label:'Hook Mate',cat:'hook'}],
+  french:[{id:'frA',fen:'rnbqkbnr/ppp2ppp/4p3/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq d6 0 3',move:'e4e5',label:'French Defense',cat:'french'}],
+  ruylopez:[{id:'rlA',fen:'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3',move:'a7a6',label:'Ruy Lopez',cat:'ruylopez'}],
+  sicilian:[{id:'scA',fen:'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2',move:'g1f3',label:'Sicilian Defense',cat:'sicilian'}],
+  carokann:[{id:'ckA',fen:'rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',move:'d2d4',label:'Caro-Kann',cat:'carokann'}],
+  italian:[{id:'itA',fen:'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3',move:'g8f6',label:'Italian Game',cat:'italian'}],
+  scotch:[{id:'stA',fen:'r1bqkbnr/pppp1ppp/2n5/4p3/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq d3 0 3',move:'c6d4',label:'Scotch Game',cat:'scotch'}],
+  kingsGambit:[{id:'kgA',fen:'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2',move:'e5f4',label:"King's Gambit",cat:'kingsGambit'}],
+  vienna:[{id:'vnA',fen:'rnbqkbnr/pppp1ppp/8/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 2',move:'g8f6',label:'Vienna Game',cat:'vienna'}],
+  promotion:[
+    {id:'prA',fen:'8/4P3/8/8/8/8/8/4K1k1 w - - 0 1',move:'e7e8',label:'Pawn Promotion',cat:'promotion'},
+    {id:'prB',fen:'8/P7/8/8/8/8/8/k1K5 w - - 0 1',move:'a7a8',label:'Queen Promotion',cat:'promotion'},
+  ],
+  zugzwang:[{id:'zgA',fen:'8/8/4k3/8/4K3/8/8/8 w - - 0 1',move:'e4f4',label:'Zugzwang',cat:'zugzwang'}],
+  pawnEnd:[{id:'pwA',fen:'8/5p2/8/5P2/5K2/8/8/6k1 w - - 0 1',move:'f4e4',label:'Pawn Endgame',cat:'pawnEnd'}],
+  rookEnd:[{id:'rkA',fen:'8/8/8/8/8/8/4k3/R3K3 w Q - 0 1',move:'a1a8',label:'Rook Endgame',cat:'rookEnd'}],
+  queenEnd:[{id:'qeA',fen:'8/8/8/4k3/8/8/8/Q3K3 w - - 0 1',move:'a1f6',label:'Queen Endgame',cat:'queenEnd'}],
+  bishopEnd:[{id:'beA',fen:'8/8/8/5k2/8/8/8/2B1K3 w - - 0 1',move:'c1d2',label:'Bishop Endgame',cat:'bishopEnd'}],
+  knightEnd:[{id:'knA',fen:'8/8/8/5k2/8/5N2/8/5K2 w - - 0 1',move:'f3d4',label:'Knight Endgame',cat:'knightEnd'}],
+  pin:[
+    {id:'piA',fen:'r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 2 5',move:'c4b5',label:'Pin',cat:'pin'},
+    {id:'piB',fen:'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4',move:'c4b5',label:'Absolute Pin',cat:'pin'},
+  ],
+  fork:[
+    {id:'fkA',fen:'r1bqkbnr/pppp1ppp/8/4p3/4n3/2N2N2/PPPPBPPP/R1BQK2R w KQkq - 0 1',move:'f3e5',label:'Fork',cat:'fork'},
+    {id:'fkB',fen:'r2qkbnr/ppp1pppp/2np4/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 4',move:'d1d5',label:'Queen Fork',cat:'fork'},
+  ],
+  skewer:[{id:'skA',fen:'4k3/8/8/8/8/8/8/R3K3 w Q - 0 1',move:'a1a8',label:'Skewer',cat:'skewer'}],
+  discoveredAttack:[{id:'daA',fen:'r1bqkb1r/ppp2ppp/2np1n2/4p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 6',move:'c3d5',label:'Discovered Attack',cat:'discoveredAttack'}],
+  doubleCheck:[{id:'dcA',fen:'r1bqk2r/ppp1bppp/2np1n2/4p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w kq - 0 7',move:'f3g5',label:'Double Check',cat:'doubleCheck'}],
+  attraction:[{id:'atA',fen:'r1bqkb1r/pppp1ppp/2n5/4p3/3nP3/2N2N2/PPPP1PPP/R1BQKB1R w KQkq - 4 4',move:'f3d4',label:'Attraction',cat:'attraction'}],
+  deflection:[{id:'dfA',fen:'r3k2r/ppp2ppp/8/3q4/8/8/PPP2PPP/R3K2R w KQkq - 0 1',move:'a1a8',label:'Deflection',cat:'deflection'}],
+  sacrifice:[{id:'sfA',fen:'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 0 4',move:'f3f7',label:'Sacrifice',cat:'sacrifice'}],
+  quietMove:[{id:'qmA',fen:'6k1/5ppp/8/8/8/8/5PPP/5RK1 w - - 0 1',move:'f1e1',label:'Quiet Move',cat:'quietMove'}],
+  enPassant:[{id:'epA',fen:'rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3',move:'e5f6',label:'En Passant!',cat:'enPassant'}],
+  castling:[{id:'csA',fen:'rnbqkb1r/pppppppp/5n2/8/4P3/8/PPPPBPPP/RNBQK2R w KQkq - 2 3',move:'e1g1',label:'Castling Kingside',cat:'castling'}],
+  underpromotion:[{id:'upA',fen:'8/5P2/6K1/8/8/8/8/5k2 w - - 0 1',move:'f7f8',label:'Underpromotion',cat:'underpromotion'}],
+  crushing:[{id:'crA',fen:'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 0 4',move:'f3f7',label:'Crushing Advantage',cat:'crushing'}],
+  equality:[{id:'eqA',fen:'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 2 3',move:'g1f3',label:'Equality',cat:'equality'}],
+  mixed:[
+    {id:'mxA',fen:'r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 0 4',move:'f3f7',label:'Mixed Puzzle',cat:'mixed'},
+    {id:'mxB',fen:'r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4',move:'f3e5',label:'Mixed Puzzle 2',cat:'mixed'},
+  ],
+};
+
+const RANDOM_POOL=[...PUZZLES.mate1,...PUZZLES.mate2,...PUZZLES.fork,...PUZZLES.pin];
+
+const CATEGORIES=[
+  {id:'checkmates',icon:'👑',name:'Checkmates',subs:[
+    {label:'Mate in One',key:'mate1',free:true},{label:'Mate in Two',key:'mate2',free:true},{label:'Mate in Three+',key:'mate3',free:true},
+    {label:'Back Rank',key:'backrank',free:false},{label:'Smothered',key:'smothered',free:false},{label:'Anastasia',key:'anastasia',free:false},
+    {label:'Arabian',key:'arabian',free:false},{label:"Boden's",key:'boden',free:false},{label:'Double Bishop',key:'doubleBishop',free:false},
+    {label:'Dovetail',key:'dovetail',free:false},{label:'Hook',key:'hook',free:false},
+  ]},
+  {id:'openings',icon:'📖',name:'Openings',subs:[
+    {label:'French Defense',key:'french',free:true},{label:'Ruy Lopez',key:'ruylopez',free:true},{label:'Sicilian',key:'sicilian',free:true},
+    {label:'Caro-Kann',key:'carokann',free:false},{label:'Italian Game',key:'italian',free:false},{label:'Scotch Game',key:'scotch',free:false},
+    {label:"King's Gambit",key:'kingsGambit',free:false},{label:'Vienna Game',key:'vienna',free:false},
+    {label:'QGD',key:'mixed',free:false},{label:'English',key:'mixed',free:false},{label:'Russian',key:'mixed',free:false},
+    {label:'Scandinavian',key:'mixed',free:false},{label:'Four Knights',key:'mixed',free:false},{label:'Pirc',key:'mixed',free:false},
+    {label:'Modern',key:'mixed',free:false},{label:'Rapport-Jobava',key:'mixed',free:false},{label:'Philidor',key:'mixed',free:false},
+    {label:'Damiano',key:'mixed',free:false},{label:"King's Indian",key:'mixed',free:false},{label:'Nimzo-Indian',key:'mixed',free:false},
+  ]},
+  {id:'endgames',icon:'🏁',name:'Endgames',subs:[
+    {label:'Promotion',key:'promotion',free:true},{label:'Zugzwang',key:'zugzwang',free:true},{label:'Pawn Endgame',key:'pawnEnd',free:true},
+    {label:'Rook Endgame',key:'rookEnd',free:false},{label:'Queen Endgame',key:'queenEnd',free:false},{label:'Q+R Endgame',key:'rookEnd',free:false},
+    {label:'Bishop Endgame',key:'bishopEnd',free:false},{label:'Knight Endgame',key:'knightEnd',free:false},
+    {label:'Advanced Pawn',key:'promotion',free:false},{label:'Attacking f2/f7',key:'sacrifice',free:false},
+  ]},
+  {id:'tactics',icon:'⚔️',name:'Tactics',subs:[
+    {label:'Pin',key:'pin',free:true},{label:'Fork',key:'fork',free:true},{label:'Skewer',key:'skewer',free:true},
+    {label:'Discovered Attack',key:'discoveredAttack',free:false},{label:'Double Check',key:'doubleCheck',free:false},
+    {label:'Attraction',key:'attraction',free:false},{label:'X-Ray',key:'pin',free:false},{label:'Deflection',key:'deflection',free:false},
+    {label:'Hanging Piece',key:'fork',free:false},{label:'Sacrifice',key:'sacrifice',free:false},
+    {label:'Interference',key:'quietMove',free:false},{label:'Trapped Piece',key:'pin',free:false},
+    {label:'Capturing Defender',key:'deflection',free:false},{label:'Clearance',key:'quietMove',free:false},
+    {label:'Exposed King',key:'sacrifice',free:false},{label:'Kingside Attack',key:'sacrifice',free:false},
+    {label:'Queenside Attack',key:'fork',free:false},{label:'Quiet Move',key:'quietMove',free:false},
+    {label:'Intermezzo',key:'quietMove',free:false},{label:'Middle Game',key:'mixed',free:false},
+    {label:'Defensive Move',key:'quietMove',free:false},
+  ]},
+  {id:'special',icon:'✨',name:'Special Moves',subs:[
+    {label:'En Passant',key:'enPassant',free:true},{label:'Underpromotion',key:'underpromotion',free:true},{label:'Castling',key:'castling',free:true},
+    {label:'Promotion Trick',key:'promotion',free:false},
+  ]},
+  {id:'length',icon:'📏',name:'Length of Puzzle',subs:[
+    {label:'Short (1 move)',key:'mate1',free:true},{label:'One Move',key:'mate1',free:true},
+    {label:'Long (3+ moves)',key:'mate3',free:false},{label:'Very Long',key:'mixed',free:false},
+  ]},
+  {id:'goals',icon:'🎯',name:'Goals',subs:[
+    {label:'Checkmate',key:'mate1',free:true},{label:'Advantage',key:'fork',free:true},
+    {label:'Crushing',key:'crushing',free:false},{label:'Equality',key:'equality',free:false},
+  ]},
+  {id:'other',icon:'🏆',name:'Other',subs:[
+    {label:'Mixed',key:'mixed',free:true},{label:'Master Games',key:'mixed',free:false},{label:'New Puzzles',key:'mixed',free:false},
+  ]},
+];
+
+const BOOKS=[
+  {id:'b1',icon:'📘',coverClass:'b1',title:'Book 1: Meet the Chess Family',desc:'Learn all 6 pieces — FREE!',stars:0,premium:false,
+   sessions:[
+    {title:'Who are the Chess Pieces?',sub:'Meet all 6 members',emoji:'♟️',content:`<span class="lesson-emoji">♟️👑♜♝♞♛</span><h4>Welcome to the Chess Family!</h4><p>Chess has 6 piece types, each with their own superpower!</p><div class="tip">💡 Every player starts with 16 pieces — 8 pawns and 8 special pieces!</div><p>👑 <b>King</b> — Most important!<br>♛ <b>Queen</b> — Most powerful!<br>♜ <b>Rook</b> — Straight lines!<br>♝ <b>Bishop</b> — Diagonals!<br>♞ <b>Knight</b> — L-shape jumper!<br>♟️ <b>Pawn</b> — March forward!</p>`},
+    {title:'The Mighty King',sub:'How the King moves',emoji:'👑',content:`<span class="lesson-emoji">👑</span><h4>The King — Most Important!</h4><p>The King moves <b>one square in any direction</b>.</p><div class="tip">💡 If your King is attacked — CHECK! You must escape!</div><p>When the King is trapped — that's <b>CHECKMATE</b> — game over! 🎉</p>`},
+    {title:'The Powerful Queen',sub:'How the Queen moves',emoji:'♛',content:`<span class="lesson-emoji">♛</span><h4>The Queen — Most Powerful!</h4><p>Moves <b>any number of squares</b> in any direction — straight or diagonal.</p><div class="tip">💡 Protect your Queen! She's worth 9 pawns!</div>`},
+    {title:'The Rook Castle',sub:'How the Rook moves',emoji:'♜',content:`<span class="lesson-emoji">♜</span><h4>The Rook — Straight Line Power!</h4><p>Moves in <b>straight lines</b> — left, right, up, or down — as far as it wants.</p><div class="tip">💡 Rooks are strongest on open files!</div>`},
+    {title:'The Sneaky Knight',sub:'L-shape jumper!',emoji:'♞',content:`<span class="lesson-emoji">♞</span><h4>The Knight — L-Shape Jumper!</h4><p>Moves in an <b>L-shape</b>: 2 squares one way, 1 sideways. It can <b>jump over</b> other pieces!</p><div class="tip">💡 Knights are best in the CENTER of the board!</div>`},
+   ]},
+  {id:'b2',icon:'📗',coverClass:'b2',title:'Book 2: Tricky Tactics',desc:'Learn pins, forks & win material!',stars:3,premium:true,
+   sessions:[
+    {title:'What is a Fork?',sub:'Attack two at once!',emoji:'🍴',content:`<span class="lesson-emoji">🍴</span><h4>The Fork — Attack Two at Once!</h4><p>A fork is when ONE piece attacks TWO enemy pieces. The enemy can only save one!</p><div class="tip">💡 Knights are the BEST forking pieces!</div>`},
+    {title:'What is a Pin?',sub:'Stuck in place!',emoji:'📌',content:`<span class="lesson-emoji">📌</span><h4>The Pin — Stuck in Place!</h4><p>A pin is when a piece can't move because it's shielding a more valuable piece behind it.</p><div class="tip">💡 Bishops and Rooks are great at pinning!</div>`},
+    {title:"What's a Skewer?",sub:'Force the big piece to move!',emoji:'🗡️',content:`<span class="lesson-emoji">🗡️</span><h4>The Skewer — Move or Lose!</h4><p>You attack a VALUABLE piece, and when it moves, you capture what was behind it!</p><div class="tip">💡 Skewers often work against the King!</div>`},
+   ]},
+  {id:'b3',icon:'📕',coverClass:'b3',title:"Book 3: King's Secrets",desc:'Master checkmates & King power!',stars:10,premium:true,
+   sessions:[
+    {title:'Checkmate Patterns',sub:'The most important patterns!',emoji:'♚',content:`<span class="lesson-emoji">♚</span><h4>Checkmate Patterns</h4><p>Famous checkmate patterns that great players use over and over!</p><div class="tip">💡 The most common: the BACK RANK MATE!</div>`},
+   ]},
+];
+
+const BADGES=[
+  {id:'first_solve',icon:'🌟',label:'First Solve'},{id:'streak3',icon:'🔥',label:'3 Day Streak'},
+  {id:'puzzles5',icon:'🧩',label:'5 Puzzles'},{id:'puzzles10',icon:'💎',label:'10 Puzzles'},
+  {id:'book1',icon:'📘',label:'Book 1 Done'},{id:'learn_all',icon:'🎓',label:'All Pieces'},
+  {id:'stars10',icon:'⭐',label:'10 Stars'},{id:'premium',icon:'🚀',label:'Premium'},
+];
+
+const PIECE_UNICODE={wK:'♔',wQ:'♕',wR:'♖',wB:'♗',wN:'♘',wP:'♙',bK:'♚',bQ:'♛',bR:'♜',bB:'♝',bN:'♞',bP:'♟'};
+
+/* ════════════ STATE ════════════ */
+let state={stars:0,streak:0,lastPlayDate:null,solvedPuzzles:[],learnedPieces:[],badges:[],premium:false};
+
+function loadState(){try{const s=JSON.parse(localStorage.getItem('chesskids')||'{}');state={...state,...s};}catch(e){}updateStreakCheck();}
+// Normalize loaded state and ensure types are correct
+function normalizeState(){
+  state.stars = Number(state.stars||0);
+  state.streak = Number(state.streak||0);
+  state.lastPlayDate = state.lastPlayDate || null;
+  state.solvedPuzzles = Array.isArray(state.solvedPuzzles)?state.solvedPuzzles:[];
+  state.learnedPieces = Array.isArray(state.learnedPieces)?state.learnedPieces:[];
+  state.badges = Array.isArray(state.badges)?state.badges:[];
+  state.premium = Boolean(state.premium);
+}
+function saveState(){localStorage.setItem('chesskids',JSON.stringify(state));updateUI();}
+function updateStreakCheck(){const today=new Date().toDateString();const yesterday=new Date(Date.now()-86400000).toDateString();if(state.lastPlayDate&&state.lastPlayDate!==today&&state.lastPlayDate!==yesterday)state.streak=0;}
+function recordPlayToday(){const today=new Date().toDateString();if(state.lastPlayDate!==today){state.lastPlayDate=today;state.streak++;saveState();}}
+function isPremium(){return state.premium;}
+
+function updateUI(){
+  document.getElementById('stars-count').textContent=state.stars;
+  document.getElementById('streak-count').textContent=state.streak;
+  document.getElementById('tr-stars').textContent=state.stars;
+  document.getElementById('tr-streak').textContent=state.streak;
+  document.getElementById('tr-solved').textContent=state.solvedPuzzles.length;
+  document.getElementById('trophy-bar').style.width=Math.min(100,(state.stars/20)*100)+'%';
+  const lbl=document.getElementById('next-unlock-label');
+  if(isPremium())lbl.textContent='🚀 Premium active — all content unlocked!';
+  else{const ns=state.stars<3?3:state.stars<10?10:null;lbl.textContent=ns?`${ns-state.stars} more stars to unlock next book!`:'All books unlocked! 🎉';}
+  renderBooks();
+  const bar=document.getElementById('chest-premium-bar');
+  if(bar)bar.style.display=isPremium()?'none':'flex';
+}
+
+/* ════════════ MODALS ════════════ */
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+document.querySelectorAll('.modal-overlay').forEach(el=>{el.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);});});
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)';},3000);}
+
+/* ════════════ PREMIUM ════════════ */
+function showPremium(){openModal('premium-modal');}
+
+function activatePremium(){
+  state.premium=true;if(!state.badges.includes('premium'))state.badges.push('premium');
+  saveState();closeModal('premium-modal');renderCategories();
+  showToast('🚀 Premium activated! All content unlocked!');
+}
+
+function alreadyPaid(){
+  const code=prompt('Enter your access code or receipt email:');
+  if(code&&code.trim().length>3)activatePremium();
+  else if(code!==null)alert('Code not recognized. Please contact support@chesskids.com');
+}
+
+/* ════════════ BOARD DRAWING ════════════ */
+function drawBoard(canvas,chess,selected,legalSquares,flipped){
+  const ctx=canvas.getContext('2d');const W=canvas.width;const sq=W/8;
+  ctx.clearRect(0,0,W,W);
+  for(let r=0;r<8;r++){for(let c=0;c<8;c++){
+    const light=(r+c)%2===0;
+    const dR=flipped?7-r:r,dC=flipped?7-c:c;
+    const file='abcdefgh'[dC],rank=8-dR,sqN=file+rank;
+    let bg=light?'#F0D9B5':'#B58863';
+    if(legalSquares&&legalSquares.includes(sqN))bg=light?'#cde6a0':'#aad46e';
+    if(selected===sqN)bg='#f6f669';
+    ctx.fillStyle=bg;ctx.fillRect(c*sq,r*sq,sq,sq);
+    const piece=chess.get(sqN);
+    if(piece){
+      const key=(piece.color==='w'?'w':'b')+piece.type.toUpperCase();
+      ctx.font=`${sq*.72}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle=piece.color==='w'?'#FFF9E7':'#1A1A1A';
+      ctx.shadowColor=piece.color==='w'?'#8B4513':'#FFFDE7';ctx.shadowBlur=3;
+      ctx.fillText(PIECE_UNICODE[key],c*sq+sq/2,r*sq+sq/2+2);ctx.shadowBlur=0;
+    }
+    ctx.font=`${sq*.2}px Nunito`;ctx.fillStyle=light?'#B58863':'#F0D9B5';
+    if(c===0){ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText(rank,3,r*sq+3);}
+    if(r===7){ctx.textAlign='right';ctx.textBaseline='bottom';ctx.fillText(file,(c+1)*sq-3,(r+1)*sq-2);}
+  }}
+}
+
+function squareFromClick(canvas,x,y,flipped){
+  const rect=canvas.getBoundingClientRect();const sx=canvas.width/rect.width,sy=canvas.height/rect.height;
+  const cx=(x-rect.left)*sx,cy=(y-rect.top)*sy;const sq=canvas.width/8;
+  let c=Math.floor(cx/sq),r=Math.floor(cy/sq);if(flipped){c=7-c;r=7-r;}
+  return 'abcdefgh'[c]+(8-r);
+}
+
+/* ════════════ PUZZLE ════════════ */
+let puzzleState={chess:null,currentPuzzle:null,selected:null,legalSquares:[],solved:false,catKey:null};
+
+function showPuzzle(icon,title,key){
+  const ps=puzzleState;ps.catKey=key;
+  const arr=key==='random'?RANDOM_POOL:(PUZZLES[key]||PUZZLES.mixed);
+  ps.currentPuzzle=arr[Math.floor(Math.random()*arr.length)];
+  ps.solved=false;ps.selected=null;ps.legalSquares=[];
+  ps.chess=new Chess(ps.currentPuzzle.fen);
+  document.getElementById('puzzle-modal-icon').textContent=icon||'🎯';
+  document.getElementById('puzzle-modal-title').textContent=title||'Solve Puzzles';
+  document.getElementById('puzzle-label').textContent=ps.currentPuzzle.label;
+  const tb=document.getElementById('turn-badge');const turn=ps.chess.turn()==='w'?'White ♙':'Black ♟';
+  tb.textContent=turn;tb.className='turn-badge '+(ps.chess.turn()==='w'?'white':'black');
+  setMsg('Find the best move!','');openModal('puzzle-modal');
+  setTimeout(()=>{const c=document.getElementById('board-canvas');c.width=Math.min(360,c.parentElement.offsetWidth-32);c.height=c.width;drawBoard(c,ps.chess,null,[],ps.chess.turn()==='b');c.onclick=e=>puzzleClick(e);},50);
+}
+
+function puzzleClick(e){
+  const ps=puzzleState;if(ps.solved)return;
+  const canvas=document.getElementById('board-canvas');
+  const sq=squareFromClick(canvas,e.clientX,e.clientY,ps.chess.turn()==='b');
+  const piece=ps.chess.get(sq);
+  if(ps.selected){
+    const moves=ps.chess.moves({square:ps.selected,verbose:true}).map(m=>m.to);
+    if(moves.includes(sq)){
+      let promo=undefined;const mp=ps.chess.get(ps.selected);
+      if(mp&&mp.type==='p'){const rk=sq[1];if((mp.color==='w'&&rk==='8')||(mp.color==='b'&&rk==='1'))promo='q';}
+      ps.chess.move({from:ps.selected,to:sq,promotion:promo||'q'});
+      const expected=ps.currentPuzzle.move,made=ps.selected+sq;
+      ps.selected=null;ps.legalSquares=[];
+      drawBoard(canvas,ps.chess,null,[],ps.chess.turn()==='b');
+      if(made===expected||made===expected.substring(0,4)||ps.chess.in_checkmate())puzzleSolved();
+      else{setMsg("Oops! That's not right. Try again! 🤔",'error');setTimeout(()=>{ps.chess.undo();ps.selected=null;ps.legalSquares=[];drawBoard(canvas,ps.chess,null,[],ps.chess.turn()==='b');setMsg('Find the best move!','');},1200);}
+    } else if(piece&&piece.color===ps.chess.turn()){ps.selected=sq;ps.legalSquares=ps.chess.moves({square:sq,verbose:true}).map(m=>m.to);drawBoard(canvas,ps.chess,ps.selected,ps.legalSquares,ps.chess.turn()==='b');}
+    else{ps.selected=null;ps.legalSquares=[];drawBoard(canvas,ps.chess,null,[],ps.chess.turn()==='b');}
+  } else{if(piece&&piece.color===ps.chess.turn()){ps.selected=sq;ps.legalSquares=ps.chess.moves({square:sq,verbose:true}).map(m=>m.to);drawBoard(canvas,ps.chess,ps.selected,ps.legalSquares,ps.chess.turn()==='b');}}
+}
+
+function puzzleSolved(){
+  const ps=puzzleState;ps.solved=true;setMsg('🎉 Amazing! You found the move!','success');
+  if(!state.solvedPuzzles.includes(ps.currentPuzzle.id)){state.stars++;state.solvedPuzzles.push(ps.currentPuzzle.id);recordPlayToday();checkBadges();saveState();}
+  celebrate();
+}
+
+function celebrate(){if(typeof confetti==='function')confetti({particleCount:120,spread:80,origin:{y:.5}});}
+function setMsg(t,cls){const el=document.getElementById('puzzle-msg');el.textContent=t;el.className='puzzle-msg '+(cls||'');}
+function resetPuzzle(){const ps=puzzleState;ps.chess=new Chess(ps.currentPuzzle.fen);ps.solved=false;ps.selected=null;ps.legalSquares=[];setMsg('Find the best move!','');const c=document.getElementById('board-canvas');drawBoard(c,ps.chess,null,[],ps.chess.turn()==='b');}
+function showHint(){const ps=puzzleState;const from=ps.currentPuzzle.move.substring(0,2),to=ps.currentPuzzle.move.substring(2,4);setMsg(`💡 Hint: Move from ${from.toUpperCase()} to ${to.toUpperCase()}!`,'');ps.selected=from;ps.legalSquares=[to];drawBoard(document.getElementById('board-canvas'),ps.chess,from,[to],ps.chess.turn()==='b');}
+function nextPuzzle(){showPuzzle(document.getElementById('puzzle-modal-icon').textContent,document.getElementById('puzzle-modal-title').textContent,puzzleState.catKey);}
+
+/* ════════════ LEARN PIECES — INTERACTIVE ════════════ */
+let learnState={piece:null,pieceRow:null,pieceCol:null,starRow:null,starCol:null,selected:false};
+const BOARD_SIZE=5;
+
+function showLearn(){
+  openModal('learn-modal');
+  const grid=document.getElementById('pieces-grid');grid.innerHTML='';
+  PIECES_DATA.forEach((p)=>{
+    const learned=state.learnedPieces.includes(p.name);
+    const canUse=isPremium()||p.free;
+    const card=document.createElement('div');
+    card.className='piece-card'+(learned?' viewed':'')+(learnState.piece&&learnState.piece.name===p.name?' selected-piece':'');
+    card.innerHTML=`<span class="piece-symbol">${p.symbol}</span><span class="piece-name">${p.name}</span><span class="piece-tag ${canUse?'free-tag':'lock-tag'}">${canUse?'FREE':'🔒 Premium'}</span>`;
+    card.onclick=()=>{if(!canUse){showPremium();return;}selectLearnPiece(p,card);};
+    grid.appendChild(card);
+  });
+  setTimeout(()=>{
+    const canvas=document.getElementById('piece-learn-canvas');
+    canvas.width=Math.min(300,canvas.parentElement.offsetWidth-32);canvas.height=canvas.width;
+    if(!learnState.piece)drawLearnBoard(canvas);
+    canvas.onclick=e=>learnClick(e);
+  },50);
+}
+
+function selectLearnPiece(p,card){
+  learnState.piece=p;learnState.selected=false;
+  document.querySelectorAll('.piece-card').forEach(c=>c.classList.remove('selected-piece'));
+  card.classList.add('selected-piece');
+  document.getElementById('pd-title').textContent=p.symbol+' '+p.name;
+  document.getElementById('pd-desc').textContent=p.desc;
+  const instr=document.getElementById('learn-instructions');
+  instr.style.display='block';instr.textContent=`Tap the ${p.name}, then tap the ⭐ star to score!`;
+  document.getElementById('learn-result').textContent='';
+  placePieceAndStar();
+  const canvas=document.getElementById('piece-learn-canvas');
+  if(canvas.width<50){canvas.width=Math.min(300,canvas.parentElement.offsetWidth-32);canvas.height=canvas.width;}
+  drawLearnBoard(canvas);
+}
+
+function placePieceAndStar(){
+  const ls=learnState;const B=BOARD_SIZE;
+  ls.pieceRow=1+Math.floor(Math.random()*(B-2));ls.pieceCol=1+Math.floor(Math.random()*(B-2));ls.selected=false;
+  const valid=getLearnMoves(ls.piece.moves,ls.pieceRow,ls.pieceCol,B);
+  if(!valid.length){placePieceAndStar();return;}
+  const pick=valid[Math.floor(Math.random()*valid.length)];ls.starRow=pick[0];ls.starCol=pick[1];
+}
+
+function getLearnMoves(type,r,c,B){
+  const moves=[];
+  const ok=(rr,cc)=>rr>=0&&rr<B&&cc>=0&&cc<B&&!(rr===r&&cc===c);
+  if(type==='king'){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if((dr||dc)&&ok(r+dr,c+dc))moves.push([r+dr,c+dc]);}
+  else if(type==='queen'||type==='rook'){for(let i=1;i<B;i++){[[r+i,c],[r-i,c],[r,c+i],[r,c-i]].forEach(([rr,cc])=>{if(ok(rr,cc))moves.push([rr,cc]);});}if(type==='queen')for(let i=1;i<B;i++){[[r+i,c+i],[r+i,c-i],[r-i,c+i],[r-i,c-i]].forEach(([rr,cc])=>{if(ok(rr,cc))moves.push([rr,cc]);});}}
+  else if(type==='bishop'){for(let i=1;i<B;i++){[[r+i,c+i],[r+i,c-i],[r-i,c+i],[r-i,c-i]].forEach(([rr,cc])=>{if(ok(rr,cc))moves.push([rr,cc]);});}}
+  else if(type==='knight'){[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(([dr,dc])=>{if(ok(r+dr,c+dc))moves.push([r+dr,c+dc]);});}
+  else if(type==='pawn'){if(ok(r-1,c))moves.push([r-1,c]);if(r===B-2&&ok(r-2,c))moves.push([r-2,c]);}
+  return moves;
+}
+
+function drawLearnBoard(canvas){
+  const ls=learnState;const ctx=canvas.getContext('2d');const W=canvas.width;const B=BOARD_SIZE;const sq=W/B;
+  ctx.clearRect(0,0,W,W);
+  for(let r=0;r<B;r++){for(let c=0;c<B;c++){
+    ctx.fillStyle=(r+c)%2===0?'#F0D9B5':'#B58863';ctx.fillRect(c*sq,r*sq,sq,sq);
+    if(ls.piece&&ls.selected){
+      const vm=getLearnMoves(ls.piece.moves,ls.pieceRow,ls.pieceCol,B);
+      if(vm.some(([vr,vc])=>vr===r&&vc===c)){ctx.fillStyle='rgba(100,200,100,0.35)';ctx.fillRect(c*sq,r*sq,sq,sq);}
+    }
+    if(ls.selected&&ls.pieceRow===r&&ls.pieceCol===c){ctx.fillStyle='rgba(255,220,0,0.45)';ctx.fillRect(c*sq,r*sq,sq,sq);}
+  }}
+  if(ls.piece&&ls.starRow!==null){ctx.font=`${sq*.72}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⭐',(ls.starCol+.5)*sq,(ls.starRow+.5)*sq+2);}
+  if(ls.piece&&ls.pieceRow!==null){
+    const syms={king:'♔',queen:'♕',rook:'♖',bishop:'♗',knight:'♘',pawn:'♙'};
+    ctx.font=`${sq*.76}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='#FFF9E7';ctx.shadowColor='#8B4513';ctx.shadowBlur=3;
+    ctx.fillText(syms[ls.piece.moves],(ls.pieceCol+.5)*sq,(ls.pieceRow+.5)*sq+2);ctx.shadowBlur=0;
+  }
+  if(!ls.piece){ctx.font=`${sq*.8}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(180,140,100,0.3)';ctx.fillText('♟',W/2,W/2+4);ctx.font=`${sq*.25}px Nunito`;ctx.fillStyle='#B58863';ctx.fillText('Pick a piece above!',W/2,W-sq*.3);}
+}
+
+function learnClick(e){
+  const ls=learnState;if(!ls.piece)return;
+  const canvas=document.getElementById('piece-learn-canvas');
+  const rect=canvas.getBoundingClientRect();const B=BOARD_SIZE;const sq=canvas.width/B;
+  const cc=Math.floor((e.clientX-rect.left)*(canvas.width/rect.width)/sq);
+  const rr=Math.floor((e.clientY-rect.top)*(canvas.height/rect.height)/sq);
+  const res=document.getElementById('learn-result');
+  if(!ls.selected){
+    if(rr===ls.pieceRow&&cc===ls.pieceCol){ls.selected=true;res.textContent='Great! Now tap the ⭐ star!';res.className='learn-result';drawLearnBoard(canvas);}
+    else{res.textContent='Tap the '+ls.piece.name+' first! 👆';res.className='learn-result error';}
+  } else {
+    const vm=getLearnMoves(ls.piece.moves,ls.pieceRow,ls.pieceCol,B);
+    if(rr===ls.starRow&&cc===ls.starCol){
+      res.textContent='⭐ Amazing! You moved the '+ls.piece.name+'!';res.className='learn-result success';
+      ls.pieceRow=ls.starRow;ls.pieceCol=ls.starCol;ls.selected=false;drawLearnBoard(canvas);
+      if(!state.learnedPieces.includes(ls.piece.name)){state.learnedPieces.push(ls.piece.name);if(state.learnedPieces.length===6){state.stars+=2;checkBadges();}saveState();showLearn();}
+      celebrate();
+      setTimeout(()=>{placePieceAndStar();ls.selected=false;drawLearnBoard(canvas);res.textContent='Great job! Try again!';res.className='learn-result success';},1400);
+    } else if(vm.some(([vr,vc])=>vr===rr&&vc===cc)){
+      res.textContent="That's a valid move, but find the ⭐ star!";res.className='learn-result error';ls.selected=false;drawLearnBoard(canvas);
+    } else{
+      res.textContent="The "+ls.piece.name+" can't move there! Try again 🤔";res.className='learn-result error';ls.selected=false;drawLearnBoard(canvas);
+    }
+  }
+}
+
+/* ════════════ BOT ════════════ */
+let botState={chess:null,selected:null,legalSquares:[],gameOver:false};
+
+function showBot(){openModal('bot-modal');resetBot();}
+function resetBot(){const bs=botState;bs.chess=new Chess();bs.selected=null;bs.legalSquares=[];bs.gameOver=false;document.getElementById('bot-status').textContent='You play White! Make your first move! ♙';setTimeout(()=>{const c=document.getElementById('bot-board-canvas');c.width=Math.min(360,c.parentElement.offsetWidth-32);c.height=c.width;drawBoard(c,bs.chess,null,[],false);c.onclick=e=>botClick(e);},50);}
+
+function botClick(e){
+  const bs=botState;if(bs.gameOver||bs.chess.turn()!=='w')return;
+  const canvas=document.getElementById('bot-board-canvas');
+  const sq=squareFromClick(canvas,e.clientX,e.clientY,false);const piece=bs.chess.get(sq);
+  if(bs.selected){
+    const moves=bs.chess.moves({square:bs.selected,verbose:true}).map(m=>m.to);
+    if(moves.includes(sq)){
+      let promo=undefined;const mp=bs.chess.get(bs.selected);if(mp&&mp.type==='p'&&sq[1]==='8')promo='q';
+      bs.chess.move({from:bs.selected,to:sq,promotion:promo||'q'});bs.selected=null;bs.legalSquares=[];drawBoard(canvas,bs.chess,null,[],false);
+      if(bs.chess.in_checkmate()){endBotGame('🎉 Checkmate! You won! Amazing!');return;}if(bs.chess.in_draw()){endBotGame("It's a draw!");return;}
+      document.getElementById('bot-status').textContent='🤖 Bot is thinking...';
+      setTimeout(()=>{botMove();drawBoard(canvas,bs.chess,null,[],false);if(bs.chess.in_checkmate()){endBotGame('😮 The bot got you! Try again!');return;}if(bs.chess.in_draw()){endBotGame("It's a draw!");return;}document.getElementById('bot-status').textContent='Your turn! ♙';},500);
+    } else if(piece&&piece.color==='w'){bs.selected=sq;bs.legalSquares=bs.chess.moves({square:sq,verbose:true}).map(m=>m.to);drawBoard(canvas,bs.chess,bs.selected,bs.legalSquares,false);}
+    else{bs.selected=null;bs.legalSquares=[];drawBoard(canvas,bs.chess,null,[],false);}
+  } else{if(piece&&piece.color==='w'){bs.selected=sq;bs.legalSquares=bs.chess.moves({square:sq,verbose:true}).map(m=>m.to);drawBoard(canvas,bs.chess,bs.selected,bs.legalSquares,false);}}
+}
+
+function botMove(){const moves=botState.chess.moves({verbose:true});if(!moves.length)return;const caps=moves.filter(m=>m.captured);botState.chess.move(caps.length?caps[Math.floor(Math.random()*caps.length)]:moves[Math.floor(Math.random()*moves.length)]);}
+function botHint(){const moves=botState.chess.moves({verbose:true});if(!moves.length)return;const caps=moves.filter(m=>m.captured);const h=caps.length?caps[0]:moves[0];document.getElementById('bot-status').textContent=`💡 Try moving from ${h.from.toUpperCase()} to ${h.to.toUpperCase()}!`;}
+function endBotGame(msg){botState.gameOver=true;document.getElementById('bot-status').textContent=msg;if(msg.includes('won')){state.stars++;saveState();celebrate();}}
+
+/* ════════════ BOOKS ════════════ */
+function renderBooks(){
+  const el=document.getElementById('books-list');el.innerHTML='';
+  BOOKS.forEach(book=>{
+    const starOk=state.stars>=book.stars;
+    const premOk=!book.premium||isPremium();
+    // A book is unlocked if the star requirement is met OR the user has Premium.
+    const unlocked = starOk || (book.premium && isPremium()) || (!book.premium && starOk);
+    const div=document.createElement('div');
+    div.className='book-item'+(unlocked?'':' locked');
+    div.style.cursor='pointer';
+    let badge=unlocked?'<div class="book-badge">▶ Start</div>':book.premium&&!isPremium()?'<div class="book-badge premium-lock">🚀 Premium</div>':`<div class="book-badge lock">🔒 ${book.stars}⭐</div>`;
+    div.innerHTML=`<div class="book-cover ${book.coverClass}">${book.icon}</div><div class="book-info"><div class="book-title">${book.title}</div><div class="book-desc">${book.desc}</div></div>${badge}`;
+
+    // Use a stable event listener so clicks always route through the same handler.
+    div.addEventListener('click', ()=>{
+      if(unlocked){
+        openBook(book);
+        return;
+      }
+      if(book.premium && !isPremium()){
+        // Clearly indicate this is premium content
+        showPremium();
+        return;
+      }
+      // Not premium, not enough stars
+      const need = Math.max(0, book.stars - (state.stars||0));
+      showToast(`🔒 ${need} more ⭐ to unlock this book`);
+    });
+
+    el.appendChild(div);
+  });
+}
+
+function openBook(book){
+  document.getElementById('book-modal-icon').textContent=book.icon;document.getElementById('book-modal-title').textContent=book.title;
+  const list=document.getElementById('session-list');list.innerHTML='';
+  book.sessions.forEach((s,i)=>{const div=document.createElement('div');div.className='session-item';div.innerHTML=`<div class="session-num">${i+1}</div><div><div class="session-title">${s.emoji} ${s.title}</div><div class="session-sub">${s.sub}</div></div>`;div.onclick=()=>openLesson(s);list.appendChild(div);});
+  openModal('book-modal');
+}
+
+function openLesson(s){closeModal('book-modal');document.getElementById('lesson-icon').textContent=s.emoji;document.getElementById('lesson-title').textContent=s.title;document.getElementById('lesson-body').innerHTML=s.content;openModal('lesson-modal');}
+
+/* ════════════ CATEGORIES ════════════ */
+function renderCategories(){
+  const container=document.getElementById('categories-container');container.innerHTML='';
+  CATEGORIES.forEach(cat=>{
+    const group=document.createElement('div');group.className='category-group';
+    const header=document.createElement('div');header.className='cat-header';
+    const freeCount=cat.subs.filter(s=>s.free).length;
+    header.innerHTML=`<span class="cat-icon">${cat.icon}</span><span class="cat-name">${cat.name}</span><span class="cat-count">${isPremium()?cat.subs.length+' puzzles':freeCount+' free, '+(cat.subs.length-freeCount)+' locked'}</span><span class="cat-arrow" id="arr-${cat.id}">▶</span>`;
+    const items=document.createElement('div');items.className='cat-items';items.id='cat-'+cat.id;
+    cat.subs.forEach(sub=>{
+      const chip=document.createElement('button');
+      const solved=PUZZLES[sub.key]&&PUZZLES[sub.key].some(p=>state.solvedPuzzles.includes(p.id));
+      const canUse=isPremium()||sub.free;
+      chip.className='puzzle-chip'+(canUse?'':' locked-chip')+(canUse&&solved?' solved':'');
+      chip.textContent=(canUse?'':'🔒 ')+sub.label;
+      chip.onclick=canUse?()=>{closeChest();showPuzzle(cat.icon,cat.name+' — '+sub.label,sub.key);}:()=>showPremium();
+      items.appendChild(chip);
+    });
+    header.onclick=()=>{document.getElementById('cat-'+cat.id).classList.toggle('open');document.getElementById('arr-'+cat.id).classList.toggle('open');};
+    group.appendChild(header);group.appendChild(items);container.appendChild(group);
+  });
+}
+
+function toggleChest(){document.getElementById('chest-body').classList.toggle('open');document.getElementById('chest-arrow').classList.toggle('open');}
+function closeChest(){document.getElementById('chest-body').classList.remove('open');document.getElementById('chest-arrow').classList.remove('open');}
+
+/* ════════════ TROPHY ════════════ */
+function showTrophy(){
+  document.getElementById('t-stars').textContent=state.stars;document.getElementById('t-puzzles').textContent=state.solvedPuzzles.length;document.getElementById('t-streak').textContent=state.streak;
+  document.getElementById('t-stars-bar').style.width=Math.min(100,state.stars*5)+'%';document.getElementById('t-puzzles-bar').style.width=Math.min(100,state.solvedPuzzles.length*10)+'%';document.getElementById('t-streak-bar').style.width=Math.min(100,state.streak*20)+'%';
+  const grid=document.getElementById('badge-grid');grid.innerHTML='';
+  BADGES.forEach(b=>{const earned=state.badges.includes(b.id);const div=document.createElement('div');div.className='badge-item'+(earned?' earned':'');div.innerHTML=`<span class="badge-icon" style="opacity:${earned?1:.2}">${b.icon}</span><span class="badge-label">${b.label}</span>`;grid.appendChild(div);});
+  openModal('trophy-modal');
+}
+
+function checkBadges(){
+  let changed=false;
+  const add=id=>{if(!state.badges.includes(id)){state.badges.push(id);changed=true;}};
+  if(state.solvedPuzzles.length>=1) add('first_solve');
+  if(state.streak>=3) add('streak3');
+  if(state.solvedPuzzles.length>=5) add('puzzles5');
+  if(state.solvedPuzzles.length>=10) add('puzzles10');
+  if(state.learnedPieces.length===6) add('learn_all');
+  if(state.stars>=10) add('stars10');
+  if(isPremium()) add('premium');
+  if(changed) saveState();
+}
+
+/* ════════════ INIT ════════════ */
+function init(){loadState();normalizeState();updateStreakCheck();renderBooks();renderCategories();updateUI();}
+init();
+</script>
 </body>
 </html>

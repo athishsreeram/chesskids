@@ -1,0 +1,20 @@
+{
+  "name": "chesskids",
+  "version": "1.1.0",
+  "description": "Interactive phonics learning app for kids ages 3-7",
+  "main": "index.html",
+  "scripts": {
+    "dev":   "npx serve . -p 8000",
+    "build": "echo 'Static site – no build step needed'",
+    "start": "npx serve . -p 8000"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  },
+  "keywords": ["phonics","education","children","reading"],
+  "author": "Athish Sreeram",
+  "license": "MIT"
+}
