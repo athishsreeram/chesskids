@@ -52,6 +52,15 @@ chesskids/
 
 All styles are managed in [style.css](file:///Users/athish/Desktop/Desktop%20-%20Athish’s%20Mac%20mini/cop/chesskids-1/css/style.css) using a consistent design system of CSS variables for colors, spacing, and animations.
 
+## Quick Start
+
+```bash
+git clone https://github.com/athishsreeram/chesskids.git
+cd chesskids
+npx serve . -p 8000
+# Opens http://localhost:8000 automatically
+```
+
 ## 📜 License
 
 Created with ❤️ for the next generation of grandmasters.
