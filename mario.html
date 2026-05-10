@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍄 Mario Chess 🍄</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--sq-l:#5ab52a;--sq-d:#4a9a20;--bg1:#5c94fc;--bg2:#3870d4;--panel:#ffffffee;--shadow:0 8px 32px rgba(0,0,80,.18);--font:'Nunito',sans-serif;--pfont:'Press Start 2P',monospace;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font);background:linear-gradient(180deg,#5c94fc 0%,#8ab4fa 60%,#5ab52a 60%,#3d8c1a 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:12px 6px 40px;overflow-x:hidden;position:relative;}
+/* Sky clouds */
+.cloud{position:fixed;background:#fff;border-radius:50px;opacity:.85;pointer-events:none;z-index:0;}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.c1{width:120px;height:36px;top:6%;left:8%;animation:cloudMove 18s linear infinite;}
+.c1::before{width:60px;height:50px;top:-24px;left:18px;}
+.c1::after{width:40px;height:36px;top:-18px;left:55px;}
+.c2{width:90px;height:28px;top:12%;left:55%;animation:cloudMove 24s linear infinite 5s;}
+.c2::before{width:44px;height:38px;top:-18px;left:12px;}
+.c2::after{width:30px;height:28px;top:-14px;left:42px;}
+.c3{width:70px;height:22px;top:4%;left:78%;animation:cloudMove 20s linear infinite 11s;}
+.c3::before{width:34px;height:30px;top:-14px;left:10px;}
+.c3::after{width:24px;height:22px;top:-10px;left:33px;}
+@keyframes cloudMove{0%{transform:translateX(0);}100%{transform:translateX(110vw);}}
+/* Ground */
+.ground-row{position:fixed;bottom:0;left:0;right:0;height:40px;background:repeating-linear-gradient(90deg,#c84b0a 0,#c84b0a 40px,#e05510 40px,#e05510 80px);z-index:0;border-top:4px solid #8b3008;}
+
+h1{font-family:var(--pfont);font-size:clamp(.7rem,3vw,1.1rem);color:#ffd700;text-shadow:3px 3px 0 #c84b0a,-1px -1px 0 #8b3008,2px 2px 6px rgba(0,0,0,.4);margin:8px 0 4px;position:relative;z-index:1;text-align:center;}
+.subtitle{font-size:.7rem;color:#fff;font-weight:700;margin-bottom:10px;position:relative;z-index:1;text-shadow:1px 1px 3px rgba(0,0,0,.5);}
+
+/* Setup */
+#setup-screen{background:var(--panel);border-radius:16px;padding:24px 20px;box-shadow:var(--shadow);text-align:center;max-width:380px;width:100%;position:relative;z-index:1;border:3px solid #ffd700;}
+#setup-screen h2{font-family:var(--pfont);font-size:.65rem;color:#c84b0a;margin-bottom:16px;}
+.color-choice{display:flex;gap:10px;justify-content:center;margin:14px 0;}
+.color-btn{flex:1;padding:12px 6px;border-radius:12px;border:3px solid #ddd;cursor:pointer;font-family:var(--font);font-weight:900;font-size:.85rem;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px;background:#f8f8f8;}
+.color-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.15);}
+.color-btn.selected{border-color:#e52521;background:#fff5f5;}
+.color-btn svg{width:52px;height:52px;}
+
+/* ELO selector */
+.elo-section{margin:14px 0;}
+.elo-section label{font-family:var(--pfont);font-size:.5rem;color:#555;display:block;margin-bottom:8px;}
+.elo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.elo-btn{padding:8px 6px;border-radius:10px;border:2px solid #ddd;cursor:pointer;font-family:var(--font);font-weight:800;font-size:.75rem;background:#f8f8f8;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.elo-btn .elo-icon{font-size:1.2rem;}
+.elo-btn .elo-name{color:#333;}
+.elo-btn .elo-num{font-size:.65rem;color:#aaa;font-family:var(--pfont);}
+.elo-btn:hover{transform:translateY(-1px);}
+.elo-btn.selected{border-color:#e52521;background:#fff5f5;}
+
+.start-btn{width:100%;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#e52521,#ff6b35);color:#fff;font-family:var(--pfont);font-size:.6rem;cursor:pointer;transition:all .2s;box-shadow:0 4px 0 #8b1510;margin-top:10px;letter-spacing:1px;}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #8b1510;}
+.start-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #8b1510;}
+
+/* Game */
+#game-screen{display:none;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:560px;position:relative;z-index:1;}
+#status-bar{background:var(--panel);border-radius:14px;padding:10px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;width:100%;border:2px solid #ffd700;}
+#status-icon{font-size:1.6rem;}
+#status-text{flex:1;color:#c84b0a;font-weight:900;font-size:.82rem;}
+#turn-indicator{font-size:.55rem;color:#888;font-weight:800;background:#f3f3f3;border-radius:8px;padding:4px 8px;font-family:var(--pfont);}
+
+#board-wrapper{background:var(--panel);border-radius:16px;padding:14px;box-shadow:var(--shadow);width:100%;border:3px solid #ffd700;}
+.col-labels{display:flex;padding:0 24px;}
+.col-label{flex:1;text-align:center;font-size:10px;font-weight:900;color:#3d8c1a;font-family:var(--pfont);}
+#board-and-ranks{display:flex;align-items:stretch;}
+.rank-labels{display:flex;flex-direction:column;justify-content:space-around;padding:0 3px;}
+.rank-label{font-size:9px;font-weight:900;color:#3d8c1a;font-family:var(--pfont);}
+#board{flex:1;display:grid;grid-template-columns:repeat(8,1fr);border-radius:8px;overflow:hidden;border:3px solid #3d8c1a;aspect-ratio:1;}
+
+.sq{position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;}
+.sq.light{background:#b8e074;}
+.sq.dark{background:#5ab52a;}
+.sq.highlight{background:#ffd700!important;}
+.sq.valid-move::after{content:'';position:absolute;width:35%;height:35%;border-radius:50%;background:rgba(0,180,60,.65);pointer-events:none;}
+.sq.valid-capture::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 0 4px rgba(255,60,60,.7);pointer-events:none;border-radius:2px;}
+.sq.in-check{background:rgba(255,50,50,.7)!important;}
+.sq.selected{background:#ffd700!important;}
+.sq:hover{filter:brightness(1.08);}
+
+/* Piece SVG container */
+.piece-wrap{position:absolute;inset:4%;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.piece-wrap svg{width:100%;height:100%;overflow:visible;}
+.sq.selected .piece-wrap{animation:bounce .35s ease;}
+@keyframes bounce{0%{transform:scale(1);}40%{transform:scale(1.25) translateY(-4px);}70%{transform:scale(.95);}100%{transform:scale(1);}}\
+
+/* Controls */
+#controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;}
+.ctrl-btn{padding:9px 14px;border-radius:10px;border:none;font-family:var(--pfont);font-size:.45rem;cursor:pointer;transition:all .18s;box-shadow:0 4px 0 rgba(0,0,0,.25);}
+.ctrl-btn:hover{transform:translateY(-2px);}
+.ctrl-btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.25);}
+.ctrl-btn.primary{background:#e52521;color:#fff;box-shadow:0 4px 0 #8b1510;}
+.ctrl-btn.secondary{background:#4caf50;color:#fff;box-shadow:0 4px 0 #2d6e30;}
+.ctrl-btn.tertiary{background:#ffd700;color:#5a3e00;box-shadow:0 4px 0 #a07800;}
+.ctrl-btn.quarter{background:#9b59b6;color:#fff;box-shadow:0 4px 0 #6c3483;}
+#info-bar{background:var(--panel);border-radius:12px;padding:8px 14px;font-size:.62rem;color:#888;font-weight:700;text-align:center;width:100%;box-shadow:var(--shadow);}
+#captured-display{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;min-height:1.4rem;}
+#captured-display svg{width:20px;height:20px;}
+
+/* Promotion modal */
+#promotion-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;}
+#promotion-modal.show{display:flex;}
+.promo-box{background:#fff;border-radius:20px;padding:24px;box-shadow:0 16px 48px rgba(0,0,0,.3);text-align:center;border:3px solid #ffd700;}
+.promo-box h3{font-family:var(--pfont);font-size:.55rem;color:#c84b0a;margin-bottom:14px;}
+.promo-choices{display:flex;gap:10px;justify-content:center;}
+.promo-choice{width:68px;height:68px;border-radius:14px;border:3px solid #eee;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;background:#fafafa;padding:6px;}
+.promo-choice:hover{border-color:#e52521;transform:scale(1.1);}
+.promo-choice svg{width:100%;height:100%;}
+
+/* Confetti */
+#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:999;}
+
+/* Volume */
+#vol-row{display:flex;align-items:center;gap:6px;font-size:.7rem;font-weight:700;color:#aaa;}
+#vol-row input{width:70px;}
+
+/* Capture float */
+.cap-float{position:fixed;pointer-events:none;z-index:100;font-size:1.4rem;animation:capFloat 1s ease-out forwards;}
+@keyframes capFloat{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-60px) scale(.4);}}
+
+/* ELO badge */
+#elo-badge{font-family:var(--pfont);font-size:.45rem;background:#ffd700;color:#5a3e00;padding:3px 8px;border-radius:6px;box-shadow:0 2px 0 #a07800;}
+
+/* Piece style picker */
+.style-section{margin:14px 0;}
+.style-section label{font-family:var(--pfont);font-size:.5rem;color:#555;display:block;margin-bottom:8px;}
+.style-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.style-btn{padding:10px 6px;border-radius:10px;border:2px solid #ddd;cursor:pointer;font-family:var(--font);font-weight:800;font-size:.8rem;background:#f8f8f8;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.style-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12);}
+.style-btn.selected{border-color:#e52521;background:#fff5f5;}
+.style-btn .sty-preview{font-size:2rem;line-height:1;}
+.style-btn .sty-preview svg{width:40px;height:40px;}
+.style-btn .sty-name{color:#333;font-size:.78rem;}
+.style-btn .sty-sub{font-size:.6rem;color:#aaa;font-family:var(--pfont);}
+
+/* Board theme picker */
+.theme-section{margin:14px 0;}
+.theme-section label{font-family:var(--pfont);font-size:.5rem;color:#555;display:block;margin-bottom:8px;}
+.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.theme-btn{padding:6px 4px;border-radius:8px;border:2px solid #ddd;cursor:pointer;font-family:var(--font);font-weight:800;font-size:.62rem;background:#f8f8f8;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.theme-btn:hover{transform:translateY(-1px);}
+.theme-btn.selected{border-color:#e52521;background:#fff5f5;}
+.theme-swatch{display:flex;gap:2px;border-radius:4px;overflow:hidden;}
+.theme-swatch span{width:14px;height:14px;display:block;}
+
+/* Classic piece style */
+.classic-piece{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,4.5vw,36px);line-height:1;user-select:none;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));transition:transform .15s;}
+.sq.selected .classic-piece{transform:scale(1.2);}
+.sq:hover .classic-piece{transform:scale(1.1);}
+.classic-w{color:#f5f0e0;text-shadow:0 0 2px #333,1px 1px 0 #555;}
+.classic-b{color:#1a1a2e;text-shadow:0 0 2px #aaa,1px 1px 0 #888;}
+
+/* In-game piece style badge */
+#style-badge{font-family:var(--pfont);font-size:.42rem;background:#9b59b6;color:#fff;padding:3px 8px;border-radius:6px;box-shadow:0 2px 0 #6c3483;}
+</style>
+</head>
+<body>
+<div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+<div class="ground-row"></div>
+<canvas id="confetti-canvas"></canvas>
+
+<h1>🍄 MARIO CHESS 🍄</h1>
+<p class="subtitle">It's-a me, your chess opponent! ⭐</p>
+
+<!-- SETUP -->
+<div id="setup-screen">
+  <h2>⚙️ Game Setup</h2>
+
+  <!-- Piece Style -->
+  <div class="style-section">
+    <label>🎨 Piece Style:</label>
+    <div class="style-grid">
+      <button class="style-btn" id="style-classic" onclick="selectStyle('classic')">
+        <span class="sty-preview">♔♛♖</span>
+        <span class="sty-name">Classic</span>
+        <span class="sty-sub">Unicode pieces</span>
+      </button>
+      <button class="style-btn selected" id="style-mario" onclick="selectStyle('mario')">
+        <span class="sty-preview"><svg viewBox="0 0 60 60" id="setup-mario-preview"></svg></span>
+        <span class="sty-name">Mario</span>
+        <span class="sty-sub">Animated chars</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Board Theme -->
+  <div class="theme-section">
+    <label>🌍 Board Theme:</label>
+    <div class="theme-grid">
+      <button class="theme-btn selected" id="theme-mario" onclick="selectTheme('mario')">
+        <div class="theme-swatch"><span style="background:#b8e074"></span><span style="background:#5ab52a"></span></div>
+        <span>Mario</span>
+      </button>
+      <button class="theme-btn" id="theme-classic" onclick="selectTheme('classic')">
+        <div class="theme-swatch"><span style="background:#f0d9b5"></span><span style="background:#b58863"></span></div>
+        <span>Classic</span>
+      </button>
+      <button class="theme-btn" id="theme-ocean" onclick="selectTheme('ocean')">
+        <div class="theme-swatch"><span style="background:#a8d8ea"></span><span style="background:#2c7873"></span></div>
+        <span>Ocean</span>
+      </button>
+      <button class="theme-btn" id="theme-candy" onclick="selectTheme('candy')">
+        <div class="theme-swatch"><span style="background:#ffb3c6"></span><span style="background:#c0392b"></span></div>
+        <span>Candy</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Side picker -->
+  <div class="style-section">
+    <label>⚔️ Play As:</label>
+    <div class="color-choice">
+      <button class="color-btn selected" id="btn-white" onclick="selectColor('white')">
+        <span id="setup-white-icon" style="font-size:2.2rem;line-height:1;">♔</span>
+        <span id="btn-white-label">White (Mario)</span>
+      </button>
+      <button class="color-btn" id="btn-black" onclick="selectColor('black')">
+        <span id="setup-black-icon" style="font-size:2.2rem;line-height:1;">♚</span>
+        <span id="btn-black-label">Black (Wario)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ELO -->
+  <div class="elo-section">
+    <label>🏆 Difficulty:</label>
+    <div class="elo-grid">
+      <button class="elo-btn" id="elo-400" onclick="selectElo(400)">
+        <span class="elo-icon">🐢</span><span class="elo-name">Baby Bowser</span><span class="elo-num">ELO ~400</span>
+      </button>
+      <button class="elo-btn selected" id="elo-800" onclick="selectElo(800)">
+        <span class="elo-icon">🍄</span><span class="elo-name">Goomba</span><span class="elo-num">ELO ~800</span>
+      </button>
+      <button class="elo-btn" id="elo-1200" onclick="selectElo(1200)">
+        <span class="elo-icon">⭐</span><span class="elo-name">Super Mario</span><span class="elo-num">ELO ~1200</span>
+      </button>
+      <button class="elo-btn" id="elo-1800" onclick="selectElo(1800)">
+        <span class="elo-icon">👑</span><span class="elo-name">King Bowser</span><span class="elo-num">ELO ~1800</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="vol-row" style="justify-content:center;margin:10px 0;">
+    🔊 <input type="range" id="vol-setup" min="0" max="1" step="0.1" value="0.5" oninput="setVolume(this.value)">
+  </div>
+  <button class="start-btn" onclick="startGame()">▶ START GAME!</button>
+</div>
+
+<!-- GAME -->
+<div id="game-screen">
+  <div id="status-bar">
+    <span id="status-icon">😊</span>
+    <span id="status-text">Your turn! Pick a piece!</span>
+    <span id="turn-indicator">WHITE</span>
+  </div>
+  <div id="board-wrapper">
+    <div class="col-labels" id="col-top"></div>
+    <div id="board-and-ranks">
+      <div class="rank-labels" id="rl"></div>
+      <div id="board"></div>
+      <div class="rank-labels" id="rr"></div>
+    </div>
+    <div class="col-labels" id="col-bot"></div>
+  </div>
+  <div id="controls">
+    <button class="ctrl-btn primary" onclick="showSetup()">🔄 NEW GAME</button>
+    <button class="ctrl-btn secondary" onclick="giveHint()">💡 HINT</button>
+    <button class="ctrl-btn tertiary" onclick="undoMove()">↩ UNDO</button>
+    <span id="elo-badge">ELO 800</span>
+    <span id="style-badge">MARIO</span>
+    <div id="vol-row">🔊<input type="range" id="vol-game" min="0" max="1" step="0.1" value="0.5" oninput="setVolume(this.value)"></div>
+  </div>
+  <div id="captured-display"></div>
+  <div id="info-bar">⭐ Click your piece → click green square to move! 🍄</div>
+</div>
+
+<!-- PROMO MODAL -->
+<div id="promotion-modal">
+  <div class="promo-box">
+    <h3>🍄 PAWN POWER UP!</h3>
+    <div class="promo-choices" id="promo-choices"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════ CONFIG STATE ═══════════════════
+let pieceStyle = 'mario'; // 'mario' | 'classic'
+let boardTheme = 'mario'; // 'mario' | 'classic' | 'ocean' | 'candy'
+
+const BOARD_THEMES = {
+  mario:   {light:'#b8e074', dark:'#5ab52a', border:'#3d8c1a', label:'#3d7a10'},
+  classic: {light:'#f0d9b5', dark:'#b58863', border:'#8a6640', label:'#7a5530'},
+  ocean:   {light:'#a8d8ea', dark:'#2c7873', border:'#1a5c55', label:'#1a4c45'},
+  candy:   {light:'#ffcce0', dark:'#e05580', border:'#b03060', label:'#9a2050'},
+};
+
+function applyBoardTheme(t){
+  const th = BOARD_THEMES[t]||BOARD_THEMES.mario;
+  document.querySelectorAll('.sq.light').forEach(s=>s.style.background=th.light);
+  document.querySelectorAll('.sq.dark').forEach(s=>s.style.background=th.dark);
+  // Also update CSS vars for new squares built later
+  document.documentElement.style.setProperty('--sq-l', th.light);
+  document.documentElement.style.setProperty('--sq-d', th.dark);
+}
+
+function selectStyle(s){
+  pieceStyle=s;
+  document.querySelectorAll('.style-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('style-'+s).classList.add('selected');
+  updateSetupIcons();
+}
+
+function selectTheme(t){
+  boardTheme=t;
+  document.querySelectorAll('.theme-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('theme-'+t).classList.add('selected');
+}
+
+const CLASSIC_SYMBOLS = {
+  wK:'♔', wQ:'♕', wR:'♖', wB:'♗', wN:'♘', wP:'♙',
+  bK:'♚', bQ:'♛', bR:'♜', bB:'♝', bN:'♞', bP:'♟',
+};
+
+function updateSetupIcons(){
+  const wi = document.getElementById('setup-white-icon');
+  const bi = document.getElementById('setup-black-icon');
+  const wl = document.getElementById('btn-white-label');
+  const bl = document.getElementById('btn-black-label');
+  const mp = document.getElementById('setup-mario-preview');
+  if(mp) mp.innerHTML = svgKing('w');
+  if(pieceStyle==='mario'){
+    if(wi){ wi.style.fontSize=''; if(wi.tagName!=='SVG'){wi.innerHTML=''; const sv=document.createElementNS('http://www.w3.org/2000/svg','svg'); sv.setAttribute('viewBox','0 0 60 60'); sv.style.width='48px'; sv.style.height='48px'; sv.innerHTML=svgKing('w'); wi.replaceWith(sv); sv.id='setup-white-icon';} else wi.innerHTML=svgKing('w'); }
+    if(bi){ if(bi.tagName!=='SVG'){bi.innerHTML=''; const sv=document.createElementNS('http://www.w3.org/2000/svg','svg'); sv.setAttribute('viewBox','0 0 60 60'); sv.style.width='48px'; sv.style.height='48px'; sv.innerHTML=svgKing('b'); bi.replaceWith(sv); sv.id='setup-black-icon';} else bi.innerHTML=svgKing('b');}
+    if(wl) wl.textContent='White (Mario)';
+    if(bl) bl.textContent='Black (Wario)';
+  } else {
+    // Replace SVGs back to spans if needed
+    ['setup-white-icon','setup-black-icon'].forEach((id,i)=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      if(el.tagName==='svg'||el.tagName==='SVG'){
+        const sp=document.createElement('span'); sp.id=id; sp.style.fontSize='2.5rem'; sp.style.lineHeight='1';
+        sp.textContent=i===0?'♔':'♚'; el.replaceWith(sp);
+      } else {el.textContent=i===0?'♔':'♚'; el.style.fontSize='2.5rem';}
+    });
+    if(wl) wl.textContent='White';
+    if(bl) bl.textContent='Black';
+  }
+}
+
+// ═══════════════════ SVG PIECES (Mario-style animated) ═══════════════════
+// Each piece is a function(color) => SVG inner HTML string
+// color: 'w'=white team (Mario palette), 'b'=black team (Wario/dark palette)
+
+const C = {
+  // White team (Mario reds/blues)
+  wSkin:'#ffd5a8', wHat:'#e52521', wShirt:'#e52521', wOverall:'#1a6bff',
+  wOutline:'#5a2d00', wEye:'#1a1a1a', wNose:'#c8844a', wBoot:'#5a2d00',
+  // Black team (Wario yellows/purples)
+  bSkin:'#ffe066', bHat:'#7c3fa8', bShirt:'#7c3fa8', bOverall:'#ffe000',
+  bOutline:'#2a1a00', bEye:'#2a1a00', bNose:'#d4a800', bBoot:'#2a1a00',
+};
+function pc(c,k){return C[(c)+k];}
+
+// Shared animation snippets
+const IDLE_BOB = (id,ms=1200)=>`<animateTransform attributeName="transform" type="translate" values="0,0;0,-2;0,0" dur="${ms}ms" repeatCount="indefinite" additive="sum"/>`;
+const EYE_BLINK = (id)=>`<animate attributeName="ry" values="3;3;3;3;0.3;3;3;3" dur="3s" repeatCount="indefinite"/>`;
+const STAR_SPIN = `<animateTransform attributeName="transform" type="rotate" values="0 8 8;360 8 8" dur="2s" repeatCount="indefinite"/>`;
+
+function svgPawn(c){
+  const s=pc(c,'Skin'),h=pc(c,'Hat'),ov=pc(c,'Overall'),o=pc(c,'Outline'),e=pc(c,'Eye'),n=pc(c,'Nose'),bt=pc(c,'Boot');
+  return `<g>${IDLE_BOB('p',1100)}
+  <!-- body -->
+  <ellipse cx="30" cy="46" rx="12" ry="8" fill="${ov}" stroke="${o}" stroke-width="1.5"/>
+  <!-- boots -->
+  <ellipse cx="24" cy="52" rx="6" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="36" cy="52" rx="6" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <!-- shirt -->
+  <ellipse cx="30" cy="38" rx="9" ry="7" fill="${h}" stroke="${o}" stroke-width="1.5"/>
+  <!-- head -->
+  <ellipse cx="30" cy="26" rx="10" ry="9" fill="${s}" stroke="${o}" stroke-width="1.5"/>
+  <!-- hat -->
+  <ellipse cx="30" cy="19" rx="11" ry="4" fill="${h}" stroke="${o}" stroke-width="1.2"/>
+  <rect x="23" y="11" width="14" height="9" rx="3" fill="${h}" stroke="${o}" stroke-width="1.2"/>
+  <!-- eyes -->
+  <ellipse cx="26.5" cy="25" rx="2.5" ry="3" fill="${e}"><${EYE_BLINK()}</ellipse>
+  <ellipse cx="33.5" cy="25" rx="2.5" ry="3" fill="${e}"><${EYE_BLINK()}</ellipse>
+  <!-- nose -->
+  <ellipse cx="30" cy="29" rx="3" ry="2" fill="${n}"/>
+  <!-- mustache -->
+  <path d="M24,31 Q27,34 30,32 Q33,34 36,31" stroke="${o}" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>`;
+}
+
+function svgKnight(c){
+  const s=pc(c,'Skin'),h=pc(c,'Hat'),ov=pc(c,'Overall'),o=pc(c,'Outline'),e=pc(c,'Eye'),bt=pc(c,'Boot');
+  // Yoshi-like (white=green Yoshi, black=purple Yoshi)
+  const body = c==='w'?'#4ccc44':'#9b3bbf';
+  const belly = c==='w'?'#d4f0a0':'#d4aaee';
+  const saddle = c==='w'?'#e52521':'#ffe000';
+  return `<g>${IDLE_BOB('n',900)}
+  <!-- Yoshi body -->
+  <ellipse cx="30" cy="44" rx="14" ry="11" fill="${body}" stroke="${o}" stroke-width="1.5"/>
+  <!-- belly -->
+  <ellipse cx="30" cy="47" rx="8" ry="6" fill="${belly}" stroke="${o}" stroke-width="1"/>
+  <!-- saddle/shell -->
+  <ellipse cx="30" cy="35" rx="10" ry="6" fill="${saddle}" stroke="${o}" stroke-width="1.5"/>
+  <!-- neck -->
+  <rect x="24" y="28" width="12" height="10" rx="5" fill="${body}" stroke="${o}" stroke-width="1.2"/>
+  <!-- head -->
+  <ellipse cx="30" cy="22" rx="12" ry="10" fill="${body}" stroke="${o}" stroke-width="1.5"/>
+  <!-- snout -->
+  <ellipse cx="36" cy="24" rx="6" ry="4" fill="${belly}" stroke="${o}" stroke-width="1"/>
+  <!-- nostril -->
+  <circle cx="38" cy="23" r="1.2" fill="${o}"/>
+  <!-- eye -->
+  <circle cx="27" cy="18" r="4" fill="#fff" stroke="${o}" stroke-width="1"/>
+  <circle cx="27" cy="18" r="2.2" fill="${e}"/>
+  <!-- legs -->
+  <ellipse cx="22" cy="54" rx="5" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="38" cy="54" rx="5" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  </g>`;
+}
+
+function svgBishop(c){
+  const s=pc(c,'Skin'),h=pc(c,'Hat'),ov=pc(c,'Overall'),o=pc(c,'Outline'),e=pc(c,'Eye'),bt=pc(c,'Boot');
+  // Toad-style (white=blue Toad, black=dark Toad)
+  const cap = c==='w'?'#5599ff':'#aa3377';
+  const spot = c==='w'?'#fff':'#ffe000';
+  return `<g>${IDLE_BOB('b',1300)}
+  <!-- body -->
+  <ellipse cx="30" cy="46" rx="11" ry="9" fill="${ov}" stroke="${o}" stroke-width="1.5"/>
+  <ellipse cx="22" cy="52" rx="5" ry="3" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="38" cy="52" rx="5" ry="3" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <!-- vest -->
+  <ellipse cx="30" cy="37" rx="8" ry="6" fill="${h}" stroke="${o}" stroke-width="1.2"/>
+  <!-- head -->
+  <ellipse cx="30" cy="26" rx="9" ry="8" fill="${s}" stroke="${o}" stroke-width="1.5"/>
+  <!-- mushroom cap -->
+  <ellipse cx="30" cy="19" rx="15" ry="10" fill="${cap}" stroke="${o}" stroke-width="1.5"/>
+  <!-- spots -->
+  <circle cx="24" cy="16" r="3.5" fill="${spot}" stroke="${o}" stroke-width="1"/>
+  <circle cx="36" cy="16" r="3.5" fill="${spot}" stroke="${o}" stroke-width="1"/>
+  <circle cx="30" cy="13" r="2.5" fill="${spot}" stroke="${o}" stroke-width="1"/>
+  <!-- eyes -->
+  <circle cx="26" cy="26" r="2.5" fill="${e}"><${EYE_BLINK()}</circle>
+  <circle cx="34" cy="26" r="2.5" fill="${e}"><${EYE_BLINK()}</circle>
+  <!-- mouth -->
+  <path d="M26,31 Q30,34 34,31" stroke="${o}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </g>`;
+}
+
+function svgRook(c){
+  const o=pc(c,'Outline'),bt=pc(c,'Boot');
+  // Bullet Bill / Bob-omb style
+  const body = c==='w'?'#e8e8e8':'#222222';
+  const fuse = c==='w'?'#aaaaaa':'#555';
+  const eyeW = c==='w'?'#222':'#ffffff';
+  return `<g>${IDLE_BOB('r',1500)}
+  <!-- Bob-omb body -->
+  <circle cx="30" cy="34" r="18" fill="${body}" stroke="${o}" stroke-width="2"/>
+  <!-- wind key -->
+  <rect x="44" y="28" width="5" height="12" rx="2" fill="${fuse}" stroke="${o}" stroke-width="1"/>
+  <rect x="42" y="26" width="9" height="4" rx="1" fill="${fuse}" stroke="${o}" stroke-width="1"/>
+  <!-- fuse -->
+  <path d="M30,16 Q34,8 28,4 Q22,0 30,0" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- fuse tip spark -->
+  <circle cx="30" cy="0" r="2.5" fill="#ffd700"><animate attributeName="r" values="2.5;3.5;2.5" dur=".6s" repeatCount="indefinite"/><animate attributeName="fill" values="#ffd700;#ff6600;#ffd700" dur=".6s" repeatCount="indefinite"/></circle>
+  <!-- eyes -->
+  <ellipse cx="24" cy="32" rx="5" ry="6" fill="#fff" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="36" cy="32" rx="5" ry="6" fill="#fff" stroke="${o}" stroke-width="1"/>
+  <circle cx="24" cy="33" r="3" fill="${eyeW}"/>
+  <circle cx="36" cy="33" r="3" fill="${eyeW}"/>
+  <!-- feet -->
+  <ellipse cx="24" cy="51" rx="6" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="36" cy="51" rx="6" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  </g>`;
+}
+
+function svgQueen(c){
+  const s=pc(c,'Skin'),h=pc(c,'Hat'),ov=pc(c,'Overall'),o=pc(c,'Outline'),e=pc(c,'Eye'),n=pc(c,'Nose'),bt=pc(c,'Boot');
+  // Princess Peach (white) / Rosalina (black)
+  const dress = c==='w'?'#ffb6d9':'#4466cc';
+  const hair = c==='w'?'#ffd700':'#e8d090';
+  const crown = c==='w'?'#ffd700':'#aaaaaa';
+  const gem = c==='w'?'#e52521':'#66ccff';
+  return `<g>${IDLE_BOB('q',1000)}
+  <!-- dress -->
+  <ellipse cx="30" cy="47" rx="16" ry="11" fill="${dress}" stroke="${o}" stroke-width="1.5"/>
+  <!-- dress trim -->
+  <ellipse cx="30" cy="55" rx="16" ry="5" fill="${crown}" stroke="${o}" stroke-width="1" opacity=".6"/>
+  <!-- body -->
+  <ellipse cx="30" cy="37" rx="9" ry="8" fill="${dress}" stroke="${o}" stroke-width="1.2"/>
+  <!-- hair flowing -->
+  <ellipse cx="30" cy="22" rx="14" ry="10" fill="${hair}" stroke="${o}" stroke-width="1.2"/>
+  <ellipse cx="17" cy="28" rx="5" ry="9" fill="${hair}" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="43" cy="28" rx="5" ry="9" fill="${hair}" stroke="${o}" stroke-width="1"/>
+  <!-- head -->
+  <ellipse cx="30" cy="22" rx="10" ry="9" fill="${s}" stroke="${o}" stroke-width="1.5"/>
+  <!-- crown -->
+  <path d="M20,14 L22,8 L26,12 L30,6 L34,12 L38,8 L40,14 Z" fill="${crown}" stroke="${o}" stroke-width="1.2"/>
+  <!-- crown gems -->
+  <circle cx="30" cy="9" r="2.5" fill="${gem}"><animate attributeName="opacity" values="1;0.5;1" dur="1.2s" repeatCount="indefinite"/></circle>
+  <circle cx="23" cy="12" r="1.8" fill="${gem}" opacity=".7"/>
+  <circle cx="37" cy="12" r="1.8" fill="${gem}" opacity=".7"/>
+  <!-- eyes -->
+  <ellipse cx="26" cy="21" rx="2.5" ry="3" fill="${e}"><${EYE_BLINK()}</ellipse>
+  <ellipse cx="34" cy="21" rx="2.5" ry="3" fill="${e}"><${EYE_BLINK()}</ellipse>
+  <!-- blush -->
+  <ellipse cx="23" cy="25" rx="3" ry="1.5" fill="rgba(255,140,180,.5)"/>
+  <ellipse cx="37" cy="25" rx="3" ry="1.5" fill="rgba(255,140,180,.5)"/>
+  <!-- smile -->
+  <path d="M26,27 Q30,31 34,27" stroke="${o}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </g>`;
+}
+
+function svgKing(c){
+  const s=pc(c,'Skin'),h=pc(c,'Hat'),ov=pc(c,'Overall'),o=pc(c,'Outline'),e=pc(c,'Eye'),n=pc(c,'Nose'),bt=pc(c,'Boot');
+  // Mario (white) / Wario (black)
+  const cap = c==='w'?'#e52521':'#7c3fa8';
+  const logo = c==='w'?'M':'W';
+  const logoC = c==='w'?'#fff':'#ffe000';
+  return `<g>${IDLE_BOB('k',800)}
+  <!-- legs -->
+  <rect x="23" y="44" width="7" height="10" rx="3" fill="${ov}" stroke="${o}" stroke-width="1.2"/>
+  <rect x="30" y="44" width="7" height="10" rx="3" fill="${ov}" stroke="${o}" stroke-width="1.2"/>
+  <!-- boots -->
+  <ellipse cx="26" cy="54" rx="6" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="34" cy="54" rx="6" ry="3.5" fill="${bt}" stroke="${o}" stroke-width="1"/>
+  <!-- overalls bib -->
+  <ellipse cx="30" cy="39" rx="10" ry="8" fill="${ov}" stroke="${o}" stroke-width="1.5"/>
+  <!-- buttons -->
+  <circle cx="27" cy="38" r="1.5" fill="#ffd700"/>
+  <circle cx="33" cy="38" r="1.5" fill="#ffd700"/>
+  <!-- shirt -->
+  <ellipse cx="30" cy="35" rx="8" ry="5" fill="${cap}" stroke="${o}" stroke-width="1"/>
+  <!-- arms -->
+  <ellipse cx="19" cy="38" rx="5" ry="3" fill="${cap}" stroke="${o}" stroke-width="1" transform="rotate(-20 19 38)"/>
+  <ellipse cx="41" cy="38" rx="5" ry="3" fill="${cap}" stroke="${o}" stroke-width="1" transform="rotate(20 41 38)"/>
+  <!-- hands with star -->
+  <circle cx="15" cy="42" r="4" fill="${s}" stroke="${o}" stroke-width="1"/>
+  <circle cx="45" cy="42" r="4" fill="${s}" stroke="${o}" stroke-width="1"/>
+  <!-- head -->
+  <ellipse cx="30" cy="23" rx="12" ry="11" fill="${s}" stroke="${o}" stroke-width="1.8"/>
+  <!-- ear -->
+  <ellipse cx="19" cy="23" rx="3" ry="4" fill="${s}" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="41" cy="23" rx="3" ry="4" fill="${s}" stroke="${o}" stroke-width="1"/>
+  <!-- hair -->
+  <path d="M18,20 Q22,14 30,15 Q38,14 42,20" fill="#5a2d00" stroke="${o}" stroke-width="1"/>
+  <!-- hat brim -->
+  <ellipse cx="30" cy="14" rx="14" ry="4" fill="${cap}" stroke="${o}" stroke-width="1.5"/>
+  <!-- hat dome -->
+  <ellipse cx="30" cy="8" rx="10" ry="7" fill="${cap}" stroke="${o}" stroke-width="1.5"/>
+  <!-- hat logo -->
+  <circle cx="30" cy="8" r="5" fill="${logoC}" stroke="${o}" stroke-width=".8"/>
+  <text x="30" y="11" text-anchor="middle" font-size="5" font-weight="900" font-family="Arial" fill="${cap}">${logo}</text>
+  <!-- star on hat (crown) -->
+  <polygon points="30,2 31.2,5.5 35,5.5 32.2,7.8 33.3,11 30,9 26.7,11 27.8,7.8 25,5.5 28.8,5.5" fill="#ffd700" stroke="${o}" stroke-width=".5"><animate attributeName="opacity" values="1;0.6;1" dur=".9s" repeatCount="indefinite"/></polygon>
+  <!-- eyes -->
+  <ellipse cx="26" cy="22" rx="3" ry="3.5" fill="white" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="34" cy="22" rx="3" ry="3.5" fill="white" stroke="${o}" stroke-width="1"/>
+  <ellipse cx="26.5" cy="23" rx="1.8" ry="2" fill="${e}"><${EYE_BLINK()}</ellipse>
+  <ellipse cx="34.5" cy="23" rx="1.8" ry="2" fill="${e}"><${EYE_BLINK()}</ellipse>
+  <!-- nose -->
+  <ellipse cx="30" cy="27" rx="3.5" ry="2.2" fill="${n}"/>
+  <!-- mustache -->
+  <path d="M23,30 Q27,34 30,31 Q33,34 37,30" stroke="#5a2d00" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>`;
+}
+
+const PIECE_SVG = { K:svgKing, Q:svgQueen, R:svgRook, B:svgBishop, N:svgKnight, P:svgPawn };
+
+function makePieceSVG(piece){
+  const c = piece[0], t = piece[1];
+  const fn = PIECE_SVG[t];
+  return fn ? fn(c) : '';
+}
+
+function setupIcons(){
+  const ws = document.getElementById('setup-white-icon');
+  const bs = document.getElementById('setup-black-icon');
+  if(ws) ws.innerHTML = svgKing('w');
+  if(bs) bs.innerHTML = svgKing('b');
+}
+
+// ═══════════════════ AUDIO ═══════════════════
+const AudioCtx = window.AudioContext||window.webkitAudioContext;
+let actx,gainNode,masterVolume=0.5;
+function initAudio(){if(actx)return;actx=new AudioCtx();gainNode=actx.createGain();gainNode.gain.value=masterVolume;gainNode.connect(actx.destination);}
+function setVolume(v){masterVolume=parseFloat(v);document.getElementById('vol-setup').value=v;document.getElementById('vol-game').value=v;if(gainNode)gainNode.gain.value=masterVolume;}
+function playTone(freq,type,dur,vol=1){try{initAudio();const o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol*masterVolume,actx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,actx.currentTime+dur);o.connect(g);g.connect(gainNode);o.start();o.stop(actx.currentTime+dur);}catch(e){}}
+function sndMove(){playTone(520,'sine',.12);}
+function sndCapture(){playTone(300,'sawtooth',.18);setTimeout(()=>playTone(200,'sawtooth',.15),80);}
+function sndCheck(){playTone(660,'square',.1);setTimeout(()=>playTone(880,'square',.15),100);}
+function sndCheckmate(){[440,554,659,880].forEach((f,i)=>setTimeout(()=>playTone(f,'sine',.4),i*120));}
+function sndSelect(){playTone(700,'sine',.07,.4);}
+function sndCoin(){playTone(988,'sine',.08);setTimeout(()=>playTone(1319,'sine',.15),80);}
+function sndPowerup(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,'sine',.2),i*80));}
+
+// ═══════════════════ CHESS ENGINE ═══════════════════
+const PIECE_VALUES={K:20000,Q:900,R:500,B:330,N:320,P:100};
+const PST={
+  P:[[0,0,0,0,0,0,0,0],[50,50,50,50,50,50,50,50],[10,10,20,30,30,20,10,10],[5,5,10,25,25,10,5,5],[0,0,0,20,20,0,0,0],[5,-5,-10,0,0,-10,-5,5],[5,10,10,-20,-20,10,10,5],[0,0,0,0,0,0,0,0]],
+  N:[[-50,-40,-30,-30,-30,-30,-40,-50],[-40,-20,0,0,0,0,-20,-40],[-30,0,10,15,15,10,0,-30],[-30,5,15,20,20,15,5,-30],[-30,0,15,20,20,15,0,-30],[-30,5,10,15,15,10,5,-30],[-40,-20,0,5,5,0,-20,-40],[-50,-40,-30,-30,-30,-30,-40,-50]],
+  B:[[-20,-10,-10,-10,-10,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,10,10,5,0,-10],[-10,5,5,10,10,5,5,-10],[-10,0,10,10,10,10,0,-10],[-10,10,10,10,10,10,10,-10],[-10,5,0,0,0,0,5,-10],[-20,-10,-10,-10,-10,-10,-10,-20]],
+  R:[[0,0,0,0,0,0,0,0],[5,10,10,10,10,10,10,5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[0,0,0,5,5,0,0,0]],
+  Q:[[-20,-10,-10,-5,-5,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,5,5,5,0,-10],[-5,0,5,5,5,5,0,-5],[0,0,5,5,5,5,0,-5],[-10,5,5,5,5,5,0,-10],[-10,0,5,0,0,0,0,-10],[-20,-10,-10,-5,-5,-10,-10,-20]],
+  K:[[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-20,-30,-30,-40,-40,-30,-30,-20],[-10,-20,-20,-20,-20,-20,-20,-10],[20,20,0,0,0,0,20,20],[20,30,10,0,0,10,30,20]]
+};
+
+let board,turn,selected,validMoves,gameOver,playerColor,flipped;
+let enPassantTarget,castlingRights,history;
+let hintSquares=[],capturedW=[],capturedB=[];
+let currentElo=800;
+
+// ELO → depth + noise mapping
+const ELO_SETTINGS={
+  400:{depth:1,noise:120,blunderRate:.35},
+  800:{depth:2,noise:40,blunderRate:.15},
+  1200:{depth:3,noise:15,blunderRate:.05},
+  1800:{depth:4,noise:5,blunderRate:0}
+};
+
+function selectElo(elo){
+  currentElo=elo;
+  document.querySelectorAll('.elo-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('elo-'+elo).classList.add('selected');
+}
+
+function selectColor(c){
+  playerColor=c;
+  document.getElementById('btn-white').classList.toggle('selected',c==='white');
+  document.getElementById('btn-black').classList.toggle('selected',c==='black');
+}
+
+function pieceColor(p){return p?p[0]:null;}
+function pieceType(p){return p?p[1]:null;}
+function opponent(c){return c==='w'?'b':'w';}
+function inBounds(r,c){return r>=0&&r<8&&c>=0&&c<8;}
+
+function isSquareAttacked(brd,row,col,byColor){
+  const dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  for(const [dr,dc] of dirs){let r=row+dr,c=col+dc;while(inBounds(r,c)){const p=brd[r][c];if(p){if(pieceColor(p)===byColor){const t=pieceType(p),id=Math.abs(dr)===Math.abs(dc),is=dr===0||dc===0;if(t==='Q'||(t==='B'&&id)||(t==='R'&&is))return true;}break;}r+=dr;c+=dc;}}
+  for(const [dr,dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){const r=row+dr,c=col+dc;if(inBounds(r,c)&&brd[r][c]===''+byColor+'N')return true;}
+  const pd=byColor==='w'?1:-1;for(const dc of[-1,1]){const r=row+pd,c=col+dc;if(inBounds(r,c)&&brd[r][c]===''+byColor+'P')return true;}
+  for(const [dr,dc] of dirs){const r=row+dr,c=col+dc;if(inBounds(r,c)&&brd[r][c]===''+byColor+'K')return true;}
+  return false;
+}
+function findKing(brd,color){for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(brd[r][c]===color+'K')return[r,c];return null;}
+function isInCheck(brd,color){const[kr,kc]=findKing(brd,color);return isSquareAttacked(brd,kr,kc,opponent(color));}
+
+function applyMove(brd,move,epr,cr){
+  const nb=brd.map(r=>[...r]),necr={...cr};let nepr=null;
+  const{fr,fc,tr,tc,type,promo}=move,piece=nb[fr][fc],pt=pieceType(piece),pc2=pieceColor(piece);
+  nb[tr][tc]=promo?pc2+promo:piece;nb[fr][fc]=null;
+  if(type==='ep')nb[fr][tc]=null;
+  if(type==='castle-k'){nb[tr][tc-1]=nb[tr][7];nb[tr][7]=null;}
+  if(type==='castle-q'){nb[tr][tc+1]=nb[tr][0];nb[tr][0]=null;}
+  if(pt==='P'&&Math.abs(tr-fr)===2)nepr=[fr+(tr-fr)/2,fc];
+  if(pt==='K'){necr[pc2+'K']=false;necr[pc2+'Q']=false;}
+  if(pt==='R'){if(fc===7)necr[pc2+'K']=false;if(fc===0)necr[pc2+'Q']=false;}
+  return{brd:nb,epr:nepr,cr:necr};
+}
+
+function getRawMoves(brd,row,col,epr,cr){
+  const piece=brd[row][col];if(!piece)return[];
+  const pc2=pieceColor(piece),pt=pieceType(piece),moves=[];
+  const add=(tr,tc,type='normal',promo=null)=>moves.push({fr:row,fc:col,tr,tc,type,promo});
+  if(pt==='P'){
+    const dir=pc2==='w'?-1:1,startRow=pc2==='w'?6:1,promoRow=pc2==='w'?0:7;
+    if(inBounds(row+dir,col)&&!brd[row+dir][col]){
+      if(row+dir===promoRow){for(const p of['Q','R','B','N'])add(row+dir,col,'normal',p);}
+      else{add(row+dir,col);}
+      if(row===startRow&&!brd[row+2*dir][col])add(row+2*dir,col);
+    }
+    for(const dc of[-1,1]){const nr=row+dir,nc=col+dc;if(!inBounds(nr,nc))continue;if(brd[nr][nc]&&pieceColor(brd[nr][nc])!==pc2){if(nr===promoRow){for(const p of['Q','R','B','N'])add(nr,nc,'normal',p);}else add(nr,nc,'capture');}if(epr&&epr[0]===nr&&epr[1]===nc)add(nr,nc,'ep');}
+  }
+  if(pt==='N'){for(const[dr,dc]of[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]){const nr=row+dr,nc=col+dc;if(inBounds(nr,nc)&&pieceColor(brd[nr][nc])!==pc2)add(nr,nc);}}
+  if(['B','R','Q'].includes(pt)){const dirs2=[];if(pt==='B'||pt==='Q')dirs2.push(...[[1,1],[1,-1],[-1,1],[-1,-1]]);if(pt==='R'||pt==='Q')dirs2.push(...[[1,0],[-1,0],[0,1],[0,-1]]);for(const[dr,dc]of dirs2){let r=row+dr,c=col+dc;while(inBounds(r,c)){if(brd[r][c]){if(pieceColor(brd[r][c])!==pc2)add(r,c,'capture');break;}add(r,c);r+=dr;c+=dc;}}}
+  if(pt==='K'){for(const[dr,dc]of[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]){const nr=row+dr,nc=col+dc;if(inBounds(nr,nc)&&pieceColor(brd[nr][nc])!==pc2)add(nr,nc);}
+    if(!isInCheck(brd,pc2)){const br=pc2==='w'?7:0;if(row===br&&col===4){if(cr[pc2+'K']&&!brd[br][5]&&!brd[br][6]&&!isSquareAttacked(brd,br,5,opponent(pc2))&&!isSquareAttacked(brd,br,6,opponent(pc2)))add(br,6,'castle-k');if(cr[pc2+'Q']&&!brd[br][3]&&!brd[br][2]&&!brd[br][1]&&!isSquareAttacked(brd,br,3,opponent(pc2))&&!isSquareAttacked(brd,br,2,opponent(pc2)))add(br,2,'castle-q');}}}
+  return moves;
+}
+
+function getLegalMoves(brd,row,col,epr,cr){
+  const raw=getRawMoves(brd,row,col,epr,cr),pc2=pieceColor(brd[row][col]);
+  return raw.filter(m=>{const{brd:nb}=applyMove(brd,m,epr,cr);return!isInCheck(nb,pc2);});
+}
+
+function getAllLegalMoves(brd,color,epr,cr){
+  const all=[];for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(brd[r][c]&&pieceColor(brd[r][c])===color)for(const m of getLegalMoves(brd,r,c,epr,cr))all.push(m);
+  return all;
+}
+
+function isCheckmate(brd,color,epr,cr){return isInCheck(brd,color)&&getAllLegalMoves(brd,color,epr,cr).length===0;}
+function isStalemate(brd,color,epr,cr){return!isInCheck(brd,color)&&getAllLegalMoves(brd,color,epr,cr).length===0;}
+
+// ═══ ELO-aware AI ═══
+function evalBoard(brd){
+  let s=0;
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){const p=brd[r][c];if(!p)continue;const pc2=pieceColor(p),pt=pieceType(p),val=PIECE_VALUES[pt]||0,pr=pc2==='w'?r:7-r,pv=PST[pt]?PST[pt][pr][c]:0;s+=(pc2==='w'?1:-1)*(val+pv);}
+  return s;
+}
+
+function minimax(brd,depth,alpha,beta,isMax,epr,cr){
+  const color=isMax?'w':'b';
+  if(isCheckmate(brd,color,epr,cr))return isMax?-30000:30000;
+  if(isStalemate(brd,color,epr,cr))return 0;
+  if(depth===0)return evalBoard(brd);
+  const moves=getAllLegalMoves(brd,color,epr,cr);
+  if(isMax){let best=-Infinity;for(const m of moves){const r2=applyMove(brd,m,epr,cr);const v=minimax(r2.brd,depth-1,alpha,beta,false,r2.epr,r2.cr);best=Math.max(best,v);alpha=Math.max(alpha,v);if(beta<=alpha)break;}return best;}
+  else{let best=Infinity;for(const m of moves){const r2=applyMove(brd,m,epr,cr);const v=minimax(r2.brd,depth-1,alpha,beta,true,r2.epr,r2.cr);best=Math.min(best,v);beta=Math.min(beta,v);if(beta<=alpha)break;}return best;}
+}
+
+function getBestMove(brd,color,epr,cr){
+  const moves=getAllLegalMoves(brd,color,epr,cr);if(!moves.length)return null;
+  const settings=ELO_SETTINGS[currentElo]||ELO_SETTINGS[800];
+  const isMax=color==='w';
+
+  // Blunder: occasionally pick random move
+  if(Math.random()<settings.blunderRate){return moves[Math.floor(Math.random()*moves.length)];}
+
+  let bestVal=isMax?-Infinity:Infinity,bestMove=null;
+  for(const m of moves){
+    const r2=applyMove(brd,m,epr,cr);
+    let v=minimax(r2.brd,settings.depth,-Infinity,Infinity,!isMax,r2.epr,r2.cr);
+    v+=(Math.random()-.5)*settings.noise;
+    if((isMax&&v>bestVal)||(!isMax&&v<bestVal)){bestVal=v;bestMove=m;}
+  }
+  return bestMove;
+}
+
+// ═══════════════════ INIT BOARD ═══════════════════
+function initBoard(){
+  board=[['bR','bN','bB','bQ','bK','bB','bN','bR'],['bP','bP','bP','bP','bP','bP','bP','bP'],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],[null,null,null,null,null,null,null,null],['wP','wP','wP','wP','wP','wP','wP','wP'],['wR','wN','wB','wQ','wK','wB','wN','wR']];
+  turn='w';selected=null;validMoves=[];gameOver=false;enPassantTarget=null;
+  castlingRights={wK:true,wQ:true,bK:true,bQ:true};history=[];hintSquares=[];capturedW=[];capturedB=[];
+}
+
+// ═══════════════════ RENDER ═══════════════════
+function visToBoard(vi){const vr=Math.floor(vi/8),vc=vi%8;return flipped?[7-vr,7-vc]:[vr,vc];}
+function getSq(r,c){return document.querySelector(`#board .sq[data-row="${r}"][data-col="${c}"]`);}
+
+function buildBoardUI(){
+  const boardEl=document.getElementById('board');boardEl.innerHTML='';
+  const files=flipped?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];
+  const ranks=flipped?['1','2','3','4','5','6','7','8']:['8','7','6','5','4','3','2','1'];
+  const setCol=(id,arr)=>{const el=document.getElementById(id);if(el)el.innerHTML=arr.map(x=>`<span class="col-label">${x}</span>`).join('');};
+  setCol('col-top',files);setCol('col-bot',files);
+  const setR=(id,arr)=>{const el=document.getElementById(id);if(el)el.innerHTML=arr.map(x=>`<span class="rank-label">${x}</span>`).join('');};
+  setR('rl',ranks);setR('rr',ranks);
+  for(let vi=0;vi<64;vi++){
+    const[r,c]=visToBoard(vi);
+    const sq=document.createElement('div');
+    sq.className='sq '+((r+c)%2===0?'light':'dark');
+    sq.dataset.row=r;sq.dataset.col=c;
+    sq.addEventListener('click',()=>onSquareClick(r,c));
+    const pw=document.createElement('div');pw.className='piece-wrap';
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox','0 0 60 60');
+    pw.appendChild(svg);sq.appendChild(pw);
+    boardEl.appendChild(sq);
+  }
+}
+
+function renderBoard(){
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const sq=getSq(r,c);if(!sq)continue;
+    const p=board[r][c];
+    const pw=sq.querySelector('.piece-wrap svg');
+    const orig=(r+c)%2===0;
+    sq.className='sq '+(orig?'light':'dark');
+    if(p){pw.innerHTML=makePieceSVG(p);}else{pw.innerHTML='';}
+    sq.classList.remove('selected','highlight','valid-move','valid-capture','in-check');
+  }
+  if(selected){
+    const sq=getSq(selected[0],selected[1]);
+    if(sq){sq.classList.remove('light','dark');sq.classList.add('selected');}
+    for(const m of validMoves){
+      const tsq=getSq(m.tr,m.tc);
+      if(tsq)tsq.classList.add(board[m.tr][m.tc]||m.type==='ep'?'valid-capture':'valid-move');
+    }
+  }
+  for(const[hr,hc] of hintSquares){const sq=getSq(hr,hc);if(sq)sq.classList.add('highlight');}
+  if(!gameOver&&isInCheck(board,turn)){const[kr,kc]=findKing(board,turn);const sq=getSq(kr,kc);if(sq)sq.classList.add('in-check');}
+  renderCaptured();
+}
+
+function renderCaptured(){
+  const el=document.getElementById('captured-display');
+  el.innerHTML='';
+  const addPieces=(arr,color)=>{
+    for(const t of arr){
+      const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('viewBox','0 0 60 60');svg.innerHTML=makePieceSVG(color+t);
+      el.appendChild(svg);
+    }
+  };
+  addPieces(capturedB,'b');
+  addPieces(capturedW,'w');
+}
+
+function updateStatus(){
+  if(gameOver)return;
+  const isMine=turn===playerColor[0];
+  const inCheck=isInCheck(board,turn);
+  document.getElementById('turn-indicator').textContent=turn==='w'?'WHITE':'BLACK';
+  if(inCheck){document.getElementById('status-icon').textContent='⚠️';document.getElementById('status-text').textContent=isMine?'🚨 You are in Check! Escape!':'🚨 Enemy King in Check!';sndCheck();}
+  else if(isMine){document.getElementById('status-icon').textContent='⭐';document.getElementById('status-text').textContent='Your turn! Pick a character!';}
+  else{document.getElementById('status-icon').textContent='🤔';document.getElementById('status-text').textContent='Opponent thinking...';}
+}
+
+let promoResolve=null;
+function askPromotion(color){
+  return new Promise(res=>{
+    promoResolve=res;
+    const modal=document.getElementById('promotion-modal');
+    modal.classList.add('show');
+    const ch=document.getElementById('promo-choices');ch.innerHTML='';
+    for(const p of['Q','R','B','N']){
+      const btn=document.createElement('div');btn.className='promo-choice';
+      const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+      svg.setAttribute('viewBox','0 0 60 60');svg.innerHTML=makePieceSVG(color[0]+p);
+      btn.appendChild(svg);
+      btn.onclick=()=>{modal.classList.remove('show');res(p);};
+      ch.appendChild(btn);
+    }
+  });
+}
+
+function showCaptureFloat(r,c){
+  const sq=getSq(r,c);if(!sq)return;
+  const rect=sq.getBoundingClientRect();
+  const el=document.createElement('div');el.className='cap-float';
+  el.textContent=['😢','💥','✨','🌟','💫','⭐','🔥'][Math.floor(Math.random()*7)];
+  el.style.left=(rect.left+window.scrollX+rect.width/2-16)+'px';
+  el.style.top=(rect.top+window.scrollY)+'px';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1000);
+}
+
+async function onSquareClick(r,c){
+  initAudio();if(gameOver)return;
+  const isMine=turn===playerColor[0];if(!isMine)return;
+  const clickedPiece=board[r][c];
+  if(selected){
+    const move=validMoves.find(m=>m.tr===r&&m.tc===c);
+    if(move){
+      hintSquares=[];
+      let finalMove=move;
+      if(move.promo){
+        const promoMoves=validMoves.filter(m=>m.tr===r&&m.tc===c&&m.promo);
+        if(promoMoves.length>1){const ch=await askPromotion(turn);finalMove=promoMoves.find(m=>m.promo===ch)||promoMoves[0];}
+        else finalMove=promoMoves[0];
+      }
+      await executeMove(finalMove);return;
+    } else if(clickedPiece&&pieceColor(clickedPiece)===turn){
+      selected=[r,c];validMoves=getLegalMoves(board,r,c,enPassantTarget,castlingRights);sndSelect();renderBoard();return;
+    } else {
+      selected=null;validMoves=[];renderBoard();return;
+    }
+  }
+  if(clickedPiece&&pieceColor(clickedPiece)===turn){
+    selected=[r,c];validMoves=getLegalMoves(board,r,c,enPassantTarget,castlingRights);sndSelect();renderBoard();
+  }
+}
+
+async function executeMove(move){
+  const capturedPiece=board[move.tr][move.tc];
+  const isEP=move.type==='ep';
+  const epCap=isEP?board[move.fr][move.tc]:null;
+  history.push({board:board.map(r=>[...r]),turn,enPassantTarget,castlingRights:{...castlingRights},capturedW:[...capturedW],capturedB:[...capturedB]});
+  const cap=capturedPiece||epCap;
+  if(cap){
+    if(pieceColor(cap)==='w')capturedW.push(pieceType(cap));
+    else capturedB.push(pieceType(cap));
+    showCaptureFloat(move.tr,move.tc);sndCapture();
+  } else if(move.type==='castle-k'||move.type==='castle-q'){sndPowerup();}
+  else{sndMove();}
+  const result=applyMove(board,move,enPassantTarget,castlingRights);
+  board=result.brd;enPassantTarget=result.epr;castlingRights=result.cr;
+  turn=opponent(turn);selected=null;validMoves=[];
+  renderBoard();
+  const oc=turn;
+  if(isCheckmate(board,oc,enPassantTarget,castlingRights)){
+    gameOver=true;
+    const winner=opponent(oc),iWin=winner===playerColor[0];
+    document.getElementById('status-icon').textContent=iWin?'🎉':'😢';
+    document.getElementById('status-text').textContent=iWin?'You Win! Wahoo! 🎉':'Game Over! Try again!';
+    document.getElementById('turn-indicator').textContent='GAME OVER';
+    sndCheckmate();launchConfetti();return;
+  }
+  if(isStalemate(board,oc,enPassantTarget,castlingRights)){
+    gameOver=true;
+    document.getElementById('status-icon').textContent='🤝';
+    document.getElementById('status-text').textContent="It's a Draw! 🤝";
+    document.getElementById('turn-indicator').textContent='DRAW';return;
+  }
+  updateStatus();
+  if(!gameOver&&turn!==playerColor[0])setTimeout(doAIMove,600);
+}
+
+async function doAIMove(){
+  if(gameOver||turn===playerColor[0])return;
+  const move=getBestMove(board,turn,enPassantTarget,castlingRights);
+  if(!move)return;
+  const promoMoves=getAllLegalMoves(board,turn,enPassantTarget,castlingRights).filter(m=>m.tr===move.tr&&m.tc===move.tc&&m.fr===move.fr&&m.fc===move.fc&&m.promo);
+  const fm=promoMoves.length?(promoMoves.find(m=>m.promo==='Q')||promoMoves[0]):move;
+  await executeMove(fm);
+}
+
+function undoMove(){
+  if(!history.length)return;
+  let times=(history.length>=2&&history[history.length-1].turn!==playerColor[0])?2:1;
+  for(let i=0;i<times;i++){if(!history.length)break;const h=history.pop();board=h.board;turn=h.turn;enPassantTarget=h.enPassantTarget;castlingRights=h.castlingRights;capturedW=h.capturedW;capturedB=h.capturedB;}
+  gameOver=false;selected=null;validMoves=[];hintSquares=[];renderBoard();updateStatus();
+}
+
+function giveHint(){
+  if(gameOver||turn!==playerColor[0])return;
+  const moves=getAllLegalMoves(board,turn,enPassantTarget,castlingRights);if(!moves.length)return;
+  const m=moves[Math.floor(Math.random()*moves.length)];
+  hintSquares=[[m.fr,m.fc],[m.tr,m.tc]];renderBoard();
+  setTimeout(()=>{hintSquares=[];renderBoard();},2000);
+}
+
+function showSetup(){document.getElementById('setup-screen').style.display='block';document.getElementById('game-screen').style.display='none';}
+
+function startGame(){
+  playerColor=playerColor||'white';flipped=playerColor==='black';
+  initBoard();
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('game-screen').style.display='flex';
+  document.getElementById('elo-badge').textContent='ELO '+currentElo;
+  buildBoardUI();renderBoard();updateStatus();
+  if(playerColor==='black')setTimeout(doAIMove,700);
+}
+
+// Confetti
+function launchConfetti(){
+  const canvas=document.getElementById('confetti-canvas');
+  const c2=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const parts=[],colors=['#e52521','#ffd700','#4caf50','#66b3ff','#ff69b4','#ff9900'];
+  for(let i=0;i<160;i++)parts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height-canvas.height,vx:(Math.random()-.5)*5,vy:Math.random()*5+2,r:Math.random()*8+3,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*Math.PI*2,vr:(Math.random()-.5)*.2});
+  let frame=0;
+  function draw(){c2.clearRect(0,0,canvas.width,canvas.height);for(const p of parts){c2.save();c2.translate(p.x,p.y);c2.rotate(p.rot);c2.fillStyle=p.color;c2.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);c2.restore();p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.vy+=.06;}frame++;if(frame<220)requestAnimationFrame(draw);else c2.clearRect(0,0,canvas.width,canvas.height);}
+  draw();
+}
+
+// Boot
+selectColor('white');selectElo(800);setupIcons();showSetup();
+</script>
+</body>
+</html>
